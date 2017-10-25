@@ -1,0 +1,26 @@
+{
+  "name": "track-life",
+  "version": "1.0.0",
+  "description": "web app to track one's activities, habits, goals, etc. ",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codeannie/track-life.git"
+  },
+  "author": "Annie Chiang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codeannie/track-life/issues"
+  },
+  "homepage": "https://github.com/codeannie/track-life#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
