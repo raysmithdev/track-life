@@ -1,15 +1,54 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
   <head>
     <title>Track Life</title>
     <meta charset="UTF-8">
     <meta description="app to track various activities, habits, routines, in one's life">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+    <link rel="stylesheet" href="index.css">
   </head>
+
   <body>
-    <p>Hello World! Start Tracking Yourself Today!</p>
+    <navigation>
+      <h1>Track Life</h1>
+      <button type=button>LOGIN</button>
+      <button type=button>DEMO</button>
+    </navigation>
+    <main>
+      <div class="landing-page">
+        <section class="intro">
+          <h2>What is Track Life?</h2>
+          <p class="intro">Track Life will help you keep log of your activities, habits, routines or anything else you want to track!</p>
+          <p class="intro">Rather than setting goals, receive reminder alerts, and be bombarded by data, just check off that you did it. </p>
+          <p class="intro">You are measuring your own progress in the fact that you did it at all.</p>
+          <!-- insert screenshots here -->
+        </section>
+
+        <div class="bar"></div>
+
+        <section class="sign-up">
+          <form action="" method="post">
+            <fieldset>
+              <legend>Create an Account</legend>
+                <label for="username">Username:</label> 
+                <input id="username" type="text" placeholder="enter username">
+                
+                <label for="password">Password:</label>
+                <input id="password" type="password" placeholder="enter password" required>
+                
+                <button type="submit">Sign Up</button>
+                <button type="reset">Reset</button>
+                
+            </fieldset>
+          </form>
+          <p class="already-signedup">Already have an account? <a href="/login">Login</a></p>
+        </section>
+      </div>
+    </main>
   </body>
   <footer>
-    <p>Created by <a ref="www.codebear.io">codebear</a></p>
+    <p class="footer">created by <a ref="www.codebear.io">codebear 2017</a></p>
   </footer>
 </html>
