@@ -12,3 +12,23 @@ h1, h2, legend, button {
   font-family: 'Roboto', sans-serif;
 }
 
+.appName {
+  font-style: italic; 
+  font-weight: bold;
+}
+
+/* .nav-bar {
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  width: 100%;
+  background-color: 
+} */
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
