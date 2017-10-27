@@ -7,18 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif|Roboto">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif:400,700i|Roboto:400,900i">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="index.css">
   </head>
 
   <body>
-    <navigation>
-      <h1>Track Life</h1>
-      <button type=button>Login</button>
-      <button type=button>Sign Up</button>
-      <button type=button>Demo</button>
-    </navigation>
+    <div class="nav-bar">
+      <h1 class="appName">Track Life</h1>
+      <ul class="nav">
+        <li><button type=button>Login</button></li>
+        <li><button type=button>Sign Up</button></li>
+        <li><button type=button>Demo</button></li>
+      </ul>
+    </div>
     <main>
       <div class="landing-page">
         <section class="intro">
@@ -32,7 +34,7 @@
         <div class="bar"></div>
 
         <section class="sign-up">
-          <h2>Ready to start tracking?</h2>
+          <h2>Ready to Start Tracking?</h2>
           <form action="" method="post">
             <fieldset>
               <legend>Create an Account</legend>
