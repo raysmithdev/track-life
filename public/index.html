@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
   <head>
     <title>Track Life</title>
     <meta charset="UTF-8">
@@ -7,14 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif|Roboto">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="index.css">
   </head>
 
   <body>
     <navigation>
       <h1>Track Life</h1>
-      <button type=button>LOGIN</button>
-      <button type=button>DEMO</button>
+      <button type=button>Login</button>
+      <button type=button>Sign Up</button>
+      <button type=button>Demo</button>
     </navigation>
     <main>
       <div class="landing-page">
@@ -29,6 +32,7 @@
         <div class="bar"></div>
 
         <section class="sign-up">
+          <h2>Ready to start tracking?</h2>
           <form action="" method="post">
             <fieldset>
               <legend>Create an Account</legend>
@@ -40,15 +44,19 @@
                 
                 <button type="submit">Sign Up</button>
                 <button type="reset">Reset</button>
-                
             </fieldset>
           </form>
           <p class="already-signedup">Already have an account? <a href="/login">Login</a></p>
         </section>
       </div>
     </main>
+
+    <footer>
+      <p class="footer">created by <a href="www.codebear.io">codebear</a> 2017</p>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="public/index.js"></script>
+
   </body>
-  <footer>
-    <p class="footer">created by <a ref="www.codebear.io">codebear 2017</a></p>
-  </footer>
 </html>
