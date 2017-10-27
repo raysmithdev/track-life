@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Track Life</title>
+    <meta charset="UTF-8">
+    <meta description="app to track various activities, habits, routines, in one's life">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif:400,700i|Roboto:400,900i">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="app.css">
+  </head>
+
+  <body>
+    <nav class="header">
+      <h1 class="appName">Track Life</h1>
+      <ul class="header-nav">
+        <li><button type=button>Create</button></li>  <!--not sure if this is needed-->
+        <li><button type=button>Logout</button></li>
+      </ul>
+    </nav>
+
+    <nav class="sidebar">
+      <ul class="sidebar-nav">
+        <li><button type=button class="dashboard-link">Dashboard</button></li>
+        <li><button type=button class="summary-link">Summary</button></li>
+        <li><button type=button class="create-link">Create</button></li>
+        <li><button type=button class="archive-link">Archive</button></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="login"></section>
+      <section class="dashboard"></section>
+      <section class="create-tracker"></section>
+      <section class="tracker-summary"></section>
+      <section class="chart"></section>
+      <section class="profile"></section>
+      <section class="tracker-archive"></section>
+    </main>
+
+    <footer>
+      <p class="footer">created by <a href="www.codebear.io">codebear</a> 2017</p>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="public/app.js"></script>
+
+  </body>
+</html>
