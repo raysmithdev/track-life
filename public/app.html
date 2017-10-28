@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif:400,700i|Roboto:400,900i">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="grid.css">
   </head>
 
   <body>
@@ -32,8 +33,39 @@
 
     <main>
       <section class="login"></section>
+        <h2>Login</h2>
+        <form action="" method="get">
+          <legend>Back on Track</legend>
+              <label for="username">Username:</label> 
+              <input id="username" type="text" placeholder="enter username">
+              
+              <label for="password">Password:</label>
+              <input id="password" type="password" placeholder="enter password" required>
+              
+              <button type="submit">Login</button>
+              <button type="reset">Reset</button>
+          </form>
+
       <section class="dashboard"></section>
+        <h2>Dashboard</h2>
+        <article>
+          <h3 class="tracker-title">Go to Jiu Jitsu</h3>
+
+        </article>
+
       <section class="create-tracker"></section>
+        <h2>Create a Tracker</h2>
+        <form action="" method="post">
+          <label for="tracker-name">New Tracker Name</label>
+          <input id="tracker-name" type="text" placeholder="enter new tracker name">
+
+          <label for="tracker-description">Description</label>
+          <input id="tracker-description" type="text" placeholder="descrption (optional)">
+
+          <button type="submit">Create</button>
+          <button type="button">Cancel</button>
+        </form>
+        
       <section class="tracker-summary"></section>
       <section class="chart"></section>
       <section class="profile"></section>
