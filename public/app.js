@@ -1,5 +1,6 @@
 'use strict';
 
+//mock data for initial build
 const mockData = [
   {
     id: 1,
@@ -31,10 +32,68 @@ const mockData = [
     name: 'Do Back Exercises',
     description: 'strength for bjj',
     createdDate: '2017-01-28 20:38:43',
-    notes: 'Rener video',
+    notes: 'exercise ball + bridge',
     tallyMarks: {
       '2017-09': 3,
       '2017-10': 4,
     }
   },
 ];
+
+// render login screen
+// render logout
+// render dashboard
+function renderDashboard() {
+  $('.tracker-container').html('');
+
+  mockData.forEach(trackerData => {
+    const component = new TrackerComponents(trackerData);
+    $('.tracker-container').append(component.getTrackerHtml());
+  });
+
+  $('.main-section').hide();
+  $('.dashboard').show();
+}
+// render create new tracker 
+// render tracker summary page
+// render chart
+// render user profile page
+// render archive page
+
+class TrackerComponents {
+  constructor(data) {
+    this.trackerId = data.id;
+    this.name = data.name;
+    this.tallyMarks = data.tallyMarks;
+  }
+
+  getTallyMarks() {
+    const markBlocks = [];
+    const template = `<li class="mark"></li>`;
+    for (let i = 0; i < this.tallyMarks; i++) {
+      markBlocks.push(template);
+    }
+    return markBlocks.join('');
+  }
+
+  getTrackerHtml() {
+    const template = `
+      <h3 class="tracker-name">${this.name}</h3>
+      <ul class="tally-marks>${this.getTallyMarks()}</ul>
+      <div class="button-row">
+      <button type="button" id="add-mark-btn">Add Mark</button>
+      <button data-trkr-name=${this.name} id="view-sumry-btn">View Summary</button>
+    </div>
+    `;
+    return template;
+  }
+}
+
+function setUpHandlers() {
+  $('.dashboard-link').click(renderDashboard);
+}
+
+$('document').ready(() => {
+  setUpHandlers();
+  renderDashboard();
+});
