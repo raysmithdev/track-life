@@ -24,3 +24,13 @@ ul {
   padding: 0;
   display: inline;
 }
+
+.login, .dashboard, .create-tracker, 
+.tracker-summary, .chart, 
+.profile, .tracker-archive  {
+  display: none;
+}
+
+/* .login {
+  display: none;
+} */
