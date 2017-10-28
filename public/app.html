@@ -42,15 +42,19 @@
               <label for="password">Password:</label>
               <input id="password" type="password" placeholder="enter password" required>
               
-              <button type="submit">Login</button>
-              <button type="reset">Reset</button>
+              <button type="submit" id="login">Login</button>
+              <button type="reset" id="reset">Reset</button>
           </form>
 
       <section class="dashboard"></section>
         <h2>Dashboard</h2>
-        <article>
+        <article class="tracker-container">
           <h3 class="tracker-title">Go to Jiu Jitsu</h3>
-
+            <ul class="tallyMark"></ul>
+            <div class="button-row">
+              <button type="button" id="add-mark-btn">Add Mark</button>
+              <button data-tracker-name="Go to Jiu Jitsu" id="view-sumry-btn">View Summary</button>
+            </div>
         </article>
 
       <section class="create-tracker"></section>
@@ -61,11 +65,12 @@
 
           <label for="tracker-description">Description</label>
           <input id="tracker-description" type="text" placeholder="descrption (optional)">
-
-          <button type="submit">Create</button>
-          <button type="button">Cancel</button>
+          
+          <button type="button" id="add-mark-btn">Add Mark</button>
+          <button type="submit" id="create-trkr-btn">Create</button>
+          <button type="button" id="cancel-btn">Cancel</button>
         </form>
-        
+
       <section class="tracker-summary"></section>
       <section class="chart"></section>
       <section class="profile"></section>
