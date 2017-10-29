@@ -44,7 +44,7 @@ const mockData = [
 // render logout
 // render dashboard
 function renderDashboard() {
-  $('.tracker-container').html('');
+  $('.tracker-container').empty();  //.html('');
 
   mockData.forEach(trackerData => {
     const component = new TrackerComponents(trackerData);
@@ -60,6 +60,8 @@ function renderDashboard() {
 // render user profile page
 // render archive page
 
+//for current tracker need to be able to identify current month and render marks for current month
+//for tracker summary, need to get # of marks for previous months and render in chart
 class TrackerComponents {
   constructor(data) {
     this.trackerId = data.id;
@@ -70,20 +72,21 @@ class TrackerComponents {
   getTallyMarks() {
     const markBlocks = [];
     const template = `<li class="mark"></li>`;
-    for (let i = 0; i < this.tallyMarks; i++) {
+    for (let i = 0; i < this.tallyMarks; i++) {  
       markBlocks.push(template);
     }
     return markBlocks.join('');
   }
-
+  
+  //where to render description & notes? 
   getTrackerHtml() {
     const template = `
       <h3 class="tracker-name">${this.name}</h3>
-      <ul class="tally-marks>${this.getTallyMarks()}</ul>
-      <div class="button-row">
-      <button type="button" id="add-mark-btn">Add Mark</button>
-      <button data-trkr-name=${this.name} id="view-sumry-btn">View Summary</button>
-    </div>
+        <ul class="tally-marks>${this.getTallyMarks()}</ul>  
+        <div class="button-row">
+          <button type="button" id="add-mark-btn">Add Mark</button>
+          <button data-trkr-name=${this.name} id="view-sumry-btn">View Summary</button>
+        </div>
     `;
     return template;
   }
@@ -91,6 +94,7 @@ class TrackerComponents {
 
 function setUpHandlers() {
   $('.dashboard-link').click(renderDashboard);
+  $('.summary-link').on('click', ) //what is the difference?
 }
 
 $('document').ready(() => {
