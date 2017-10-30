@@ -1,7 +1,7 @@
 'use strict';
 
 //mock data for initial build
-const mockData = [
+const mockTrackerData = [
   {
     id: 1,
     name: 'Eat more tofu',
@@ -46,7 +46,7 @@ const mockData = [
 function renderDashboard() {
   $('.tracker-container').empty();  //.html('');
 
-  mockData.forEach(trackerData => {
+  mockTrackerData.forEach(trackerData => {
     const component = new TrackerComponents(trackerData);
     $('.tracker-container').append(component.getTrackerHtml());
   });
@@ -66,6 +66,7 @@ class TrackerComponents {
   constructor(data) {
     this.trackerId = data.id;
     this.name = data.name;
+    this.month = data.month;
     this.tallyMarks = data.tallyMarks;
   }
 
@@ -82,6 +83,7 @@ class TrackerComponents {
   getTrackerHtml() {
     const template = `
       <h3 class="tracker-name">${this.name}</h3>
+        <h4 class="tracker-month">${this.month}</h4>
         <ul class="tally-marks>${this.getTallyMarks()}</ul>  
         <div class="button-row">
           <button type="button" id="add-mark-btn">Add Mark</button>
