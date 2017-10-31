@@ -98,21 +98,23 @@ class TrackerComponents {
   getTallyMarks() {
     const markBlocks = [];
     const template = `<li class="mark"></li>`;
-    for (let i = 0; i < this.curentMark.monthCount; i++) { 
-      console.log(this.currentMarks.monthCount); 
+    for (let i = 0; i <= this.currentMarks.monthCount; i++) { 
+      // console.log(this.currentMarks.monthCount); 
       markBlocks.push(template);
-      console.log(markBlocks);
     }
     return markBlocks.join('');
   }
   
   //where to render description & notes? 
+  //check if container is really needed for marks row later
   getTrackerHtml() {
     const template = `
     <div class="tracker-container">
       <h3 class="tracker-name">${this.name}</h3>
-        <h4 class="tracker-month">${this.currentMarks.latestMonth}</h4>
-        <ul class="tally-marks>${this.getTallyMarks()}</ul>  
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+          <div class="marks-container">
+            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+          </div> 
         <div class="button-row">
           <button type="button" id="add-mark-btn">Add Mark</button>
           <button data-trkr-name=${this.name} id="view-sumry-btn">View Summary</button>
