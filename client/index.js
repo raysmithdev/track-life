@@ -47,6 +47,7 @@ const mockTrackerData = [
 // render logout
 // render dashboard
 function renderDashboard() {
+  $('.main-section').hide();
   $('.tracker-container').html(''); //empty()
 
   mockTrackerData.forEach(trackerData => {
@@ -54,8 +55,12 @@ function renderDashboard() {
     $('.dashboard-container').append(component.getTrackerHtml());
   });
 
-  $('.main-section').hide();
   $('.dashboard').show();
+}
+
+function renderCreateTracker() {
+  $('main-section').hide();   //need to empty everything displayed
+  $('.create-tracker').show();
 }
 
 //for current tracker need to be able to identify current month and render marks for current month
@@ -75,7 +80,7 @@ function checkTrackerMonth(marks) {
   const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, 'month'); //this is the boolean
     
   if (doesCurrentMonthMatch === true) {
-    return { latestMonth: trackerMoment.format('MMMM YYYY'), 
+    return { currentTrackerMonth: trackerMoment.format('MMMM YYYY'), 
             monthCount: marks[trackerMonth]
     }; 
   }
@@ -87,14 +92,14 @@ class TrackerComponents {
     this.trackerId = data.id;
     this.name = data.name;
     this.tallyMarks = data.tallyMarks; 
-    this.latestMark = checkTrackerMonth(this.tallyMarks);
+    this.currentMarks = checkTrackerMonth(this.tallyMarks);
   }
 
   getTallyMarks() {
     const markBlocks = [];
     const template = `<li class="mark"></li>`;
-    for (let i = 0; i < this.latestMark.monthCount; i++) { 
-      console.log(this.latestMark.monthCount); 
+    for (let i = 0; i < this.curentMark.monthCount; i++) { 
+      console.log(this.currentMarks.monthCount); 
       markBlocks.push(template);
       console.log(markBlocks);
     }
@@ -106,7 +111,7 @@ class TrackerComponents {
     const template = `
     <div class="tracker-container">
       <h3 class="tracker-name">${this.name}</h3>
-        <h4 class="tracker-month">${this.latestMark.latestMonth}</h4>
+        <h4 class="tracker-month">${this.currentMarks.latestMonth}</h4>
         <ul class="tally-marks>${this.getTallyMarks()}</ul>  
         <div class="button-row">
           <button type="button" id="add-mark-btn">Add Mark</button>
@@ -120,6 +125,7 @@ class TrackerComponents {
 
 function setUpHandlers() {
   $('.dashboard-link').click(renderDashboard);
+  $('.create-link').click(renderCreateTracker);
 }
 
 $('document').ready(() => {
