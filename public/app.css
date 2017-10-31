@@ -33,5 +33,7 @@ ul {
 
 .mark {
   display: inline;
-  background-color: blue;
+  padding: 10px;
+  margin-right: 5px;
+  background-color: dodgerblue;
 }
