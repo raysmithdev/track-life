@@ -44,7 +44,7 @@ const mockTrackerData = [
 ];
 
 // render login screen
-// render logout
+
 // render dashboard
 function renderDashboard() {
   $('.main-section').hide();
@@ -58,27 +58,38 @@ function renderDashboard() {
   $('.dashboard').show();
 }
 
+//render create new tracker
 function renderCreateTracker() {
   $('.main-section').hide();   //need to empty everything displayed
   $('.create-tracker').show();
 }
 
+//render summary page
 function renderSummaryPage() {
   $('.main-section').hide();
+  $('.summary-container').empty();
+
+  mockTrackerData.forEach(trackerData => {
+    const component = new TrackerComponents(trackerData);
+    $('.summary-container').append(component.getTrackerSummaryHtml());
+  });
+
   $('.tracker-summary').show();
 }
 
+//render archive page
 function renderArchivePage() {
   $('.main-section').hide();
   $('.tracker-archive').show();
 }
 
+//render user profile page
 function renderProfilePage() {
   $('.main-section').hide();
   $('.profile').show();
 }
 
-//return to landing-page 
+//log out and return to landing-page 
 function renderLogOutDashboard() {
 }
 
@@ -111,7 +122,7 @@ class TrackerComponents {
     this.trackerId = data.id;
     this.name = data.name;
     this.tallyMarks = data.tallyMarks; 
-    this.currentMarks = checkTrackerMonth(this.tallyMarks);
+    this.currentMarks = checkTrackerMonth(this.tallyMarks);     //how to change this after moving to class? 
   }
 
   getTallyMarks() {
@@ -128,22 +139,61 @@ class TrackerComponents {
   //check if container is really needed for marks row later
   getTrackerHtml() {
     const template = `
-    <div class="tracker-container">
+      <div class="tracker-container">
+        <h3 class="tracker-name">${this.name}</h3>
+          <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+            <div class="marks-container">
+              <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+            </div> 
+          <div class="button-row">
+            <button type="button" id="add-mark-btn">Add Mark</button>
+            <button data-trkr-name=${this.name} id="view-sumry-btn">View Summary</button>
+          </div>
+      </div>
+      `;
+    return template;
+  }
+  //look at previous month and display previous month's count in a statement 
+  getSummaryStatements() {
+    const currentMonth = moment(); 
+    const sortedKeys = Object.keys(this.currentMarks).sort();
+    const previousMonth = sortedKeys[sortedKeys.length-2];
+    const trackerMoment = moment(previousMonth);
+    const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, 'month'); 
+    if (doesCurrentMonthMatch === false) {
+      return { "previous": trackerMoment.format('MMMM YYYY'), 
+              "monthCount": previousMonth.tallyMarks
+      }; 
+    }
+    // let previousMonthCount = 
+  }
+
+  getTrackerSummaryHtml() {
+    const template = `
+      <div class="tracker-container">
       <h3 class="tracker-name">${this.name}</h3>
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
           <div class="marks-container">
             <ul class="tally-marks>${this.getTallyMarks()}</ul> 
-          </div> 
+          </div>
+          <div class="summary-statements">
+            <p class="summary-sentence">You did marked this ${this.getSummaryStatements.monthCount} times last month!</p>
+          </div>
+          <div class="chart-container"></div>
         <div class="button-row">
+          <button type="button" id="edit-trkr-btn">Edit</button>
           <button type="button" id="add-mark-btn">Add Mark</button>
-          <button data-trkr-name=${this.name} id="view-sumry-btn">View Summary</button>
+          <button type="button" id='delete-btn">Delete<button> 
+          <button type="button id="archive-btn">Archive</button>
         </div>
     </div>
     `;
-    return template;
-  }
-  //create tracker template for summary? 
+  return template;
+  } 
 }
+// class chartComponent {
+
+// }
 
 function setUpHandlers() {
   $('.dashboard-link').click(renderDashboard);
