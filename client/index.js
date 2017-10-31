@@ -1,9 +1,12 @@
+import moment from 'moment';
+import $ from 'jquery';
+
 'use strict';
 
 //mock data for initial build
 const mockTrackerData = [
   {
-    id: 1,
+    id: 1, 
     name: 'Eat more tofu',
     description: 'it\'s good for you, I think',
     createdDate: '2017-10-22 20:38:43',
@@ -44,7 +47,7 @@ const mockTrackerData = [
 // render logout
 // render dashboard
 function renderDashboard() {
-  $('.tracker-container').empty();  //.html('');
+  $('.tracker-container').html(''); //empty()
 
   mockTrackerData.forEach(trackerData => {
     const component = new TrackerComponents(trackerData);
@@ -54,14 +57,38 @@ function renderDashboard() {
   $('.main-section').hide();
   $('.dashboard').show();
 }
-// render create new tracker 
-// render tracker summary page
-// render chart
-// render user profile page
-// render archive page
 
 //for current tracker need to be able to identify current month and render marks for current month
 //for tracker summary, need to get # of marks for previous months and render in chart
+
+//loop through tallyMark object & get month/year
+//get current month
+//after get month/year, check if it matches current month
+//if current month, render tally marks
+//if not current month, render blank unless new mark added 
+//then 
+function checkTrackerMonth() {
+  //get current month
+  //get array of keys > sort > check if latest month matches current month
+  const trackerMonth = '';
+  const currentMonth = moment(); //convert this with moment?
+  const trackerMoment = moment(trackerMonth);
+  const monthCompare = trackerMoment.isSame(today, 'month');
+  
+  for (let i = 0; i < mockTrackerData.length; i++) {
+    //loop through each tracker object, get object key for tallyMarks 
+    return trackerMonth = Object.keys(mockTrackerData[i].tallyMarks).sort();
+    //check last item in array to see if it's current 
+  }
+  if (currentMonth === monthCompare) {
+    return 
+  }
+
+
+  //check if 
+}
+
+
 class TrackerComponents {
   constructor(data) {
     this.trackerId = data.id;
@@ -96,10 +123,9 @@ class TrackerComponents {
 
 function setUpHandlers() {
   $('.dashboard-link').click(renderDashboard);
-  $('.summary-link').on('click', ) //what is the difference?
 }
 
 $('document').ready(() => {
   setUpHandlers();
-  renderDashboard();
+  // renderDashboard();
 });
