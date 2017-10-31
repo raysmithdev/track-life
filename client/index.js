@@ -59,8 +59,27 @@ function renderDashboard() {
 }
 
 function renderCreateTracker() {
-  $('main-section').hide();   //need to empty everything displayed
+  $('.main-section').hide();   //need to empty everything displayed
   $('.create-tracker').show();
+}
+
+function renderSummaryPage() {
+  $('.main-section').hide();
+  $('.tracker-summary').show();
+}
+
+function renderArchivePage() {
+  $('.main-section').hide();
+  $('.tracker-archive').show();
+}
+
+function renderProfilePage() {
+  $('.main-section').hide();
+  $('.profile').show();
+}
+
+//return to landing-page 
+function renderLogOutDashboard() {
 }
 
 //for current tracker need to be able to identify current month and render marks for current month
@@ -123,11 +142,16 @@ class TrackerComponents {
     `;
     return template;
   }
+  //create tracker template for summary? 
 }
 
 function setUpHandlers() {
   $('.dashboard-link').click(renderDashboard);
+  $('.summary-link').click(renderSummaryPage);
   $('.create-link').click(renderCreateTracker);
+  $('.archive-link').click(renderArchivePage);
+  $('.profile-link').click(renderProfilePage);
+  $('#logout-btn').click(renderLogOutDashboard);
 }
 
 $('document').ready(() => {
