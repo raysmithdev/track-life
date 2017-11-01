@@ -1,5 +1,6 @@
 import moment from 'moment';
 import $ from 'jquery';
+import chart from 'chart.js';
 
 'use strict';
 
@@ -93,6 +94,29 @@ function renderProfilePage() {
 function renderLogOutDashboard() {
 }
 
+//can use .destroy() to remove instances of chart created 
+//put data gathered from getMarksToChart() and plug into chart 
+function renderChart() {
+  // var ctx = $("#myChart");
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'line',
+      // The data for our dataset
+      data: {
+          labels: [], //months 
+          datasets: [{
+              label: "Marks for ${this.name}",
+              backgroundColor: 'rgb(255, 99, 132)',
+              borderColor: 'rgb(255, 99, 132)',
+              data: [], //marks
+          }]
+      },
+      // Configuration options go here
+      options: {}
+  });
+}
+
 //for current tracker need to be able to identify current month and render marks for current month
 //for tracker summary, need to get # of marks for previous months and render in chart
 
@@ -165,6 +189,7 @@ class TrackerComponents {
               "monthCount": previousMonth.tallyMarks
       }; 
     }
+    //how to access the object returned? 
     // let previousMonthCount = 
   }
 
@@ -179,7 +204,9 @@ class TrackerComponents {
           <div class="summary-statements">
             <p class="summary-sentence">You did marked this ${this.getSummaryStatements.monthCount} times last month!</p>
           </div>
-          <div class="chart-container"></div>
+          <div class="chart-container">
+            <canvas id="myChart"></canvas>
+          </div>
         <div class="button-row">
           <button type="button" id="edit-trkr-btn">Edit</button>
           <button type="button" id="add-mark-btn">Add Mark</button>
