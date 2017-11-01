@@ -117,6 +117,17 @@ function renderChart() {
   });
 }
 
+//get last 6 months of marks to put in chart 
+// function getPreviousMarks(month) {
+//   const pastMonths = [];
+//   const sortedKeys = Object.keys(month).sort();
+//   for (let i = 0; i <= sortedKeys.length - 6; i++) {
+//     return { pastMonth:  ;
+//   }
+//   console.log(pastMonths);
+//   }
+// }
+
 //for current tracker need to be able to identify current month and render marks for current month
 //for tracker summary, need to get # of marks for previous months and render in chart
 
@@ -146,7 +157,9 @@ class TrackerComponents {
     this.trackerId = data.id;
     this.name = data.name;
     this.tallyMarks = data.tallyMarks; 
-    this.currentMarks = checkTrackerMonth(this.tallyMarks);     //how to change this after moving to class? 
+    this.currentMarks = checkTrackerMonth(this.tallyMarks); 
+    // this.pastMarks = getPreviousMarks(this.tallyMarks);    
+    //how to change this after moving to class? 
   }
 
   getTallyMarks() {
@@ -160,7 +173,7 @@ class TrackerComponents {
   }
   
   //where to render description & notes? 
-  //check if container is really needed for marks row later
+  //marks are rendering outside of container? 
   getTrackerHtml() {
     const template = `
       <div class="tracker-container">
@@ -202,7 +215,8 @@ class TrackerComponents {
             <ul class="tally-marks>${this.getTallyMarks()}</ul> 
           </div>
           <div class="summary-statements">
-            <p class="summary-sentence">You did marked this ${this.getSummaryStatements.monthCount} times last month!</p>
+          <p class="summary-sentence">You marked ${this.name} this ${this.currentMarks.monthCount} times this month!</p>
+            <p class="summary-sentence">You marked ${this.name} this ${this.getSummaryStatements.monthCount} times last month!</p>
           </div>
           <div class="chart-container">
             <canvas id="myChart"></canvas>
