@@ -75,8 +75,11 @@ function renderSummaryPage() {
   $('.summary-container').empty();
 
   mockTrackerData.forEach(trackerData => {
-    const component = new TrackerComponents(trackerData);
-    $('.summary-container').append(component.getTrackerSummaryHtml());
+    const trackerComponent = new TrackerComponents(trackerData);
+    // const chartComponent = new ChartComponents(trackerData);
+
+    $('.summary-container').append(trackerComponent.getTrackerSummaryHtml());
+    // console.log(chartComponent);
   });
 
   $('.tracker-summary').show();
@@ -105,29 +108,6 @@ function addMarkToTracker() {
   //if current month does not exist, add new and increment by 1
 }
 
-//can use .destroy() to remove instances of chart created 
-//put data gathered from getMarksToChart() and plug into chart 
-function renderChart() {
-  // var ctx = $("#myChart");
-  var ctx = document.getElementById('myChart').getContext('2d');
-  var chart = new Chart(ctx, {
-      // The type of chart we want to create
-      type: 'line',
-      // The data for our dataset
-      data: {
-          labels: [], //months 
-          datasets: [{
-              label: "Marks for ${this.name}",
-              backgroundColor: 'rgb(255, 99, 132)',
-              borderColor: 'rgb(255, 99, 132)',
-              data: [], //marks
-          }]
-      },
-      // Configuration options go here
-      options: {}
-  });
-}
-
 //for current tracker need to be able to identify current month and render marks for current month
 //if not current month, create new month object & add a mark
 
@@ -137,21 +117,6 @@ function renderChart() {
 //if current month, render tally marks
 //if not current month, render blank unless new mark added 
 
-
-// get last 6 months of marks to put in chart 
-function getPreviousMarks(month) {
-  const pastMonths = [];
-  const sortedKeys = Object.keys(month).sort();
-  // need to extra months and # to input in chart function 
-  for (let i = 0; i <= sortedKeys.length - 6; i++) {
-    // return [{
-    //   month: month.format('MMMM YY'), 
-    //   marks: month.tallyMarks
-    // }]; 
-  }
-  console.log(pastMonths);
-}
-
 class TrackerComponents {
   constructor(data) {
     this.trackerId = data.id;
@@ -159,8 +124,6 @@ class TrackerComponents {
     this.tallyMarks = data.tallyMarks; 
     this.currentMarks = this.checkTrackerMonth();
     this.oneMonthBack = this.getPreviousCount(); 
-    // this.pastMarks = getPreviousMarks(this.tallyMarks);    
-    //how to change this after moving to class? 
   }
 
   checkTrackerMonth() { 
@@ -245,9 +208,53 @@ class TrackerComponents {
   return template;
   } 
 }
-// class chartComponent {
 
-// }
+class ChartComponents {
+  constructor(data) {
+    this.trackerID = data.id;
+    this.name = data.name;
+    this.tallyMarks = data.tallyMarks;
+    this.previousMarks = this.getPreviousMarks();
+  }
+// get last 6 months of marks to put in chart 
+  getPreviousMarks() {
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const pastMonths = [];
+    const pastMarks = [];
+    // need to extra months and # to input in chart function 
+    for (let i = 0; i <= sortedKeys.length - 6; i++) {
+      //need to get array of months & count 
+      pastMonths.push(Object.keys(sortedKeys));
+      pastMarks.push(Object.values(sortedKeys));
+    }
+    console.log(pastMonths);
+    console.log(pastMarks);
+  }
+
+  //can use .destroy() to remove instances of chart created 
+  //put data gathered from getMarksToChart() and plug into chart 
+  renderChart() {
+    // var ctx = $("#myChart");
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'bar', //or 'line'
+        // The data for our dataset
+        data: {
+            labels: [this.previousMarks.pastMonths], //months 
+            datasets: [{
+                label: "Marks for ${this.name}",
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [this.previousMarks.pastMarks], //marks
+            }]
+        },
+        // Configuration options go here
+        options: {}
+    });
+  }
+
+}
 
 function setUpHandlers() {
   //sidebar navigation buttons 
@@ -259,9 +266,13 @@ function setUpHandlers() {
   $('#logout-btn').click(renderLogOutDashboard);
 
   //dyanmic buttons created within trackers
+
+  //view summary button
   $('.dashboard').on('click', '#view-sumry-btn', () => {
     renderSummaryPage();
   })
+
+  //add mark button
 }
 
 $('document').ready(() => {
