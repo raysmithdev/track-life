@@ -16,6 +16,7 @@ const mockTrackerData = [
       '2017-08-01': 10,
       '2017-09-01': 5,
       '2017-10-01': 11,
+      '2017-11-01': 10,
     }
   },
   {
@@ -29,6 +30,7 @@ const mockTrackerData = [
       '2017-08-01': 8,
       '2017-09-01': 12,
       '2017-10-01': 11,
+      '2017-11-01': 2,
     }
   },
   {
@@ -40,6 +42,7 @@ const mockTrackerData = [
     tallyMarks: {
       '2017-09-01': 3,
       '2017-10-01': 4,
+      '2017-11-01': 8,
     }
   },
 ];
@@ -91,8 +94,15 @@ function renderProfilePage() {
   $('.profile').show();
 }
 
-//log out and return to landing-page 
+//render log out 
 function renderLogOutDashboard() {
+  //return to landing-page 
+}
+
+//add a mark to an existing tracker
+function addMarkToTracker() {
+  //check if current month exists & increment by 1
+  //if current month does not exist, add new and increment by 1
 }
 
 //can use .destroy() to remove instances of chart created 
@@ -116,20 +126,6 @@ function renderChart() {
       // Configuration options go here
       options: {}
   });
-}
-
-//get last 6 months of marks to put in chart 
-function getPreviousMarks(month) {
-  const pastMonths = [];
-  const sortedKeys = Object.keys(month).sort();
-  // need to extra months and # to input in chart function 
-  for (let i = 0; i <= sortedKeys.length - 6; i++) {
-    // return [{
-    //   month: month.format('MMMM YY'), 
-    //   marks: month.tallyMarks
-    // }]; 
-  }
-  console.log(pastMonths);
 }
 
 //for current tracker need to be able to identify current month and render marks for current month
@@ -169,6 +165,21 @@ function getPreviousCount(count) {
     //how to access the object returned? 
     // let previousMonthCount = 
 }
+
+//get last 6 months of marks to put in chart 
+// function getPreviousMarks(month) {
+//   const pastMonths = [];
+//   const sortedKeys = Object.keys(month).sort();
+//   // need to extra months and # to input in chart function 
+//   for (let i = 0; i <= sortedKeys.length - 6; i++) {
+//     // return [{
+//     //   month: month.format('MMMM YY'), 
+//     //   marks: month.tallyMarks
+//     // }]; 
+//   }
+//   console.log(pastMonths);
+// }
+
 class TrackerComponents {
   constructor(data) {
     this.trackerId = data.id;
@@ -249,6 +260,9 @@ function setUpHandlers() {
   $('#logout-btn').click(renderLogOutDashboard);
 
   //dyanmic buttons created within trackers
+  $('.tracker-container').on('click', '.view-sumry-btn', () => {
+    renderSummaryPage();
+  })
 }
 
 $('document').ready(() => {
