@@ -136,28 +136,42 @@ function renderChart() {
 //after get month/year, check if it matches current month
 //if current month, render tally marks
 //if not current month, render blank unless new mark added 
-
+//pass in mockdata in renderDashboard as a test later 
 function checkTrackerMonth(marks) { 
   const currentMonth = moment(); 
   const sortedKeys = Object.keys(marks).sort();
   const trackerMonth = sortedKeys[sortedKeys.length-1];
   const trackerMoment = moment(trackerMonth);
-  const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, 'month'); //this is the boolean
-    
+
+  const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, 'month'); 
   if (doesCurrentMonthMatch === true) {
     return { currentTrackerMonth: trackerMoment.format('MMMM YYYY'), 
             monthCount: marks[trackerMonth]
     }; 
   }
 }
-//pass in mockdata in renderDashboard as a test later 
 
+//look at previous month and display previous month's count in a statement 
+function getPreviousCount(count) {
+    const currentMonth = moment(); 
+    const sortedKeys = Object.keys(count).sort();
+    const previousMonth = sortedKeys[sortedKeys.length-2];
+    const trackerMoment = moment(previousMonth);
+
+    const isItMonthBefore = trackerMoment.isBefore(currentMonth, 'month'); 
+    if (isItMonthBefore === true) {
+      return { monthCount: count[previousMonth] }; 
+    };
+    //how to access the object returned? 
+    // let previousMonthCount = 
+}
 class TrackerComponents {
   constructor(data) {
     this.trackerId = data.id;
     this.name = data.name;
     this.tallyMarks = data.tallyMarks; 
-    this.currentMarks = checkTrackerMonth(this.tallyMarks); 
+    this.currentMarks = checkTrackerMonth(this.tallyMarks);
+    this.oneMonthBack = getPreviousCount(this.tallyMarks); 
     // this.pastMarks = getPreviousMarks(this.tallyMarks);    
     //how to change this after moving to class? 
   }
@@ -190,21 +204,7 @@ class TrackerComponents {
       `;
     return template;
   }
-  //look at previous month and display previous month's count in a statement 
-  getSummaryStatements() {
-    const currentMonth = moment(); 
-    const sortedKeys = Object.keys(this.currentMarks).sort();
-    const previousMonth = sortedKeys[sortedKeys.length-2];
-    const trackerMoment = moment(previousMonth);
-    const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, 'month'); 
-    if (doesCurrentMonthMatch === false) {
-      return { "previous": trackerMoment.format('MMMM YYYY'), 
-              "monthCount": previousMonth.tallyMarks
-      }; 
-    }
-    //how to access the object returned? 
-    // let previousMonthCount = 
-  }
+
 
   getTrackerSummaryHtml() {
     const template = `
@@ -215,8 +215,8 @@ class TrackerComponents {
             <ul class="tally-marks>${this.getTallyMarks()}</ul> 
           </div>
           <div class="summary-statements">
-          <p class="summary-sentence">You marked ${this.name} this ${this.currentMarks.monthCount} times this month!</p>
-            <p class="summary-sentence">You marked ${this.name} this ${this.getSummaryStatements.monthCount} times last month!</p>
+          <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
+            <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
           </div>
           <div class="chart-container">
             <canvas id="myChart"></canvas>
