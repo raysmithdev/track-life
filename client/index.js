@@ -47,6 +47,7 @@ const mockTrackerData = [
 // render login screen
 
 // render dashboard
+//pass in mockdata in renderDashboard as a test later 
 function renderDashboard() {
   $('.main-section').hide();
   $('.tracker-container').html(''); //empty()
@@ -118,25 +119,28 @@ function renderChart() {
 }
 
 //get last 6 months of marks to put in chart 
-// function getPreviousMarks(month) {
-//   const pastMonths = [];
-//   const sortedKeys = Object.keys(month).sort();
-//   for (let i = 0; i <= sortedKeys.length - 6; i++) {
-//     return { pastMonth:  ;
-//   }
-//   console.log(pastMonths);
-//   }
-// }
+function getPreviousMarks(month) {
+  const pastMonths = [];
+  const sortedKeys = Object.keys(month).sort();
+  // need to extra months and # to input in chart function 
+  for (let i = 0; i <= sortedKeys.length - 6; i++) {
+    // return [{
+    //   month: month.format('MMMM YY'), 
+    //   marks: month.tallyMarks
+    // }]; 
+  }
+  console.log(pastMonths);
+}
 
 //for current tracker need to be able to identify current month and render marks for current month
-//for tracker summary, need to get # of marks for previous months and render in chart
+//if not current month, create new month object & add a mark
 
 //look at tallyMark object & get month/year
 //get system current month 
 //after get month/year, check if it matches current month
 //if current month, render tally marks
 //if not current month, render blank unless new mark added 
-//pass in mockdata in renderDashboard as a test later 
+
 function checkTrackerMonth(marks) { 
   const currentMonth = moment(); 
   const sortedKeys = Object.keys(marks).sort();
@@ -205,7 +209,6 @@ class TrackerComponents {
     return template;
   }
 
-
   getTrackerSummaryHtml() {
     const template = `
       <div class="tracker-container">
@@ -237,12 +240,15 @@ class TrackerComponents {
 // }
 
 function setUpHandlers() {
+  //sidebar navigation buttons 
   $('.dashboard-link').click(renderDashboard);
   $('.summary-link').click(renderSummaryPage);
   $('.create-link').click(renderCreateTracker);
   $('.archive-link').click(renderArchivePage);
   $('.profile-link').click(renderProfilePage);
   $('#logout-btn').click(renderLogOutDashboard);
+
+  //dyanmic buttons created within trackers
 }
 
 $('document').ready(() => {
