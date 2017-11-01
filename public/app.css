@@ -2,12 +2,6 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-fieldset {
-  padding: 0;
-  border: 0;
-  margin: 0;
-}
-
 h1, h2, h3, legend, button {
   font-family: 'Roboto', sans-serif;
 }
@@ -17,22 +11,30 @@ h1, h2, h3, legend, button {
   font-weight: bold;
 }
 
-
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: inline;
-}
-
 .login, .dashboard, .create-tracker, 
 .tracker-summary, .chart, 
 .profile, .tracker-archive  {
   display: none;
 }
 
+fieldset {
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  /* display: inline-block; */
+}
+.marks-container {
+  height: 35px;
+}
+
 .mark {
-  display: inline;
+  display: inline-block;  /* this makes it into square */
   padding: 10px;
   margin-right: 5px;
   background-color: dodgerblue;
