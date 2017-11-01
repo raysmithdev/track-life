@@ -137,34 +137,34 @@ function renderChart() {
 //if current month, render tally marks
 //if not current month, render blank unless new mark added 
 
-function checkTrackerMonth(marks) { 
-  const currentMonth = moment(); 
-  const sortedKeys = Object.keys(marks).sort();
-  const trackerMonth = sortedKeys[sortedKeys.length-1];
-  const trackerMoment = moment(trackerMonth);
+// function checkTrackerMonth(marks) { 
+//   const currentMonth = moment(); 
+//   const sortedKeys = Object.keys(marks).sort();
+//   const trackerMonth = sortedKeys[sortedKeys.length-1];
+//   const trackerMoment = moment(trackerMonth);
 
-  const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, 'month'); 
-  if (doesCurrentMonthMatch === true) {
-    return { currentTrackerMonth: trackerMoment.format('MMMM YYYY'), 
-            monthCount: marks[trackerMonth]
-    }; 
-  }
-}
+//   const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, 'month'); 
+//   if (doesCurrentMonthMatch === true) {
+//     return { currentTrackerMonth: trackerMoment.format('MMMM YYYY'), 
+//             monthCount: marks[trackerMonth]
+//     }; 
+//   }
+// }
 
 //look at previous month and display previous month's count in a statement 
-function getPreviousCount(count) {
-    const currentMonth = moment(); 
-    const sortedKeys = Object.keys(count).sort();
-    const previousMonth = sortedKeys[sortedKeys.length-2];
-    const trackerMoment = moment(previousMonth);
+// function getPreviousCount(count) {
+//     const currentMonth = moment(); 
+//     const sortedKeys = Object.keys(count).sort();
+//     const previousMonth = sortedKeys[sortedKeys.length-2];
+//     const trackerMoment = moment(previousMonth);
 
-    const isItMonthBefore = trackerMoment.isBefore(currentMonth, 'month'); 
-    if (isItMonthBefore === true) {
-      return { monthCount: count[previousMonth] }; 
-    };
-    //how to access the object returned? 
-    // let previousMonthCount = 
-}
+//     const isItMonthBefore = trackerMoment.isBefore(currentMonth, 'month'); 
+//     if (isItMonthBefore === true) {
+//       return { monthCount: count[previousMonth] }; 
+//     };
+//     //how to access the object returned? 
+//     // let previousMonthCount = 
+// }
 
 //get last 6 months of marks to put in chart 
 // function getPreviousMarks(month) {
@@ -185,10 +185,37 @@ class TrackerComponents {
     this.trackerId = data.id;
     this.name = data.name;
     this.tallyMarks = data.tallyMarks; 
-    this.currentMarks = checkTrackerMonth(this.tallyMarks);
-    this.oneMonthBack = getPreviousCount(this.tallyMarks); 
+    this.currentMarks = this.checkTrackerMonth();
+    this.oneMonthBack = this.getPreviousCount(); 
     // this.pastMarks = getPreviousMarks(this.tallyMarks);    
     //how to change this after moving to class? 
+  }
+
+  checkTrackerMonth() { 
+    const currentMonth = moment(); 
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const trackerMonth = sortedKeys[sortedKeys.length-1];
+    const trackerMoment = moment(trackerMonth);
+  
+    const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, 'month'); 
+    if (doesCurrentMonthMatch === true) {
+      return { currentTrackerMonth: trackerMoment.format('MMMM YYYY'), 
+              monthCount: this.tallyMarks[trackerMonth]
+      }; 
+    }
+  }
+
+  //look at previous month and display previous month's count in a statement 
+  getPreviousCount() {
+    const currentMonth = moment(); 
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const previousMonth = sortedKeys[sortedKeys.length-2];
+    const trackerMoment = moment(previousMonth);
+
+    const isItMonthBefore = trackerMoment.isBefore(currentMonth, 'month'); 
+    if (isItMonthBefore === true) {
+      return { monthCount: this.tallyMarks[previousMonth] }; 
+    };
   }
 
   getTallyMarks() {
