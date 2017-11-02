@@ -1,5 +1,7 @@
 body {
   font-family: 'Poppins', sans-serif;
+  /* 62.5% makes 1em = 10px */
+  /* font-size: 62.5%;  */
 }
 
 h1, h2, h3, legend, button {
@@ -29,9 +31,10 @@ ul {
   padding: 0;
   /* display: inline-block; */
 }
+
 .marks-container {
   height: 35px;
-  outline-color: black;
+  /* padding: 1em; */
 }
 
 .mark {
@@ -41,6 +44,48 @@ ul {
   background-color: dodgerblue;
 }
 
+/* make flex container for dashboard & trackers */
+.dashboard-container {
+  display: flex; 
+  width: 95%;
+  margin: 0 auto;
+  /* what applies to the child:  */
+  justify-content: space-evenly; 
+  flex-wrap: wrap;
+}
+
 .tracker-container {
-  outline-color: orangered;
+  /* width: 33.33%; MOVE THIS TO MEDIA QUERY for mobile*/
+  outline-style: dashed;
+  outline-color: red;
+}
+
+/* @media screen and (min-wdith: 500px ) {
+  .tracker-container {
+    width: 33.33%;
+  }
+} */
+
+/* this is for 2 columns in summary's tracker container
+ test this out to see the screen size */
+@media screen and (min-width: 500px) {
+  .inner-flexbox {
+    display: flex;
+  }
+  .col-1, .col-2 {
+    width: 50%;
+  }  
+}
+/* .col-1 {
+  background-color: yellow;
+}
+
+.col-2 {
+  background-color: green;
+} */
+
+.button-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 5px;
 }
