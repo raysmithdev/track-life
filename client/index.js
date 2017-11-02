@@ -76,11 +76,10 @@ function renderSummaryPage() {
 
   mockTrackerData.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
-    const chartComponent = new ChartComponents(trackerData);
-
     $('.summary-container').append(trackerComponent.getTrackerSummaryHtml());
-    $('.summary-container').append(chartComponent.renderChart());
-    // console.log(chartComponent);
+    
+    const chartComponent = new ChartComponents(trackerData);
+    chartComponent.renderChart();
   });
 
   $('.tracker-summary').show();
@@ -196,7 +195,7 @@ class TrackerComponents {
             <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
           </div>
           <div class="chart-container">
-            <canvas id="myChart"></canvas>
+            <canvas class="myChart-${this.trackerId}"></canvas>
           </div>
         <div class="button-row">
           <button type="button" id="edit-trkr-btn">Edit</button>
@@ -212,7 +211,7 @@ class TrackerComponents {
 
 class ChartComponents {
   constructor(data) {
-    this.trackerID = data.id;
+    this.trackerId = data.id;
     this.name = data.name;
     this.tallyMarks = data.tallyMarks;
     this.previousMarks = this.getPreviousMarks();
@@ -222,40 +221,46 @@ class ChartComponents {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const pastMonths = [];
     const pastMarks = [];
-    // need to extra months and # to input in chart function 
-    for (let i = 0; i <= sortedKeys.length - 6; i++) {
-      //need to get array of months & count 
-      pastMonths.push(Object.keys(sortedKeys));
-      pastMarks.push(Object.values(sortedKeys));
+    let i = 0; 
+
+    while (i < sortedKeys.length && i < 6) {
+      pastMonths.push(sortedKeys[i]);
+      pastMarks.push(this.tallyMarks[sortedKeys[i]]); 
+      i++
     }
     return {month: pastMonths, count: pastMarks};
-    console.log(pastMonths);
-    console.log(pastMarks);
   }
 
   //can use .destroy() to remove instances of chart created 
   //put data gathered from getMarksToChart() and plug into chart 
   renderChart() {
-    // var ctx = $("#myChart");
-    var ctx = document.getElementById('myChart').getContext('2d');
+    var ctx = document.getElementsByClassName(`myChart-${this.trackerId}`)[0].getContext('2d');
     var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'bar', //or 'line'
         // The data for our dataset
         data: {
-            labels: [this.previousMarks.pastMonths], //months 
+            labels: this.previousMarks.month, //months 
             datasets: [{
                 label: "Marks for ${this.name}",
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: [this.previousMarks.pastMarks], //marks
+                borderWidth: 1,
+                data: this.previousMarks.count, //marks
             }]
         },
         // Configuration options go here
-        options: {}
+        options: {
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero:true
+                  }
+              }]
+          }
+        }
     });
   }
-
 }
 
 function setUpHandlers() {
