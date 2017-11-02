@@ -243,8 +243,8 @@ class ChartComponents {
             labels: this.previousMarks.month, //months 
             datasets: [{
                 label: "Marks for ${this.name}",
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(79, 195, 247, 0.3)',
+                borderColor: 'rgb(0, 147, 196)',
                 borderWidth: 1,
                 data: this.previousMarks.count, //marks
             }]
@@ -257,7 +257,12 @@ class ChartComponents {
                       beginAtZero:true
                   }
               }]
-          }
+          },
+          // title: {
+          //   display: true,
+          //   text: 'Last 6 months'
+          // },
+          responsive: true,
         }
     });
   }
