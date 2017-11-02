@@ -49,12 +49,13 @@ const mockTrackerData = [
 
 // render login screen
 
-// render dashboard
 //pass in mockdata in renderDashboard as a test later 
+// render dashboard
 function renderDashboard() {
   $('.main-section').hide();
-  $('.tracker-container').html(''); //empty()
-
+  $('.dashboard-container').empty(); //html('');
+  // $('.tracker-container').empty(); 
+  
   mockTrackerData.forEach(trackerData => {
     const component = new TrackerComponents(trackerData);
     $('.dashboard-container').append(component.getTrackerHtml());
@@ -184,8 +185,9 @@ class TrackerComponents {
 
   getTrackerSummaryHtml() {
     const template = `
-      <div class="tracker-container">
-      <h3 class="tracker-name">${this.name}</h3>
+      <div class="tracker-container inner-flexbox">
+      <div class="col-1">
+        <h3 class="tracker-name">${this.name}</h3>
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
           <div class="marks-container">
             <ul class="tally-marks>${this.getTallyMarks()}</ul> 
@@ -194,6 +196,8 @@ class TrackerComponents {
           <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
             <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
           </div>
+      </div>
+      <div class="col-2">
           <div class="chart-container">
             <canvas class="myChart-${this.trackerId}"></canvas>
           </div>
@@ -203,6 +207,7 @@ class TrackerComponents {
           <button type="button" class='delete-btn">Delete<button> 
           <button type="button class="archive-btn">Archive</button>
         </div>
+      </div>
     </div>
     `;
   return template;
@@ -289,5 +294,5 @@ function setUpHandlers() {
 
 $('document').ready(() => {
   setUpHandlers();
-  // renderDashboard();
+  renderDashboard();  //this should run after user logs in
 });
