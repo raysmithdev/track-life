@@ -7,28 +7,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif:400,700i|Roboto:400,900i">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Roboto:400,900i">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="index.css">
   </head>
 
   <body>
-    <div class="nav-bar">
-      <h1 class="appName">Track Life</h1>
-      <ul class="nav">
-        <li><button type=button>Login</button></li>
-        <li><button type=button>Sign Up</button></li>
-        <li><button type=button>Demo</button></li>
-      </ul>
-    </div>
+      <nav class="header-container">
+          <h1 class="app-name">Track Life</h1>
+          <ul class="nav-btn-container">
+              <li><button type=button class="login-btn nav-btn">Login</button></li>
+              <li><button type=button class="signup-btn nav-btn">Sign Up</button></li>
+              <li><button type=button class="demo-btn nav-btn">Demo</button></li>
+          </ul>
+      </nav>
+
     <main>
       <div class="landing-page">
         <section class="intro">
           <h2>What is Track Life?</h2>
-          <p class="intro">Track Life will help you keep log of your activities, habits, routines or anything else you want to track!</p>
-          <p class="intro">Rather than setting goals, receive reminder alerts, and be bombarded by data, just check off that you did it. </p>
-          <p class="intro">You are measuring your own progress in the fact that you did it at all.</p>
-          <!-- insert screenshots here -->
+            <p class="intro">Track Life will help you keep log of your activities, habits, routines or anything else you want to track!</p>
+            <p class="intro">Rather than setting goals, receive reminder alerts, and be bombarded by data, just check off that you did it. </p>
+            <p class="intro">You are measuring your own progress in the fact that you did it at all.</p>
+          <div class="screenshots">
+
+          </div>
         </section>
 
         <div class="bar"></div>
@@ -37,7 +40,8 @@
           <h2>Ready to Start Tracking?</h2>
           <form action="" method="post">
             <fieldset>
-              <legend>Create an Account</legend>
+              <div class="signup-container">
+              <h3>Create an Account</h3>
                 <label for="username">Username:</label> 
                 <input id="username" type="text" placeholder="enter username">
                 
@@ -46,6 +50,7 @@
                 
                 <button type="submit">Sign Up</button>
                 <button type="reset">Reset</button>
+              </div>
             </fieldset>
           </form>
           <p class="already-signedup">Already have an account? <a href="/login">Login</a></p>
