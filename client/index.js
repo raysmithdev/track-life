@@ -174,8 +174,8 @@ class TrackerComponents {
               <ul class="tally-marks>${this.getTallyMarks()}</ul> 
             </div> 
           <div class="button-row">
-            <button type="button" id="add-mark-btn">Add Mark</button>
-            <button data-trkr-name=${this.name} id="view-sumry-btn">View Summary</button>
+            <button type="button" class="add-mark-btn">Add Mark</button>
+            <button data-trkr-name=${this.name} class="view-sumry-btn">View Summary</button>
           </div>
       </div>
       `;
@@ -198,10 +198,10 @@ class TrackerComponents {
             <canvas class="myChart-${this.trackerId}"></canvas>
           </div>
         <div class="button-row">
-          <button type="button" id="edit-trkr-btn">Edit</button>
-          <button type="button" id="add-mark-btn">Add Mark</button>
-          <button type="button" id='delete-btn">Delete<button> 
-          <button type="button id="archive-btn">Archive</button>
+          <button type="button" class="edit-trkr-btn">Edit</button>
+          <button type="button" class="add-mark-btn">Add Mark</button>
+          <button type="button" class='delete-btn">Delete<button> 
+          <button type="button class="archive-btn">Archive</button>
         </div>
     </div>
     `;
@@ -280,7 +280,7 @@ function setUpHandlers() {
   //dyanmic buttons created within trackers
 
   //view summary button
-  $('.dashboard').on('click', '#view-sumry-btn', () => {
+  $('.dashboard').on('click', '.view-sumry-btn', () => {
     renderSummaryPage();
   })
 
