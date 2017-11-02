@@ -204,9 +204,9 @@ class TrackerComponents {
         <div class="summary-btn-row">
           <button type="button" class="edit-trkr-btn">Edit</button>
           <button type="button" class="add-mark-btn">Add Mark</button>
-          <button type="button" class="delete-btn">Delete<button> 
-          <button type="button class="archive-btn">Archive</button>
-          <button type="button class="close-btn">Close</button>
+          <button type="button" class="delete-btn">Delete</button> 
+          <button type="button" class="archive-btn">Archive</button>
+          <button type="button" class="close-btn">Close</button>
         </div>
       </div>
     </div>
