@@ -174,7 +174,7 @@ class TrackerComponents {
             <div class="marks-container">
               <ul class="tally-marks>${this.getTallyMarks()}</ul> 
             </div> 
-          <div class="button-row">
+          <div class="dashboard-btn-row">
             <button type="button" class="add-mark-btn">Add Mark</button>
             <button data-trkr-name=${this.name} class="view-sumry-btn">View Summary</button>
           </div>
@@ -201,11 +201,12 @@ class TrackerComponents {
           <div class="chart-container">
             <canvas class="myChart-${this.trackerId}"></canvas>
           </div>
-        <div class="button-row">
+        <div class="summary-btn-row">
           <button type="button" class="edit-trkr-btn">Edit</button>
           <button type="button" class="add-mark-btn">Add Mark</button>
-          <button type="button" class='delete-btn">Delete<button> 
+          <button type="button" class="delete-btn">Delete<button> 
           <button type="button class="archive-btn">Archive</button>
+          <button type="button class="close-btn">Close</button>
         </div>
       </div>
     </div>
