@@ -76,9 +76,10 @@ function renderSummaryPage() {
 
   mockTrackerData.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
-    // const chartComponent = new ChartComponents(trackerData);
+    const chartComponent = new ChartComponents(trackerData);
 
     $('.summary-container').append(trackerComponent.getTrackerSummaryHtml());
+    $('.summary-container').append(chartComponent.renderChart());
     // console.log(chartComponent);
   });
 
@@ -227,6 +228,7 @@ class ChartComponents {
       pastMonths.push(Object.keys(sortedKeys));
       pastMarks.push(Object.values(sortedKeys));
     }
+    return {month: pastMonths, count: pastMarks};
     console.log(pastMonths);
     console.log(pastMarks);
   }
