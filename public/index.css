@@ -1,5 +1,5 @@
 body {
-  font-family: 'Noto Serif', serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 fieldset {
@@ -12,19 +12,10 @@ h1, h2, legend, button {
   font-family: 'Roboto', sans-serif;
 }
 
-.appName {
+.app-name {
   font-style: italic; 
   font-weight: bold;
 }
-
-/* .nav-bar {
-  position: fixed;
-  margin: 0;
-  padding: 0;
-  top: 0;
-  width: 100%;
-  background-color: 
-} */
 
 ul {
   list-style: none;
@@ -32,3 +23,28 @@ ul {
   padding: 0;
   display: inline;
 }
+
+.header-container {
+  display: flex;
+  padding: 1em;
+}
+
+.nav-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.app-name, .nav-btn-container {
+  margin: 0;
+  padding: 0;
+  width: 50%;
+}
+
+.landing-page {
+  padding: 1em;
+}
+
+/* fieldset {
+  display: flex;
+} */
