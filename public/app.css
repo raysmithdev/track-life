@@ -8,7 +8,7 @@ h1, h2, h3, legend, button {
   font-family: 'Roboto', sans-serif;
 }
 
-.appName {
+.app-name {
   font-style: italic; 
   font-weight: bold;
 }
@@ -32,6 +32,28 @@ ul {
   /* display: inline-block; */
 }
 
+.header-container {
+  display: flex;
+  padding: 1em;
+}
+
+.nav-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.app-name, .nav-btn-container {
+  margin: 0;
+  padding: 0;
+  width: 50%;
+}
+
+/* .nav-btn {
+  height: 25px;
+  margin-left: .5em;
+} */
+
 .marks-container {
   height: 35px;
   /* padding: 1em; */
@@ -54,8 +76,18 @@ ul {
   flex-wrap: wrap;
 }
 
+.summary-container {
+  display: flex; 
+  width: 95%;
+  margin: 0 auto;
+  /* what applies to the child:  */
+  justify-content: space-evenly; 
+  flex-wrap: wrap;
+}
+
 .tracker-container {
-  /* width: 33.33%; MOVE THIS TO MEDIA QUERY for mobile*/
+  /* MOVE THIS TO MEDIA QUERY for mobile min-width */
+  /* width: 33.33%;  */
   outline-style: dashed;
   outline-color: red;
 }
@@ -69,6 +101,10 @@ ul {
 /* this is for 2 columns in summary's tracker container
  test this out to see the screen size */
 @media screen and (min-width: 500px) {
+  .dash-trkr-box {
+    width: 33.33%
+  }
+  
   .inner-flexbox {
     display: flex;
   }
@@ -83,8 +119,13 @@ ul {
 .col-2 {
   background-color: green;
 } */
+.dashboard-btn-row {
+  display: flex;
+  justify-content: center;
+  margin-right: 5px;
+}
 
-.button-row {
+.summary-btn-row {
   display: flex;
   justify-content: flex-end;
   margin-right: 5px;
