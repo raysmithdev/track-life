@@ -230,7 +230,7 @@ class ChartComponents {
     let i = 0; 
 
     while (i < sortedKeys.length && i < 6) {
-      pastMonths.push(sortedKeys[i]);
+      pastMonths.push(moment(sortedKeys[i]).format('MMM YY'));
       pastMarks.push(this.tallyMarks[sortedKeys[i]]); 
       i++
     }
@@ -248,7 +248,7 @@ class ChartComponents {
         data: {
             labels: this.previousMarks.month, //months 
             datasets: [{
-                label: "Marks for ${this.name}",
+                label: `Marks for ${this.name}`,
                 backgroundColor: 'rgba(79, 195, 247, 0.3)',
                 borderColor: 'rgb(0, 147, 196)',
                 borderWidth: 1,
