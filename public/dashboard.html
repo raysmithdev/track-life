@@ -16,25 +16,19 @@
 
   <body>
     <!-- fixed header navigation -->
-    <nav class="header">
-      <h1 class="appName">Track Life</h1>
-      <ul class="header-nav">
-        <!-- <li><button type=button>Create</button></li>  not sure if this is needed -->
-        <li><button type=button id="logout-btn">Logout</button></li>
+    <nav class="header-container">
+      <h1 class="app-name">Track Life</h1>
+
+      <ul class="nav-btn-container">
+          <li><button type=button class="dashboard-link nav-btn">Dashboard</button></li>
+          <li><button type=button class="summary-link nav-btn">Summary</button></li>
+          <li><button type=button class="archive-link　nav-btn">Archive</button></li>
+          <li><button type=button class="create-link　nav-btn">Create</button></li>
+          <li><button type=button class="profile-link　nav-btn">Profile</button></li>
+          <li><button type=button id="logout-btn　nav-btn">Logout</button></li>
       </ul>
     </nav>
-
-    <!-- Sidebar Shortcuts -->
-    <nav class="sidebar">
-      <ul class="sidebar-nav">
-        <li><button type=button class="dashboard-link">Dashboard</button></li>
-        <li><button type=button class="summary-link">Summary</button></li>
-        <li><button type=button class="create-link">Create</button></li>
-        <li><button type=button class="archive-link">Archive</button></li>
-        <li><button type=button class="profile-link">Profile</button></li>
-      </ul>
-    </nav>
-
+    
     <main>
       <!-- login screen -->
       <section class="login main-section">
