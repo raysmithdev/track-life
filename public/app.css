@@ -31,6 +31,7 @@ ul {
 }
 .marks-container {
   height: 35px;
+  outline-color: black;
 }
 
 .mark {
@@ -38,4 +39,8 @@ ul {
   padding: 10px;
   margin-right: 5px;
   background-color: dodgerblue;
+}
+
+.tracker-container {
+  outline-color: orangered;
 }
