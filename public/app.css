@@ -76,17 +76,15 @@ h2 {
   border: 0;
   cursor: pointer;
   margin-right: 5px;
-  /* margin-bottom: 0; */
 }
 
 .tracker-container {
-  /* outline-style: dashed;
-  outline-color: red; */
   flex-grow: 1;
   max-width: 800px;
-  margin: 5px;
+  /* margin: 5px; */
   padding: 10px;
   border: 1.5px solid #ffd54f;
+  border-radius: 3px;
 }
 
 .tally-marks {
@@ -98,6 +96,17 @@ h2 {
   height: 35px;
   margin-bottom: 5px;
   /* padding: 1em; */
+}
+
+.trkr-btn {
+  height: auto;
+  font-size: 18px;
+  /* font-weight: 500; */
+  text-align: center;
+  background: #eceff1;
+  border: 1px solid #008ba3;
+  cursor: pointer;
+  margin-right: 5px;
 }
 
 .mark {
