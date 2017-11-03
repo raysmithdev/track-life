@@ -264,10 +264,10 @@ class ChartComponents {
                   }
               }]
           },
-          // title: {
-          //   display: true,
-          //   text: 'Last 6 months'
-          // },
+          title: {
+            display: true,
+            text: 'Last 6 Months'
+          },
           responsive: true,
         }
     });
