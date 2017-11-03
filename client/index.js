@@ -13,7 +13,7 @@ const mockTrackerData = [
     createdDate: '2017-10-22 20:38:43',
     notes: 'tofu steak recipe http://www.justmoretofu.com/steak',
     tallyMarks: {
-      '2017-08-01': 10,
+      '2017-08-01': 7,
       '2017-09-01': 5,
       '2017-10-01': 11,
       '2017-11-01': 10,
@@ -42,7 +42,7 @@ const mockTrackerData = [
     tallyMarks: {
       '2017-09-01': 3,
       '2017-10-01': 4,
-      '2017-11-01': 8,
+      '2017-11-01': 30,
     }
   },
 ];
@@ -165,6 +165,10 @@ class TrackerComponents {
   }
   
   //where to render description & notes? 
+  getIndividualTrackerSummary() {
+
+  }
+
   //marks are rendering outside of container? 
   getTrackerHtml() {
     const template = `
@@ -175,8 +179,8 @@ class TrackerComponents {
               <ul class="tally-marks>${this.getTallyMarks()}</ul> 
             </div> 
           <div class="dashboard-btn-row">
-            <button type="button" class="add-mark-btn">Add Mark</button>
-            <button data-trkr-name=${this.name} class="view-sumry-btn">View Summary</button>
+            <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
+            <button type="button" class="view-sumry-btn trkr-btn">View Summary</button>
           </div>
       </div>
       `;
@@ -202,11 +206,42 @@ class TrackerComponents {
             <canvas class="myChart-${this.trackerId}"></canvas>
           </div>
         <div class="summary-btn-row">
-          <button type="button" class="edit-trkr-btn">Edit</button>
-          <button type="button" class="add-mark-btn">Add Mark</button>
-          <button type="button" class="delete-btn">Delete</button> 
-          <button type="button" class="archive-btn">Archive</button>
-          <button type="button" class="close-btn">Close</button>
+          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
+          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" class="archive-btn trkr-btn">Archive</button>
+          <button type="button" class="close-btn trkr-btn">Close</button>
+        </div>
+      </div>
+    </div>
+    `;
+  return template;
+  } 
+
+  getIndividualTrackerHtml() {
+    const template = `
+      <div class="tracker-container inner-flexbox">
+      <div class="col-1">
+        <h3 class="tracker-name">${this.name}</h3>
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+          <div class="marks-container">
+            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+          </div>
+          <div class="summary-statements">
+          <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
+            <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
+          </div>
+      </div>
+      <div class="col-2">
+          <div class="chart-container">
+            <canvas class="myChart-${this.trackerId}"></canvas>
+          </div>
+        <div class="summary-btn-row">
+          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>
+          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" class="archive-btn trkr-btn">Archive</button>
+          <button type="button" class="close-btn trkr-btn">Close</button>
         </div>
       </div>
     </div>
@@ -261,6 +296,8 @@ class ChartComponents {
               yAxes: [{
                   ticks: {
                       beginAtZero:true
+                      //look up the setting for highest y axis value 
+                      //take highest value of the marks and + 2 
                   }
               }]
           },
