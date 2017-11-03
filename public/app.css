@@ -11,12 +11,18 @@ h1, h2, h3, legend, button {
 .app-name {
   font-style: italic; 
   font-weight: bold;
+  /* color: #ffffff;  */
 }
 
 .login, .dashboard, .create-tracker, 
 .tracker-summary, .chart, 
 .profile, .tracker-archive  {
   display: none;
+}
+
+.dashboard, .tracker-summary, 
+.tracker-archive, .profile {
+  padding: 1em;
 }
 
 fieldset {
@@ -29,12 +35,12 @@ ul {
   list-style: none;
   margin: 0;
   padding: 0;
-  /* display: inline-block; */
 }
 
 .header-container {
   display: flex;
   padding: 1em;
+  background-color: #00bcd4
 }
 
 .nav-btn-container {
@@ -43,19 +49,54 @@ ul {
   align-items: center;
 }
 
+/* figure out weird spacing issue
+.nav-btn {
+  margin-right: 5px;
+} */
+
 .app-name, .nav-btn-container {
   margin: 0;
   padding: 0;
   width: 50%;
 }
 
-/* .nav-btn {
-  height: 25px;
-  margin-left: .5em;
-} */
+h2 {
+  padding: .25em;
+  background-color: #eceff1;
+  text-align: center;
+  vertical-align: center;
+}
+
+.nav-btn {
+  height: auto;
+  font-size: 18px;
+  /* font-weight: 500; */
+  text-align: center;
+  background: #ffffff;
+  border: 0;
+  cursor: pointer;
+  margin-right: 5px;
+  /* margin-bottom: 0; */
+}
+
+.tracker-container {
+  /* outline-style: dashed;
+  outline-color: red; */
+  flex-grow: 1;
+  max-width: 800px;
+  margin: 5px;
+  padding: 10px;
+  border: 1.5px solid #ffd54f;
+}
+
+.tally-marks {
+  display: flex;
+  max-width: 200px;
+}
 
 .marks-container {
   height: 35px;
+  margin-bottom: 5px;
   /* padding: 1em; */
 }
 
@@ -63,7 +104,7 @@ ul {
   display: inline-block;  /* this makes it into square */
   padding: 10px;
   margin-right: 5px;
-  background-color: dodgerblue;
+  background-color: #aed581;
 }
 
 /* make flex container for dashboard & trackers */
@@ -85,11 +126,10 @@ ul {
   flex-wrap: wrap;
 }
 
-.tracker-container {
-  /* MOVE THIS TO MEDIA QUERY for mobile min-width */
-  /* width: 33.33%;  */
-  outline-style: dashed;
-  outline-color: red;
+.footer {
+  padding: .25em;
+  text-align: center;
+  background-color: #00bcd4
 }
 
 /* @media screen and (min-wdith: 500px ) {
@@ -101,10 +141,6 @@ ul {
 /* this is for 2 columns in summary's tracker container
  test this out to see the screen size */
 @media screen and (min-width: 500px) {
-  .dash-trkr-box {
-    width: 33.33%
-  }
-  
   .inner-flexbox {
     display: flex;
   }
@@ -112,13 +148,7 @@ ul {
     width: 50%;
   }  
 }
-/* .col-1 {
-  background-color: yellow;
-}
 
-.col-2 {
-  background-color: green;
-} */
 .dashboard-btn-row {
   display: flex;
   justify-content: center;
