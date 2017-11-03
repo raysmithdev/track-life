@@ -70,12 +70,24 @@ h2 {
 .nav-btn {
   height: auto;
   font-size: 18px;
-  /* font-weight: 500; */
   text-align: center;
   background: #ffffff;
   border: 0;
+  border-radius: 3px;
   cursor: pointer;
   margin-right: 5px;
+}
+
+.tracker-name {
+  padding: .25em;
+  background-color: #eceff1;
+  text-align: center;
+  vertical-align: center;
+}
+
+.tracker-month {
+  /* color: #008ba3; */
+  font-size: 18px;
 }
 
 .tracker-container {
@@ -101,10 +113,10 @@ h2 {
 .trkr-btn {
   height: auto;
   font-size: 18px;
-  /* font-weight: 500; */
   text-align: center;
   background: #eceff1;
   border: 1px solid #008ba3;
+  border-radius: 3px;  
   cursor: pointer;
   margin-right: 5px;
 }
