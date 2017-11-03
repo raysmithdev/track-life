@@ -26,16 +26,19 @@
       <div class="landing-page">
         <section class="intro">
           <h2>What is Track Life?</h2>
-            <p class="intro">Track Life will help you keep log of your activities, habits, routines or anything else you want to track!</p>
-            <p class="intro">Rather than setting goals, receive reminder alerts, and be bombarded by data, just check off that you did it. </p>
-            <p class="intro">You are measuring your own progress in the fact that you did it at all.</p>
-          <div class="screenshots">
+            <div class="intro-container">
+              <p class="intro">Track Life will help you keep log of your activities, habits, routines or anything else you want to track!</p>
+              <p class="intro">Rather than setting goals, receive reminder alerts, and be bombarded by data, just check off that you did it. </p>
+              <p class="intro">You are measuring your own progress in the fact that you did it at all.</p>
+            </div>
+            <div class="screenshots">
 
           </div>
         </section>
 
         <section class="sign-up">
           <h2>Ready to Start Tracking?</h2>
+          <!-- <div class="form-container"> -->
           <form action="" method="post" class="signup-form">
             <fieldset>
               <legend>Create an Account</legend>
@@ -44,12 +47,14 @@
                 
                 <label for="password">Password:</label>
                 <input id="password" type="password" placeholder="enter password" required>
-                
-                <button type="submit">Sign Up</button>
-                <button type="reset">Reset</button>
+                <div class="form-btn-row">
+                  <button type="submit" class="form-btn">Sign Up</button>
+                  <button type="reset" class="form-btn">Reset</button>
+                </div>
             </fieldset>
           </form>
           <p class="already-signedup">Already have an account? <a href="/login">Login</a></p>
+          <!-- </div> -->
         </section>
       </div>
     </main>
