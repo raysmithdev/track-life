@@ -53,7 +53,7 @@
       <!-- create a new tracker screen -->
       <section class="create-tracker main-section">
         <h2>Create a Tracker</h2>
-        <form action="" method="post">
+        <form action="" method="post" class="create-form">
           <label for="tracker-name">New Tracker Name</label>
           <input id="tracker-name" type="text" placeholder="enter new tracker name">
           
@@ -62,11 +62,12 @@
           
           <label for="notes">Notes</label>
           <!-- add text formatting?  -->
-          <textarea id="notes" placeholder="Add any notes for yourself (optional)"></textarea>
-          
-          <button type="button" class="add-mark-btn">Add Mark</button>
-          <button type="submit" class="create-trkr-btn">Create</button>
-          <button type="button" class="cancel-btn">Cancel</button>
+          <textarea class="tracker-notes" placeholder="Add any notes for yourself (optional)"></textarea>
+          <div class="form-btn-row">              
+            <!-- <button type="button" class="add-mark-btn new-trkr-btn">Add Mark</button> -->
+            <button type="submit" class="create-trkr-btn new-trkr-btn">Create</button>
+            <button type="button" class="cancel-btn new-trkr-btn">Cancel</button>
+          </div>
         </form>
       </section>
       <!-- tracker summary page -->
