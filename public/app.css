@@ -123,7 +123,7 @@ h2 {
 }
 
 /* make flex container for dashboard & trackers */
-.dashboard-container {
+.dashboard-container, .summary-container, .archive-container {
   display: flex; 
   width: 95%;
   margin: 0 auto;
@@ -132,14 +132,13 @@ h2 {
   flex-wrap: wrap;
 }
 
-.summary-container {
+/* .summary-container {
   display: flex; 
   width: 95%;
   margin: 0 auto;
-  /* what applies to the child:  */
   justify-content: space-evenly; 
   flex-wrap: wrap;
-}
+} */
 
 .dashboard-btn-row {
   display: flex;

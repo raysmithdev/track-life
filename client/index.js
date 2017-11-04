@@ -89,6 +89,16 @@ function renderSummaryPage() {
 //render archive page
 function renderArchivePage() {
   $('.main-section').hide();
+  $('.archive-container').empty();
+
+  mockTrackerData.forEach(trackerData => {
+    const trackerComponent = new TrackerComponents(trackerData);
+    $('.archive-container').append(trackerComponent.getArchiveTrackerHtml());
+    
+    const chartComponent = new ChartComponents(trackerData);
+    chartComponent.renderChart();
+  });
+
   $('.tracker-archive').show();
 }
 
@@ -122,6 +132,7 @@ class TrackerComponents {
   constructor(data) {
     this.trackerId = data.id;
     this.name = data.name;
+    this.description = data.description;
     this.tallyMarks = data.tallyMarks; 
     this.currentMarks = this.checkTrackerMonth();
     this.oneMonthBack = this.getPreviousCount(); 
@@ -163,11 +174,6 @@ class TrackerComponents {
     }
     return markBlocks.join('');
   }
-  
-  //where to render description & notes? 
-  getIndividualTrackerSummary() {
-
-  }
 
   //marks are rendering outside of container? 
   getTrackerHtml() {
@@ -180,7 +186,7 @@ class TrackerComponents {
             </div> 
           <div class="dashboard-btn-row">
             <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
-            <button type="button" class="view-sumry-btn trkr-btn">View Summary</button>
+            <button type="button" data-trkr-name=${this.name} class="view-sumry-btn trkr-btn">View Summary</button>
           </div>
       </div>
       `;
@@ -210,7 +216,6 @@ class TrackerComponents {
           <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
           <button type="button" class="delete-btn trkr-btn">Delete</button> 
           <button type="button" class="archive-btn trkr-btn">Archive</button>
-          <button type="button" class="close-btn trkr-btn">Close</button>
         </div>
       </div>
     </div>
@@ -218,7 +223,7 @@ class TrackerComponents {
   return template;
   } 
 
-  getIndividualTrackerHtml() {
+  getArchiveTrackerHtml() {
     const template = `
       <div class="tracker-container inner-flexbox">
       <div class="col-1">
@@ -228,8 +233,7 @@ class TrackerComponents {
             <ul class="tally-marks>${this.getTallyMarks()}</ul> 
           </div>
           <div class="summary-statements">
-          <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
-            <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
+            <p class="summary-sentence">You last marked ${this.name} ${this.currentMarks.monthCount} times.</p>
           </div>
       </div>
       <div class="col-2">
@@ -237,10 +241,9 @@ class TrackerComponents {
             <canvas class="myChart-${this.trackerId}"></canvas>
           </div>
         <div class="summary-btn-row">
-          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>
-          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
           <button type="button" class="delete-btn trkr-btn">Delete</button> 
-          <button type="button" class="archive-btn trkr-btn">Archive</button>
+          <button type="button" class="reactivate-btn trkr-btn">Reactivate</button>
           <button type="button" class="close-btn trkr-btn">Close</button>
         </div>
       </div>
@@ -324,10 +327,13 @@ function setUpHandlers() {
 
   //view summary button
   $('.dashboard').on('click', '.view-sumry-btn', () => {
-    renderSummaryPage();
+    renderIndividualTrackerSummary();
   })
 
   //add mark button
+  //add delete button
+  //add archive button
+  //add close button
 }
 
 $('document').ready(() => {
