@@ -321,7 +321,7 @@ function setUpHandlers() {
   $('.create-link').click(renderCreateTracker);
   $('.archive-link').click(renderArchivePage);
   $('.profile-link').click(renderProfilePage);
-  $('#logout-btn').click(renderLogOutDashboard);
+  $('.logout-btn').click(renderLogOutDashboard);
 
   //dyanmic buttons created within trackers
 
