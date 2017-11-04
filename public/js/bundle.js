@@ -16022,7 +16022,7 @@ const mockTrackerData = [
     createdDate: '2017-10-22 20:38:43',
     notes: 'tofu steak recipe http://www.justmoretofu.com/steak',
     tallyMarks: {
-      '2017-08-01': 10,
+      '2017-08-01': 7,
       '2017-09-01': 5,
       '2017-10-01': 11,
       '2017-11-01': 10,
@@ -16051,19 +16051,20 @@ const mockTrackerData = [
     tallyMarks: {
       '2017-09-01': 3,
       '2017-10-01': 4,
-      '2017-11-01': 8,
+      '2017-11-01': 30,
     }
   },
 ];
 
 // render login screen
 
-// render dashboard
 //pass in mockdata in renderDashboard as a test later 
+// render dashboard
 function renderDashboard() {
   __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.main-section').hide();
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.tracker-container').html(''); //empty()
-
+  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.dashboard-container').empty(); //html('');
+  // $('.tracker-container').empty(); 
+  
   mockTrackerData.forEach(trackerData => {
     const component = new TrackerComponents(trackerData);
     __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.dashboard-container').append(component.getTrackerHtml());
@@ -16085,11 +16086,10 @@ function renderSummaryPage() {
 
   mockTrackerData.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
-    const chartComponent = new ChartComponents(trackerData);
-
     __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.summary-container').append(trackerComponent.getTrackerSummaryHtml());
-    __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.summary-container').append(chartComponent.renderChart());
-    // console.log(chartComponent);
+    
+    const chartComponent = new ChartComponents(trackerData);
+    chartComponent.renderChart();
   });
 
   __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.tracker-summary').show();
@@ -16098,6 +16098,16 @@ function renderSummaryPage() {
 //render archive page
 function renderArchivePage() {
   __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.main-section').hide();
+  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.archive-container').empty();
+
+  mockTrackerData.forEach(trackerData => {
+    const trackerComponent = new TrackerComponents(trackerData);
+    __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.archive-container').append(trackerComponent.getArchiveTrackerHtml());
+    
+    const chartComponent = new ChartComponents(trackerData);
+    chartComponent.renderChart();
+  });
+
   __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.tracker-archive').show();
 }
 
@@ -16131,6 +16141,7 @@ class TrackerComponents {
   constructor(data) {
     this.trackerId = data.id;
     this.name = data.name;
+    this.description = data.description;
     this.tallyMarks = data.tallyMarks; 
     this.currentMarks = this.checkTrackerMonth();
     this.oneMonthBack = this.getPreviousCount(); 
@@ -16172,20 +16183,19 @@ class TrackerComponents {
     }
     return markBlocks.join('');
   }
-  
-  //where to render description & notes? 
+
   //marks are rendering outside of container? 
   getTrackerHtml() {
     const template = `
-      <div class="tracker-container">
+      <div class="tracker-container dash-trkr-box">
         <h3 class="tracker-name">${this.name}</h3>
           <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
             <div class="marks-container">
               <ul class="tally-marks>${this.getTallyMarks()}</ul> 
             </div> 
-          <div class="button-row">
-            <button type="button" id="add-mark-btn">Add Mark</button>
-            <button data-trkr-name=${this.name} id="view-sumry-btn">View Summary</button>
+          <div class="dashboard-btn-row">
+            <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
+            <button type="button" data-trkr-name=${this.name} class="view-sumry-btn trkr-btn">View Summary</button>
           </div>
       </div>
       `;
@@ -16194,8 +16204,9 @@ class TrackerComponents {
 
   getTrackerSummaryHtml() {
     const template = `
-      <div class="tracker-container">
-      <h3 class="tracker-name">${this.name}</h3>
+      <div class="tracker-container inner-flexbox">
+      <div class="col-1">
+        <h3 class="tracker-name">${this.name}</h3>
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
           <div class="marks-container">
             <ul class="tally-marks>${this.getTallyMarks()}</ul> 
@@ -16204,15 +16215,47 @@ class TrackerComponents {
           <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
             <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
           </div>
+      </div>
+      <div class="col-2">
           <div class="chart-container">
-            <canvas id="myChart"></canvas>
+            <canvas class="myChart-${this.trackerId}"></canvas>
           </div>
-        <div class="button-row">
-          <button type="button" id="edit-trkr-btn">Edit</button>
-          <button type="button" id="add-mark-btn">Add Mark</button>
-          <button type="button" id='delete-btn">Delete<button> 
-          <button type="button id="archive-btn">Archive</button>
+        <div class="summary-btn-row">
+          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
+          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" class="archive-btn trkr-btn">Archive</button>
         </div>
+      </div>
+    </div>
+    `;
+  return template;
+  } 
+
+  getArchiveTrackerHtml() {
+    const template = `
+      <div class="tracker-container inner-flexbox">
+      <div class="col-1">
+        <h3 class="tracker-name">${this.name}</h3>
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+          <div class="marks-container">
+            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+          </div>
+          <div class="summary-statements">
+            <p class="summary-sentence">You last marked ${this.name} ${this.currentMarks.monthCount} times.</p>
+          </div>
+      </div>
+      <div class="col-2">
+          <div class="chart-container">
+            <canvas class="myChart-${this.trackerId}"></canvas>
+          </div>
+        <div class="summary-btn-row">
+          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
+          <button type="button" class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" class="reactivate-btn trkr-btn">Reactivate</button>
+          <button type="button" class="close-btn trkr-btn">Close</button>
+        </div>
+      </div>
     </div>
     `;
   return template;
@@ -16221,7 +16264,7 @@ class TrackerComponents {
 
 class ChartComponents {
   constructor(data) {
-    this.trackerID = data.id;
+    this.trackerId = data.id;
     this.name = data.name;
     this.tallyMarks = data.tallyMarks;
     this.previousMarks = this.getPreviousMarks();
@@ -16231,40 +16274,53 @@ class ChartComponents {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const pastMonths = [];
     const pastMarks = [];
-    // need to extra months and # to input in chart function 
-    for (let i = 0; i <= sortedKeys.length - 6; i++) {
-      //need to get array of months & count 
-      pastMonths.push(Object.keys(sortedKeys));
-      pastMarks.push(Object.values(sortedKeys));
+    let i = 0; 
+
+    while (i < sortedKeys.length && i < 6) {
+      pastMonths.push(__WEBPACK_IMPORTED_MODULE_0_moment___default()(sortedKeys[i]).format('MMM YY'));
+      pastMarks.push(this.tallyMarks[sortedKeys[i]]); 
+      i++
     }
     return {month: pastMonths, count: pastMarks};
-    console.log(pastMonths);
-    console.log(pastMarks);
   }
 
   //can use .destroy() to remove instances of chart created 
   //put data gathered from getMarksToChart() and plug into chart 
   renderChart() {
-    // var ctx = $("#myChart");
-    var ctx = document.getElementById('myChart').getContext('2d');
+    var ctx = document.getElementsByClassName(`myChart-${this.trackerId}`)[0].getContext('2d');
     var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'bar', //or 'line'
         // The data for our dataset
         data: {
-            labels: [this.previousMarks.pastMonths], //months 
+            labels: this.previousMarks.month, //months 
             datasets: [{
-                label: "Marks for ${this.name}",
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: [this.previousMarks.pastMarks], //marks
+                label: `Marks for ${this.name}`,
+                backgroundColor: 'rgba(79, 195, 247, 0.3)',
+                borderColor: 'rgb(0, 147, 196)',
+                borderWidth: 1,
+                data: this.previousMarks.count, //marks
             }]
         },
         // Configuration options go here
-        options: {}
+        options: {
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero:true
+                      //look up the setting for highest y axis value 
+                      //take highest value of the marks and + 2 
+                  }
+              }]
+          },
+          title: {
+            display: true,
+            text: 'Last 6 Months'
+          },
+          responsive: true,
+        }
     });
   }
-
 }
 
 function setUpHandlers() {
@@ -16279,16 +16335,19 @@ function setUpHandlers() {
   //dyanmic buttons created within trackers
 
   //view summary button
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.dashboard').on('click', '#view-sumry-btn', () => {
-    renderSummaryPage();
+  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.dashboard').on('click', '.view-sumry-btn', () => {
+    renderIndividualTrackerSummary();
   })
 
   //add mark button
+  //add delete button
+  //add archive button
+  //add close button
 }
 
 __WEBPACK_IMPORTED_MODULE_1_jquery___default()('document').ready(() => {
   setUpHandlers();
-  // renderDashboard();
+  renderDashboard();  //this should run after user logs in
 });
 
 /***/ }),
