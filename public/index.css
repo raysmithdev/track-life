@@ -1,5 +1,5 @@
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   /* background-image: url("https://images.unsplash.com/photo-1498575207492-cfbed56146c0?auto=format&fit=crop&w=2602&q=60&ixid=dW5zcGxhc2guY29tOzs7Ozs%3D") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -7,39 +7,38 @@ body {
   background-size: cover; */
 }
 
-h1, h2, legend, button {
-  font-family: 'Roboto', sans-serif;
+h1,
+h2,
+legend,
+button {
+  font-family: "Roboto", sans-serif;
 }
 
 .app-name {
-  font-style: italic; 
+  font-style: italic;
   font-weight: bold;
-}
-
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  /* display: inline; */
 }
 
 .header-container {
   display: flex;
+  justify-content: space-between;
   padding: 1em;
-  background-color: #00bcd4
+  background-color: #00bcd4;
+  flex-wrap: wrap;
 }
 
+.app-name-container,
 .nav-btn-container {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
 }
 
-.app-name, .nav-btn-container {
-  margin: 0;
-  padding: 0;
-  width: 50%;
+.nav-btn {
+  white-space: nowrap;
+  /* add highlight when clicked */
 }
+
+/* add media query to change justify-content: center when screen is small */
 
 .landing-page {
   padding: 1em;
@@ -51,7 +50,7 @@ ul {
 }
 
 h2 {
-  padding: .25em;
+  padding: 0.25em;
   background-color: #eceff1;
   text-align: center;
   vertical-align: center;
@@ -59,7 +58,7 @@ h2 {
 
 .intro {
   text-align: justify;
-} 
+}
 
 fieldset {
   display: flex;
@@ -71,8 +70,8 @@ fieldset {
 .signup-form {
   width: 65%;
   padding: 1em;
-  border-radius: .5em;
-  background-color: #ffd54f; 
+  border-radius: 0.5em;
+  background-color: #ffd54f;
   margin: 0 auto;
 }
 
@@ -104,7 +103,7 @@ input {
 }
 
 input:focus {
-  border: 3px solid #62efff
+  border: 3px solid #62efff;
 }
 
 ::placeholder {
@@ -126,7 +125,7 @@ button {
   text-align: center;
   background: #ffffff;
   border: 0;
-  border-radius: 3px;  
+  border-radius: 3px;
   cursor: pointer;
   margin-right: 5px;
 }
@@ -135,13 +134,8 @@ button {
   text-align: center;
 }
 
-/* add yellow highlight when hover */
-.nav-button {
-  
-}
-
 .footer {
-  padding: .25em;
+  padding: 0.25em;
   text-align: center;
-  background-color: #00bcd4
+  background-color: #00bcd4;
 }

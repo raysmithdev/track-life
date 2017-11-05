@@ -43473,6 +43473,142 @@ return zhTw;
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__chart_component__ = __webpack_require__(247);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tracker_component__ = __webpack_require__(297);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mock_data__ = __webpack_require__(298);
+
+
+
+
+
+
+
+("use strict");
+
+// render login screen
+
+//pass in mockdata in renderDashboard as a test later
+// render dashboard
+function renderDashboard() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard-container").empty(); //html('');
+  // $('.tracker-container').empty();
+
+  __WEBPACK_IMPORTED_MODULE_3__mock_data__["a" /* default */].forEach(trackerData => {
+    const component = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard-container").append(component.getTrackerHtml());
+  });
+
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard").show();
+}
+
+//render create new tracker
+function renderCreateTracker() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide(); //need to empty everything displayed
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-tracker").show();
+}
+
+//render summary page
+function renderSummaryPage() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").empty();
+
+  __WEBPACK_IMPORTED_MODULE_3__mock_data__["a" /* default */].forEach(trackerData => {
+    const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
+
+    const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](trackerData);
+    chartComponent.renderChart();
+  });
+
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").show();
+}
+
+//render individual tracker summary
+function renderIndividualTrackerSummary(id) {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").empty();
+
+  let trackerData = __WEBPACK_IMPORTED_MODULE_3__mock_data__["a" /* default */].find(tracker => tracker.id === id);
+  const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
+
+  const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](trackerData);
+  chartComponent.renderChart();
+
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").show();
+}
+
+//render archive page
+function renderArchivePage() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-container").empty();
+
+  __WEBPACK_IMPORTED_MODULE_3__mock_data__["a" /* default */].forEach(trackerData => {
+    const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-container").append(trackerComponent.getArchiveTrackerHtml());
+
+    const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](trackerData);
+    chartComponent.renderChart();
+  });
+
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-archive").show();
+}
+
+//render user profile page
+function renderProfilePage() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".profile").show();
+}
+
+//render log out
+function renderLogOutDashboard() {
+  //return to landing-page
+}
+
+//add a mark to an existing tracker
+function addMarkToTracker() {
+  //check if current month exists & increment by 1
+  //if current month does not exist, add new and increment by 1
+}
+
+function setUpHandlers() {
+  //sidebar navigation buttons
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard-link").click(renderDashboard);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-link").click(renderSummaryPage);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-link").click(renderCreateTracker);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-link").click(renderArchivePage);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".profile-link").click(renderProfilePage);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".logout-btn").click(renderLogOutDashboard);
+
+  //dyanmic buttons created within trackers
+
+  //view summary button
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard").on("click", ".view-sumry-btn", e => {
+    const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    console.log(__WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"));
+    renderIndividualTrackerSummary(trackerId);
+  });
+
+  //add mark button
+  //add delete button
+  //add archive button
+  //add close button
+}
+
+__WEBPACK_IMPORTED_MODULE_0_jquery___default()("document").ready(() => {
+  setUpHandlers();
+  renderDashboard(); //this should run after user logs in
+});
+
+
+/***/ }),
+/* 247 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_moment__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(8);
@@ -43482,257 +43618,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-
-'use strict';
-
-//mock data for initial build
-const mockTrackerData = [
-  {
-    id: 1, 
-    name: 'Eat more tofu',
-    description: 'it\'s good for you, I think',
-    createdDate: '2017-10-22 20:38:43',
-    notes: 'tofu steak recipe http://www.justmoretofu.com/steak',
-    tallyMarks: {
-      '2017-08-01': 7,
-      '2017-09-01': 5,
-      '2017-10-01': 11,
-      '2017-11-01': 10,
-    }
-  },
-  {
-    id: 2,
-    name: 'Go to Jiu Jitsu',
-    description: 'get more flow',
-    createdDate: '2017-01-28 20:38:43',
-    notes: '10/27 - loop choke from guard',
-    tallyMarks: {
-      '2017-07-01': 9,
-      '2017-08-01': 8,
-      '2017-09-01': 12,
-      '2017-10-01': 11,
-      '2017-11-01': 2,
-    }
-  },
-  {
-    id: 3,
-    name: 'Do Back Exercises',
-    description: 'strength for bjj',
-    createdDate: '2017-01-28 20:38:43',
-    notes: 'exercise ball + bridge',
-    tallyMarks: {
-      '2017-09-01': 3,
-      '2017-10-01': 4,
-      '2017-11-01': 30,
-    }
-  },
-];
-
-// render login screen
-
-//pass in mockdata in renderDashboard as a test later 
-// render dashboard
-function renderDashboard() {
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.main-section').hide();
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.dashboard-container').empty(); //html('');
-  // $('.tracker-container').empty(); 
-  
-  mockTrackerData.forEach(trackerData => {
-    const component = new TrackerComponents(trackerData);
-    __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.dashboard-container').append(component.getTrackerHtml());
-  });
-
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.dashboard').show();
-}
-
-//render create new tracker
-function renderCreateTracker() {
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.main-section').hide();   //need to empty everything displayed
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.create-tracker').show();
-}
-
-//render summary page
-function renderSummaryPage() {
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.main-section').hide();
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.summary-container').empty();
-
-  mockTrackerData.forEach(trackerData => {
-    const trackerComponent = new TrackerComponents(trackerData);
-    __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.summary-container').append(trackerComponent.getTrackerSummaryHtml());
-    
-    const chartComponent = new ChartComponents(trackerData);
-    chartComponent.renderChart();
-  });
-
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.tracker-summary').show();
-}
-
-//render archive page
-function renderArchivePage() {
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.main-section').hide();
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.archive-container').empty();
-
-  mockTrackerData.forEach(trackerData => {
-    const trackerComponent = new TrackerComponents(trackerData);
-    __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.archive-container').append(trackerComponent.getArchiveTrackerHtml());
-    
-    const chartComponent = new ChartComponents(trackerData);
-    chartComponent.renderChart();
-  });
-
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.tracker-archive').show();
-}
-
-//render user profile page
-function renderProfilePage() {
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.main-section').hide();
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.profile').show();
-}
-
-//render log out 
-function renderLogOutDashboard() {
-  //return to landing-page 
-}
-
-//add a mark to an existing tracker
-function addMarkToTracker() {
-  //check if current month exists & increment by 1
-  //if current month does not exist, add new and increment by 1
-}
-
-//for current tracker need to be able to identify current month and render marks for current month
-//if not current month, create new month object & add a mark
-
-//look at tallyMark object & get month/year
-//get system current month 
-//after get month/year, check if it matches current month
-//if current month, render tally marks
-//if not current month, render blank unless new mark added 
-
-class TrackerComponents {
-  constructor(data) {
-    this.trackerId = data.id;
-    this.name = data.name;
-    this.description = data.description;
-    this.tallyMarks = data.tallyMarks; 
-    this.currentMarks = this.checkTrackerMonth();
-    this.oneMonthBack = this.getPreviousCount(); 
-  }
-
-  checkTrackerMonth() { 
-    const currentMonth = __WEBPACK_IMPORTED_MODULE_0_moment___default()(); 
-    const sortedKeys = Object.keys(this.tallyMarks).sort();
-    const trackerMonth = sortedKeys[sortedKeys.length-1];
-    const trackerMoment = __WEBPACK_IMPORTED_MODULE_0_moment___default()(trackerMonth);
-  
-    const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, 'month'); 
-    if (doesCurrentMonthMatch === true) {
-      return { currentTrackerMonth: trackerMoment.format('MMMM YYYY'), 
-              monthCount: this.tallyMarks[trackerMonth]
-      }; 
-    }
-  }
-
-  //look at previous month and display previous month's count in a statement 
-  getPreviousCount() {
-    const currentMonth = __WEBPACK_IMPORTED_MODULE_0_moment___default()(); 
-    const sortedKeys = Object.keys(this.tallyMarks).sort();
-    const previousMonth = sortedKeys[sortedKeys.length-2];
-    const trackerMoment = __WEBPACK_IMPORTED_MODULE_0_moment___default()(previousMonth);
-
-    const isItMonthBefore = trackerMoment.isBefore(currentMonth, 'month'); 
-    if (isItMonthBefore === true) {
-      return { monthCount: this.tallyMarks[previousMonth] }; 
-    };
-  }
-
-  getTallyMarks() {
-    const markBlocks = [];
-    const template = `<li class="mark"></li>`;
-    for (let i = 0; i <= this.currentMarks.monthCount; i++) { 
-      // console.log(this.currentMarks.monthCount); 
-      markBlocks.push(template);
-    }
-    return markBlocks.join('');
-  }
-
-  //marks are rendering outside of container? 
-  getTrackerHtml() {
-    const template = `
-      <div class="tracker-container dash-trkr-box">
-        <h3 class="tracker-name">${this.name}</h3>
-          <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
-            <div class="marks-container">
-              <ul class="tally-marks>${this.getTallyMarks()}</ul> 
-            </div> 
-          <div class="dashboard-btn-row">
-            <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
-            <button type="button" data-trkr-name=${this.name} class="view-sumry-btn trkr-btn">View Summary</button>
-          </div>
-      </div>
-      `;
-    return template;
-  }
-
-  getTrackerSummaryHtml() {
-    const template = `
-      <div class="tracker-container inner-flexbox">
-      <div class="col-1">
-        <h3 class="tracker-name">${this.name}</h3>
-        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
-          <div class="marks-container">
-            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
-          </div>
-          <div class="summary-statements">
-          <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
-            <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
-          </div>
-      </div>
-      <div class="col-2">
-          <div class="chart-container">
-            <canvas class="myChart-${this.trackerId}"></canvas>
-          </div>
-        <div class="summary-btn-row">
-          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
-          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
-          <button type="button" class="delete-btn trkr-btn">Delete</button> 
-          <button type="button" class="archive-btn trkr-btn">Archive</button>
-        </div>
-      </div>
-    </div>
-    `;
-  return template;
-  } 
-
-  getArchiveTrackerHtml() {
-    const template = `
-      <div class="tracker-container inner-flexbox">
-      <div class="col-1">
-        <h3 class="tracker-name">${this.name}</h3>
-        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
-          <div class="marks-container">
-            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
-          </div>
-          <div class="summary-statements">
-            <p class="summary-sentence">You last marked ${this.name} ${this.currentMarks.monthCount} times.</p>
-          </div>
-      </div>
-      <div class="col-2">
-          <div class="chart-container">
-            <canvas class="myChart-${this.trackerId}"></canvas>
-          </div>
-        <div class="summary-btn-row">
-          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
-          <button type="button" class="delete-btn trkr-btn">Delete</button> 
-          <button type="button" class="reactivate-btn trkr-btn">Reactivate</button>
-          <button type="button" class="close-btn trkr-btn">Close</button>
-        </div>
-      </div>
-    </div>
-    `;
-  return template;
-  } 
-}
 
 class ChartComponents {
   constructor(data) {
@@ -43760,7 +43645,7 @@ class ChartComponents {
   //put data gathered from getMarksToChart() and plug into chart 
   renderChart() {
     var ctx = document.getElementsByClassName(`myChart-${this.trackerId}`)[0].getContext('2d');
-    var chart = new Chart(ctx, {
+    var chart = new __WEBPACK_IMPORTED_MODULE_2_chart_js__["Chart"](ctx, {
         // The type of chart we want to create
         type: 'bar', //or 'line'
         // The data for our dataset
@@ -43794,36 +43679,10 @@ class ChartComponents {
     });
   }
 }
+/* harmony export (immutable) */ __webpack_exports__["a"] = ChartComponents;
 
-function setUpHandlers() {
-  //sidebar navigation buttons 
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.dashboard-link').click(renderDashboard);
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.summary-link').click(renderSummaryPage);
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.create-link').click(renderCreateTracker);
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.archive-link').click(renderArchivePage);
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.profile-link').click(renderProfilePage);
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.logout-btn').click(renderLogOutDashboard);
-
-  //dyanmic buttons created within trackers
-
-  //view summary button
-  __WEBPACK_IMPORTED_MODULE_1_jquery___default()('.dashboard').on('click', '.view-sumry-btn', () => {
-    renderIndividualTrackerSummary();
-  })
-
-  //add mark button
-  //add delete button
-  //add archive button
-  //add close button
-}
-
-__WEBPACK_IMPORTED_MODULE_1_jquery___default()('document').ready(() => {
-  setUpHandlers();
-  renderDashboard();  //this should run after user logs in
-});
 
 /***/ }),
-/* 247 */,
 /* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -57104,6 +56963,247 @@ module.exports = function(Chart) {
 	};
 };
 
+
+/***/ }),
+/* 297 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_moment__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_moment__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
+
+
+//for current tracker need to be able to identify current month and render marks for current month
+//if not current month, create new month object & add a mark
+
+//look at tallyMark object & get month/year
+//get system current month
+//after get month/year, check if it matches current month
+//if current month, render tally marks
+//if not current month, render blank unless new mark added
+
+class TrackerComponents {
+  constructor(data) {
+    this.trackerId = data.id;
+    this.name = data.name;
+    this.description = data.description;
+    this.tallyMarks = data.tallyMarks;
+    this.currentMarks = this.checkTrackerMonth();
+    this.oneMonthBack = this.getPreviousCount();
+  }
+
+  checkTrackerMonth() {
+    const currentMonth = __WEBPACK_IMPORTED_MODULE_0_moment___default()();
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const trackerMonth = sortedKeys[sortedKeys.length - 1];
+    const trackerMoment = __WEBPACK_IMPORTED_MODULE_0_moment___default()(trackerMonth);
+
+    const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
+    if (doesCurrentMonthMatch === true) {
+      return {
+        currentTrackerMonth: trackerMoment.format("MMMM YYYY"),
+        monthCount: this.tallyMarks[trackerMonth]
+      };
+    }
+  }
+
+  //look at previous month and display previous month's count in a statement
+  getPreviousCount() {
+    const currentMonth = __WEBPACK_IMPORTED_MODULE_0_moment___default()();
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const previousMonth = sortedKeys[sortedKeys.length - 2];
+    const trackerMoment = __WEBPACK_IMPORTED_MODULE_0_moment___default()(previousMonth);
+
+    const isItMonthBefore = trackerMoment.isBefore(currentMonth, "month");
+    if (isItMonthBefore === true) {
+      return { monthCount: this.tallyMarks[previousMonth] };
+    }
+  }
+
+  getTallyMarks() {
+    const markBlocks = [];
+    const template = `<li class="mark"></li>`;
+    for (let i = 0; i <= this.currentMarks.monthCount; i++) {
+      // console.log(this.currentMarks.monthCount);
+      markBlocks.push(template);
+    }
+    return markBlocks.join("");
+  }
+
+  //marks are rendering outside of container?
+  getTrackerHtml() {
+    const template = `
+      <div class="tracker-container dash-trkr-box">
+        <h3 class="tracker-name">${this.name}</h3>
+          <h4 class="tracker-month">${this.currentMarks
+            .currentTrackerMonth}</h4>
+            <div class="marks-container">
+              <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+            </div> 
+          <div class="dashboard-btn-row">
+            <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
+            <button type="button" data-trkr-id=${this
+              .trackerId} class="view-sumry-btn trkr-btn">View Summary</button>
+          </div>
+      </div>
+      `;
+    return template;
+  }
+
+  getTrackerSummaryHtml() {
+    const template = `
+      <div class="tracker-container inner-flexbox">
+      <div class="col-1">
+        <h3 class="tracker-name">${this.name}</h3>
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+          <div class="marks-container">
+            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+          </div>
+          <div class="summary-statements">
+          <p class="summary-sentence">You marked ${this.name} ${this
+      .currentMarks.monthCount} times this month!</p>
+            <p class="summary-sentence">You marked ${this.name} ${this
+      .oneMonthBack.monthCount} times last month!</p>
+          </div>
+      </div>
+      <div class="col-2">
+          <div class="chart-container">
+            <canvas class="myChart-${this.trackerId}"></canvas>
+          </div>
+        <div class="summary-btn-row">
+          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
+          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" class="archive-btn trkr-btn">Archive</button>
+        </div>
+      </div>
+    </div>
+    `;
+    return template;
+  }
+
+  getIndividualTrackerHtml() {
+    const template = `
+      <div class="tracker-container inner-flexbox">
+      <div class="col-1">
+        <h3 class="tracker-name">${this.name}</h3>
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+        <p class="description">${this.description}</p>
+          <div class="marks-container">
+            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+          </div>
+          <div class="summary-statements">
+            <p class="summary-sentence">You marked ${this.name} ${this
+      .currentMarks.monthCount} times this month!</p>
+            <p class="summary-sentence">You marked ${this.name} ${this
+      .oneMonthBack.monthCount} times last month!</p>
+          </div>
+      </div>
+      <div class="col-2">
+          <div class="tracker-notes"> </div>
+          <div class="chart-container">
+            <canvas class="myChart-${this.trackerId}"></canvas>
+          </div>
+        <div class="summary-btn-row">
+          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>
+          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" class="archive-btn trkr-btn">Archive</button>
+          <button type="button" class="close-btn trkr-btn">Close</button>
+        </div>
+      </div>
+    </div>
+    `;
+    return template;
+  }
+
+  getArchiveTrackerHtml() {
+    const template = `
+      <div class="tracker-container inner-flexbox">
+      <div class="col-1">
+        <h3 class="tracker-name">${this.name}</h3>
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+          <div class="marks-container">
+            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+          </div>
+          <div class="summary-statements">
+            <p class="summary-sentence">You last marked ${this.name} ${this
+      .currentMarks.monthCount} times.</p>
+          </div>
+      </div>
+      <div class="col-2">
+          <div class="chart-container">
+            <canvas class="myChart-${this.trackerId}"></canvas>
+          </div>
+        <div class="summary-btn-row">
+          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
+          <button type="button" class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" class="reactivate-btn trkr-btn">Reactivate</button>
+          <button type="button" class="close-btn trkr-btn">Close</button>
+        </div>
+      </div>
+    </div>
+    `;
+    return template;
+  }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = TrackerComponents;
+
+
+
+/***/ }),
+/* 298 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//mock data for initial build
+const mockTrackerData = [
+  {
+    id: 1, 
+    name: 'Eat more tofu',
+    description: 'it\'s good for you, I think',
+    createdDate: '2017-10-22 20:38:43',
+    notes: 'tofu steak recipe http://www.justmoretofu.com/steak',
+    tallyMarks: {
+      '2017-08-01': 7,
+      '2017-09-01': 5,
+      '2017-10-01': 11,
+      '2017-11-01': 10,
+    }
+  },
+  {
+    id: 2,
+    name: 'Go to Jiu Jitsu',
+    description: 'get more flow',
+    createdDate: '2017-01-28 20:38:43',
+    notes: '10/27 - loop choke from guard',
+    tallyMarks: {
+      '2017-07-01': 9,
+      '2017-08-01': 8,
+      '2017-09-01': 12,
+      '2017-10-01': 11,
+      '2017-11-01': 2,
+    }
+  },
+  {
+    id: 3,
+    name: 'Do Back Exercises',
+    description: 'strength for bjj',
+    createdDate: '2017-01-28 20:38:43',
+    notes: 'exercise ball + bridge',
+    tallyMarks: {
+      '2017-09-01': 3,
+      '2017-10-01': 4,
+      '2017-11-01': 30,
+    }
+  },
+];
+/* unused harmony export mockTrackerData */
+
+
+/* harmony default export */ __webpack_exports__["a"] = (mockTrackerData);
 
 /***/ })
 /******/ ]);
