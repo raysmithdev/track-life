@@ -50,7 +50,16 @@ button {
 
 /* add highlight when clicked */
 .nav-btn {
+  height: auto;
+  font-size: 18px;
+  text-align: center;
+  background: #ffffff;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-right: 5px;
   white-space: nowrap;
+  /* flex-wrap: wrap; */
 }
 
 @media screen and (max-width: 500px) {
@@ -86,15 +95,26 @@ h2 {
   vertical-align: center;
 }
 
-.nav-btn {
-  height: auto;
-  font-size: 18px;
-  text-align: center;
-  background: #ffffff;
-  border: 0;
+.tracker-container {
+  flex-grow: 1;
+  max-width: 800px;
+  margin: 5px;
+  padding: 10px;
+  border: 1.5px solid #ffd54f;
   border-radius: 3px;
-  cursor: pointer;
-  margin-right: 5px;
+}
+
+/* this is for 2 columns in summary's tracker container
+ test this out to see the screen size */
+@media screen and (min-width: 500px) {
+  .inner-flexbox {
+    display: flex;
+  }
+  .col-1,
+  .col-2 {
+    width: 50%;
+    /* or min-width? */
+  }
 }
 
 .tracker-name {
@@ -107,15 +127,6 @@ h2 {
 .tracker-month {
   /* color: #008ba3; */
   font-size: 18px;
-}
-
-.tracker-container {
-  flex-grow: 1;
-  max-width: 800px;
-  margin: 5px;
-  padding: 10px;
-  border: 1.5px solid #ffd54f;
-  border-radius: 3px;
 }
 
 .tally-marks {
@@ -138,6 +149,7 @@ h2 {
   border-radius: 3px;
   cursor: pointer;
   margin-right: 5px;
+  white-space: nowrap;
 }
 
 .mark {
@@ -158,14 +170,6 @@ h2 {
   justify-content: space-evenly;
   flex-wrap: wrap;
 }
-
-/* .summary-container {
-  display: flex; 
-  width: 95%;
-  margin: 0 auto;
-  justify-content: space-evenly; 
-  flex-wrap: wrap;
-} */
 
 .dashboard-btn-row {
   display: flex;
@@ -258,16 +262,4 @@ button {
   padding: 0.25em;
   text-align: center;
   background-color: #00bcd4;
-}
-
-/* this is for 2 columns in summary's tracker container
- test this out to see the screen size */
-@media screen and (min-width: 500px) {
-  .inner-flexbox {
-    display: flex;
-  }
-  .col-1,
-  .col-2 {
-    width: 50%;
-  }
 }
