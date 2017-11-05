@@ -50,8 +50,26 @@ button {
 
 /* add highlight when clicked */
 .nav-btn {
+  height: auto;
+  font-size: 18px;
+  text-align: center;
+  background: #ffffff;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-right: 5px;
   white-space: nowrap;
+  /* flex-wrap: wrap; */
 }
+
+@media screen and (max-width: 500px) {
+  .header-container {
+    justify-content: center;
+    /* flex-flow: column wrap; */
+    /* padding: 0; */
+  }
+}
+
 /* .app-name-container,
 .nav-btn-container {
   display: flex;
@@ -77,15 +95,26 @@ h2 {
   vertical-align: center;
 }
 
-.nav-btn {
-  height: auto;
-  font-size: 18px;
-  text-align: center;
-  background: #ffffff;
-  border: 0;
+.tracker-container {
+  flex-grow: 1;
+  max-width: 800px;
+  margin: 5px;
+  padding: 10px;
+  border: 1.5px solid #ffd54f;
   border-radius: 3px;
-  cursor: pointer;
-  margin-right: 5px;
+}
+
+/* this is for 2 columns in summary's tracker container
+ test this out to see the screen size */
+@media screen and (min-width: 600px) {
+  .inner-flexbox {
+    display: flex;
+  }
+  .col-1,
+  .col-2 {
+    width: 50%;
+    /* or min-width? */
+  }
 }
 
 .tracker-name {
@@ -100,24 +129,21 @@ h2 {
   font-size: 18px;
 }
 
-.tracker-container {
-  flex-grow: 1;
-  max-width: 800px;
-  margin: 5px;
-  padding: 10px;
-  border: 1.5px solid #ffd54f;
-  border-radius: 3px;
-}
-
 .tally-marks {
   display: flex;
   max-width: 200px;
 }
 
 .marks-container {
+  /* max-width: 75%; */
   min-height: 35px;
-  margin-bottom: 5px;
-  /* padding: 1em; */
+}
+
+.mark {
+  display: inline-block; /* this makes it into square */
+  padding: 10px;
+  margin-right: 5px;
+  background-color: #aed581;
 }
 
 .trkr-btn {
@@ -129,13 +155,7 @@ h2 {
   border-radius: 3px;
   cursor: pointer;
   margin-right: 5px;
-}
-
-.mark {
-  display: inline-block; /* this makes it into square */
-  padding: 10px;
-  margin-right: 5px;
-  background-color: #aed581;
+  white-space: nowrap;
 }
 
 /* make flex container for dashboard & trackers */
@@ -150,14 +170,6 @@ h2 {
   flex-wrap: wrap;
 }
 
-/* .summary-container {
-  display: flex; 
-  width: 95%;
-  margin: 0 auto;
-  justify-content: space-evenly; 
-  flex-wrap: wrap;
-} */
-
 .dashboard-btn-row {
   display: flex;
   justify-content: center;
@@ -166,8 +178,8 @@ h2 {
 
 .summary-btn-row {
   display: flex;
-  justify-content: flex-end;
-  margin-right: 5px;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 fieldset {
@@ -249,16 +261,4 @@ button {
   padding: 0.25em;
   text-align: center;
   background-color: #00bcd4;
-}
-
-/* this is for 2 columns in summary's tracker container
- test this out to see the screen size */
-@media screen and (min-width: 500px) {
-  .inner-flexbox {
-    display: flex;
-  }
-  .col-1,
-  .col-2 {
-    width: 50%;
-  }
 }
