@@ -1,92 +1,91 @@
-import $ from 'jquery';
+import $ from "jquery";
 
-import ChartComponents from './chart.component';
-import TrackerComponents from './tracker.component';
+import ChartComponents from "./chart.component";
+import TrackerComponents from "./tracker.component";
 
-import mockTrackerData from './mock-data';
+import mockTrackerData from "./mock-data";
 
-'use strict';
+("use strict");
 
 // render login screen
 
-//pass in mockdata in renderDashboard as a test later 
+//pass in mockdata in renderDashboard as a test later
 // render dashboard
 function renderDashboard() {
-  $('.main-section').hide();
-  $('.dashboard-container').empty(); //html('');
-  // $('.tracker-container').empty(); 
-  
+  $(".main-section").hide();
+  $(".dashboard-container").empty(); //html('');
+  // $('.tracker-container').empty();
+
   mockTrackerData.forEach(trackerData => {
     const component = new TrackerComponents(trackerData);
-    $('.dashboard-container').append(component.getTrackerHtml());
+    $(".dashboard-container").append(component.getTrackerHtml());
   });
 
-  $('.dashboard').show();
+  $(".dashboard").show();
 }
 
 //render create new tracker
 function renderCreateTracker() {
-  $('.main-section').hide();   //need to empty everything displayed
-  $('.create-tracker').show();
+  $(".main-section").hide(); //need to empty everything displayed
+  $(".create-tracker").show();
 }
 
 //render summary page
 function renderSummaryPage() {
-  $('.main-section').hide();
-  $('.summary-container').empty();
+  $(".main-section").hide();
+  $(".summary-container").empty();
 
   mockTrackerData.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
-    $('.summary-container').append(trackerComponent.getTrackerSummaryHtml());
-    
+    $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
+
     const chartComponent = new ChartComponents(trackerData);
     chartComponent.renderChart();
   });
 
-  $('.tracker-summary').show();
+  $(".tracker-summary").show();
 }
 
 //render individual tracker summary
-function renderIndividualTrackerSummary() {
-  $('.main-section').hide();
-  $('.summary-container').empty();
+function renderIndividualTrackerSummary(id) {
+  $(".main-section").hide();
+  $(".summary-container").empty();
 
-  mockTrackerData.forEach(trackerData => {
-    const trackerComponent = new TrackerComponents(trackerData);
-    $('.summary-container').append(trackerComponent.getIndividualTrackerHtml());
-    
-    const chartComponent = new ChartComponents(trackerData);
-    chartComponent.renderChart();
-  });
+  let trackerData = mockTrackerData.find(tracker => tracker.id === id);
+  const trackerComponent = new TrackerComponents(trackerData);
+  $(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
 
-  $('.tracker-summary').show();
+  const chartComponent = new ChartComponents(trackerData);
+  chartComponent.renderChart();
+
+  $(".tracker-summary").show();
 }
-    
+
 //render archive page
 function renderArchivePage() {
-  $('.main-section').hide();
-  $('.archive-container').empty();
+  $(".main-section").hide();
+  $(".archive-container").empty();
 
   mockTrackerData.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
-    $('.archive-container').append(trackerComponent.getArchiveTrackerHtml());
-    
+    $(".archive-container").append(trackerComponent.getArchiveTrackerHtml());
+
     const chartComponent = new ChartComponents(trackerData);
     chartComponent.renderChart();
   });
 
-  $('.tracker-archive').show();
+  $(".tracker-archive").show();
 }
 
 //render user profile page
 function renderProfilePage() {
-  $('.main-section').hide();
-  $('.profile').show();
+  $(".main-section").hide();
+  $(".profile").show();
 }
 
-//render log out 
+//render log out
 function renderLogOutDashboard() {
-  //return to landing-page 
+  //return to landing-page
 }
 
 //add a mark to an existing tracker
@@ -95,22 +94,23 @@ function addMarkToTracker() {
   //if current month does not exist, add new and increment by 1
 }
 
-
 function setUpHandlers() {
-  //sidebar navigation buttons 
-  $('.dashboard-link').click(renderDashboard);
-  $('.summary-link').click(renderSummaryPage);
-  $('.create-link').click(renderCreateTracker);
-  $('.archive-link').click(renderArchivePage);
-  $('.profile-link').click(renderProfilePage);
-  $('.logout-btn').click(renderLogOutDashboard);
+  //sidebar navigation buttons
+  $(".dashboard-link").click(renderDashboard);
+  $(".summary-link").click(renderSummaryPage);
+  $(".create-link").click(renderCreateTracker);
+  $(".archive-link").click(renderArchivePage);
+  $(".profile-link").click(renderProfilePage);
+  $(".logout-btn").click(renderLogOutDashboard);
 
   //dyanmic buttons created within trackers
 
   //view summary button
-  $('.dashboard').on('click', '.view-sumry-btn', () => {
-    renderIndividualTrackerSummary();
-  })
+  $(".dashboard").on("click", ".view-sumry-btn", e => {
+    const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    console.log($(e.currentTarget).data("trkr-id"));
+    renderIndividualTrackerSummary(trackerId);
+  });
 
   //add mark button
   //add delete button
@@ -118,7 +118,7 @@ function setUpHandlers() {
   //add close button
 }
 
-$('document').ready(() => {
+$("document").ready(() => {
   setUpHandlers();
-  renderDashboard();  //this should run after user logs in
+  renderDashboard(); //this should run after user logs in
 });
