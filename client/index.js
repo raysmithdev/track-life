@@ -86,6 +86,22 @@ function renderSummaryPage() {
   $('.tracker-summary').show();
 }
 
+//render individual tracker summary
+function renderIndividualTrackerSummary() {
+  $('.main-section').hide();
+  $('.summary-container').empty();
+
+  mockTrackerData.forEach(trackerData => {
+    const trackerComponent = new TrackerComponents(trackerData);
+    $('.summary-container').append(trackerComponent.getIndividualTrackerHtml());
+    
+    const chartComponent = new ChartComponents(trackerData);
+    chartComponent.renderChart();
+  });
+
+  $('.tracker-summary').show();
+}
+    
 //render archive page
 function renderArchivePage() {
   $('.main-section').hide();
@@ -175,6 +191,16 @@ class TrackerComponents {
     return markBlocks.join('');
   }
 
+    //how to render notes? 
+    getIndividualTrackerSummary() {
+      //when view summary button clicked, get ID of tracker
+      $('.dashboard').on('click', '.view-sumry-btn', () => {
+        const trackerClicked = this.trackerId;
+  
+      })
+      //render individual tracker by ID 
+    }
+
   //marks are rendering outside of container? 
   getTrackerHtml() {
     const template = `
@@ -216,6 +242,39 @@ class TrackerComponents {
           <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
           <button type="button" class="delete-btn trkr-btn">Delete</button> 
           <button type="button" class="archive-btn trkr-btn">Archive</button>
+        </div>
+      </div>
+    </div>
+    `;
+  return template;
+  }
+  
+  getIndividualTrackerHtml() {
+    const template = `
+      <div class="tracker-container inner-flexbox">
+      <div class="col-1">
+        <h3 class="tracker-name">${this.name}</h3>
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+        <p class="description">${this.description}</p>
+          <div class="marks-container">
+            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+          </div>
+          <div class="summary-statements">
+            <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
+            <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
+          </div>
+      </div>
+      <div class="col-2">
+          <div class="tracker-notes"> </div>
+          <div class="chart-container">
+            <canvas class="myChart-${this.trackerId}"></canvas>
+          </div>
+        <div class="summary-btn-row">
+          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>
+          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" class="archive-btn trkr-btn">Archive</button>
+          <button type="button" class="close-btn trkr-btn">Close</button>
         </div>
       </div>
     </div>
