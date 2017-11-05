@@ -52,6 +52,15 @@ button {
 .nav-btn {
   white-space: nowrap;
 }
+
+@media screen and (max-width: 500px) {
+  .header-container {
+    justify-content: center;
+    /* flex-flow: column wrap; */
+    /* padding: 0; */
+  }
+}
+
 /* .app-name-container,
 .nav-btn-container {
   display: flex;

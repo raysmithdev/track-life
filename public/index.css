@@ -38,7 +38,17 @@ button {
   white-space: nowrap;
 }
 
-/* add media query to change justify-content: center when screen is small */
+/* .nav-btn :hover {
+  background: #ffd54f;
+} */
+
+@media screen and (max-width: 500px) {
+  .header-container {
+    justify-content: center;
+    /* flex-flow: column wrap; */
+    /* padding: 0; */
+  }
+}
 
 .landing-page {
   padding: 1em;
