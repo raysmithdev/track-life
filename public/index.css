@@ -16,30 +16,24 @@ h1, h2, legend, button {
   font-weight: bold;
 }
 
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  /* display: inline; */
-}
-
 .header-container {
   display: flex;
+  justify-content: space-between;
   padding: 1em;
-  background-color: #00bcd4
+  background-color: #00bcd4;
+  flex-wrap: wrap;
 }
 
-.nav-btn-container {
+.app-name-container, .nav-btn-container {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
 }
 
-.app-name, .nav-btn-container {
-  margin: 0;
-  padding: 0;
-  width: 50%;
+.nav-btn {
+  white-space: nowrap;
 }
+
+/* add media query to change justify-content: center when screen is small */
 
 .landing-page {
   padding: 1em;
