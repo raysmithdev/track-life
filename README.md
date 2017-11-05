@@ -23,17 +23,7 @@ User:
    ◦ trackerIds: ObjectId[]
 
 
+https://material.io/color/#!/?view.left=0&view.right=0&primary.color=00BCD4&secondary.color=FFD54F
 
+https://material.io/color/#!/?view.left=0&view.right=0&primary.color=00BCD4&secondary.color=AED581
 
-
-{
-   name: 'Eat more tofu',
-   description: 'it's good for you, I think',
-   createdDate: '2017-10-22 20:38:43',
-   notes: 'tofu steak recipe http://www.justmoretofu.com/steak',
-   tallyMarks: {
-               "2017-08": 10,
-               "2017-09": 5,
-               "2017-10": 11,
-            }
-}
