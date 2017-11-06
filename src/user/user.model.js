@@ -7,9 +7,10 @@ const userSchema = mongoose.Schema ({
     firstName: String,
     lastName: String,
     },
-  userName: String,
-  password: String,
-  trackerIds: //how to handle?
+  userName: {type: String, required: true},
+  password: {type: String, required: true},
+  avatar: String,
+  trackerIds: [mongoose.Schema.Types.ObjectId]
 });
 
 
@@ -23,7 +24,7 @@ userSchema.methods.toClient = function () {
     id: this._id,
     name: this.name,
     username: this.username,
-    password: this.password,
+    avatar: this.avatar,
     trackerIds: this.trackerIds
   };
 }

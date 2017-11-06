@@ -3,18 +3,15 @@
 const mongoose = require('mongoose');
 
 const trackerSchema = mongoose.Schema ({
-  name: String,
+  name: {type: String, required: true},
   description: String,
   status: Number, 
-  createdDate: Date,
+  createdDate: {type: Date, default: new Date()},
   notes: String,
-  tallyMarks: {
-    'YYYY-MM-DD': Number
-  }
+  tallyMarks: mongoose.Schema.Types.Mixed
 });
 
-//what is the purpose of this method?
-trackerSchema.methods.toClient = function () {
+trackerSchema.methods.toClient = function() {
   return {
     id: this._id,
     name: this.name,
