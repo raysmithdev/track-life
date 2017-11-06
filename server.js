@@ -6,8 +6,10 @@ const mongoose = require('mongoose');
 const morgon = require('morgan');
 const { DATABASE_URL, PORT } = require('./config');
 
-const app = express();
+//creating new express app
+const app = express(); 
 
+//use these middleware for the app
 app.use(morgon('common'));
 app.use(bodyParser.json());
 
@@ -15,10 +17,10 @@ mongoose.Promise = global.Promise;
 
 app.use(express.static('public'));
 
-//not sure what to put here
+//use these routes 
 app.get('/',  (req, res) => {
   res.send('Hello World!');
-}
+})
 
 let server; 
 
