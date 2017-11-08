@@ -146,6 +146,13 @@ h2 {
   background-color: #aed581;
 }
 
+.trkr-sumry-notes {
+  /* resize: none; */
+  width: 85% ;
+  height: auto;
+  padding: 5px;
+}
+
 .trkr-btn {
   height: auto;
   font-size: 18px;
