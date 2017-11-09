@@ -3,17 +3,19 @@
 const mongoose = require('mongoose');
 
 const trackerSchema = mongoose.Schema ({
+  userId: String,
   name: {type: String, required: true},
   description: String,
   status: Number, 
   createdDate: {type: Date, default: new Date()},
   notes: String,
-  tallyMarks: mongoose.Schema.Types.Mixed
+  tallyMarks: mongoose.Schema.Types.Mixed,
 });
 
 trackerSchema.methods.toClient = function() {
   return {
     id: this._id,
+    userId: this.userId, //?
     name: this.name,
     description: this.description,
     status: this.status,
