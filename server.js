@@ -3,23 +3,28 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
-const morgon = require('morgan');
+const morgan = require('morgan');
 const { DATABASE_URL, PORT } = require('./config');
+
+const TrackerRouter = require('./src/tracker/tracker.router');
 
 //creating new express app
 const app = express(); 
 
 //use these middleware for the app
-app.use(morgon('common'));
+app.use(morgan('common'));
 app.use(bodyParser.json());
 
 mongoose.Promise = global.Promise;
 
+//https://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
-//use these routes 
-app.get('/',  (req, res) => {
-  res.send('Hello World!');
+app.use('/api', TrackerRouter); //why api
+
+//establish dashboard path 
+app.get('/dashboard',  (req, res) => {
+  res.status(200).sendFile(__dirname + '/public/dashboard.html');
 })
 
 let server; 
