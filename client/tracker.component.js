@@ -18,7 +18,7 @@ export default class TrackerComponents {
     this.notes = data.notes;
     this.tallyMarks = data.tallyMarks;
     this.currentMarks = this.checkTrackerMonth();
-    this.oneMonthBack = this.getPreviousCount();
+    this.oneMonthBack = this.getPreviousCount(); 
     // this.averageMarks = this.calculateAverage();
   }
 
@@ -28,8 +28,15 @@ export default class TrackerComponents {
     const trackerMonth = sortedKeys[sortedKeys.length - 1];
     const trackerMoment = moment(trackerMonth);
 
+    // console.log(this.tallyMarks[trackerMonth]);
+
     const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
     if (doesCurrentMonthMatch === true) {
+      console.log({
+        currentTrackerMonth: trackerMoment.format("MMMM YYYY"),
+        monthCount: this.tallyMarks[trackerMonth]
+      });
+
       return {
         currentTrackerMonth: trackerMoment.format("MMMM YYYY"),
         monthCount: this.tallyMarks[trackerMonth]
@@ -47,6 +54,8 @@ export default class TrackerComponents {
     const isItMonthBefore = trackerMoment.isBefore(currentMonth, "month");
     if (isItMonthBefore === true) {
       return { monthCount: this.tallyMarks[previousMonth] };
+    } else { 
+      return { monthCount: 0 };
     }
   }
 
