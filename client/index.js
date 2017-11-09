@@ -5,6 +5,11 @@ import TrackerComponents from "./tracker.component";
 
 import mockTrackerData from "./mock-data";
 
+const STATE = {
+  trackers: []
+};
+
+
 ("use strict");
 
 // render login screen
@@ -16,7 +21,7 @@ function renderDashboard() {
   $(".dashboard-container").empty(); //html('');
   // $('.tracker-container').empty();
 
-  mockTrackerData.forEach(trackerData => {
+  STATE.trackers.forEach(trackerData => {
     const component = new TrackerComponents(trackerData);
     $(".dashboard-container").append(component.getTrackerHtml());
   });
@@ -51,7 +56,7 @@ function renderIndividualTrackerSummary(id) {
   $(".main-section").hide();
   $(".summary-container").empty();
 
-  let trackerData = mockTrackerData.find(tracker => tracker.id === id);
+  let trackerData = STATE.trackers.find(tracker => tracker.id === id);
   const trackerComponent = new TrackerComponents(trackerData);
   $(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
 
@@ -118,7 +123,13 @@ function setUpHandlers() {
   //add close button
 }
 
+function getDashboardTrackers() {
+  // this will call the api for trackers and store in STATE
+  STATE.trackers.push(...mockTrackerData);
+}
+
 $("document").ready(() => {
   setUpHandlers();
+  getDashboardTrackers()
   renderDashboard(); //this should run after user logs in
 });
