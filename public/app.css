@@ -137,6 +137,7 @@ h2 {
 .marks-container {
   /* max-width: 75%; */
   min-height: 35px;
+  padding: 5px;
 }
 
 .mark {
@@ -147,9 +148,10 @@ h2 {
 }
 
 .trkr-sumry-notes {
-  /* resize: none; */
-  width: 85% ;
-  height: auto;
+  resize: none;
+  width: 85%;
+  height: 100px;
+  outline: #7da453;
   padding: 5px;
 }
 
