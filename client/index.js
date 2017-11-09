@@ -40,10 +40,12 @@ function renderSummaryPage() {
   $(".main-section").hide();
   $(".summary-container").empty();
 
-  mockTrackerData.forEach(trackerData => {
+  STATE.trackers.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
-    $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
-
+    // $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
+    // streamline summary by displaying all vs individually for now 11/7/17
+    $(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
+    
     const chartComponent = new ChartComponents(trackerData);
     chartComponent.renderChart();
   });
@@ -71,7 +73,7 @@ function renderArchivePage() {
   $(".main-section").hide();
   $(".archive-container").empty();
 
-  mockTrackerData.forEach(trackerData => {
+  STATE.trackers.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
     $(".archive-container").append(trackerComponent.getArchiveTrackerHtml());
 
@@ -121,6 +123,7 @@ function setUpHandlers() {
   //add delete button
   //add archive button
   //add close button
+  
 }
 
 function getDashboardTrackers() {
