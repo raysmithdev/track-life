@@ -19,6 +19,7 @@ export default class TrackerComponents {
     this.tallyMarks = data.tallyMarks;
     this.currentMarks = this.checkTrackerMonth();
     this.oneMonthBack = this.getPreviousCount();
+    // this.averageMarks = this.calculateAverage();
   }
 
   checkTrackerMonth() {
@@ -59,6 +60,23 @@ export default class TrackerComponents {
     return markBlocks.join("");
   }
 
+  //last 6 months?
+  // calculateAverage() {
+  //   const sortedKeys = Object.keys(this.tallyMarks).sort();
+  //   let totalMarks = 0;
+  //   let avgMarks = 0;
+  //   //add sum of last 6 months marks
+  //   //divide sum by 6 or max length? 
+  //   for (let i = 0; i <= this.sortedKeys.length; i++) {
+  //     // console.log(this.sortedKeys);
+  //     totalMarks += this.tallyMarks[sortedKeys[i]];
+  //     console.log(totalMarks);
+  //   }
+  //   avgMarks.push(totalMarks / this.sortedKeys.length);
+  //   //avgMarks = totalMarks / this.sortedKeys.length;
+  //   console.log(avgMarks);
+  // }
+
   //marks are rendering outside of container?
   getTrackerHtml() {
     const template = `
@@ -92,10 +110,12 @@ export default class TrackerComponents {
           <div class="summary-statements">
             <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
             <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
+            <p class="summary-sentence"> On average, you mark ${this.name} ${/*this.averageMarks*/''} </p> 
           </div>
       </div>
       <div class="col-2">
         <div class="chart-container">
+          <button type="button" class="toggle-chart chart-btn">Toggle</button>
           <canvas class="myChart-${this.trackerId}"></canvas>
         </div>
         <div class="notes-container">
