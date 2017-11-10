@@ -131,7 +131,7 @@ export default class TrackerComponents {
           <textarea class="trkr-sumry-notes">${this.notes}</textarea>
         </div>
         <div class="summary-btn-row">
-          <button type="button" class="edit-trkr-btn trkr-btn">Edit?</button>
+          <button type="button" data-trkr-id=${this.trackerId} class="edit-trkr-btn trkr-btn">Edit</button>
           <button type="button" data-section="summary" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
           <button type="button" data-trkr-id=${this.trackerId} class="delete-btn trkr-btn">Delete</button> 
           <button type="button" data-trkr-id=${this.trackerId} class="archive-btn trkr-btn">Archive</button>
@@ -185,6 +185,7 @@ export default class TrackerComponents {
           <div class="summary-statements">
             <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
             <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
+            <p class="summary-sentence"> On average, you mark ${this.name} ${/*this.averageMarks*/''} </p>             
           </div>
       </div>
       <div class="col-2">
@@ -196,7 +197,7 @@ export default class TrackerComponents {
           <textarea class="trkr-sumry-notes">${this.notes}</textarea>
         </div>
         <div class="summary-btn-row">
-          <button type="button" class="edit-trkr-btn trkr-btn">Edit?</button>
+          <button type="button" data-trkr-id=${this.trackerId} class="edit-trkr-btn trkr-btn">Edit</button>
           <button type="button" data-section="single" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
           <button type="button" data-trkr-id=${this.trackerId} class="delete-btn trkr-btn">Delete</button> 
           <button type="button" class="archive-btn trkr-btn">Archive</button>
@@ -227,10 +228,8 @@ export default class TrackerComponents {
             <canvas class="myChart-${this.trackerId}"></canvas>
           </div>
         <div class="summary-btn-row">
-          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
           <button type="button" class="delete-btn trkr-btn">Delete</button> 
           <button type="button" class="reactivate-btn trkr-btn">Reactivate</button>
-          <button type="button" class="close-btn trkr-btn">Close</button>
         </div>
       </div>
     </div>
