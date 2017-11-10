@@ -34,7 +34,6 @@ const createNewTracker = (req, res) => {
   }
 
   const tallyMarks = {};
-  //confirm if format to 01 as DD is okay
   tallyMarks[moment().format('YYYY-MM-01')] = 1;
   Tracker
     .create({
@@ -58,7 +57,7 @@ const createNewTracker = (req, res) => {
 
 //add mark to a tracker (update by id)
 const addMark = (req, res) => {
-  console.log(req.params);
+  // console.log(req.params);
   const trackerId = req.params.trackerId;
   Tracker
     //query for tracker by id
@@ -91,16 +90,10 @@ const addMark = (req, res) => {
       res.status(500).json({ message: "internal server error: " + err.message});        
     });
 }
-//remove a mark to a tracker (update by id)
 
 //update fields within tracker (name, description, notes)
 const modifyTrackerDetails = (req, res) => {
-  if (!(req.params.trackerId && req.body.trackerId === req.body.trackerId)) {
-    res.status(400).json({
-      error: `Request path id and request body id values must match`
-    });
-  }
-
+  const trackerId = req.params.trackerId;
   const updated = {};
   const updateableFields = ['name', 'description', 'notes'];
   updateableFields.forEach(field => {
@@ -110,17 +103,20 @@ const modifyTrackerDetails = (req, res) => {
   });
 
   Tracker
-    .findByIdAndUpdate(req.params.trackerId, {$set: updated}, {new: true})
-    .then(updatedTracker => res.status(204).end()) //?
-    .catch(err => res.status(500).json({message: `tracker couldn't be updated`}));
+  .findByIdAndUpdate(trackerId, {$set: updated}, {new: true})
+  .then(updatedTracker => 
+    res.status(204).end()) //?
+  .catch(err => 
+    res.status(500).json({message: `tracker couldn't be updated`}));
 };
 
 //archive tracker (change status by id)
 const archiveTracker = (req, res) => {
+  const trackerId = req.params.trackerId;
   const updateField = ['status'];
-  // const trackerId = ''; //is this needed?
+
   Tracker
-    .findByIdAndUpdate(req.params.trackerId)
+    .findByIdAndUpdate(trackerId)
     .then()
 }
 
@@ -132,7 +128,7 @@ module.exports = {
   addMark,
   createNewTracker,
   findAllTrackers,
-  modifyTrackerDetails
+  modifyTrackerDetails,
 };
 
 
@@ -140,7 +136,41 @@ module.exports = {
 // don't set the res.json yet because you have to finish your logic 
 // and then set it when you're done, you can't send the response twice
 
-// user.trackerIds.find((tracker) => tracker._id === req.params.trackerId)
+//remove a mark to a tracker (update by id)
+// const removeMark = (req, res) => {
+//   const trackerId = req.params.trackerId;
+//   Tracker
+//     //query for tracker by id
+//     .findById(trackerId)
+//     //check if it's the current month, then increment by 1
+//     .then(tracker => { 
+//       if(!tracker) res.status(400).json({message: 'Tracker Not Found'});
+//       const currentMonth = moment();
+//       const sortedKeys = Object.keys(tracker.tallyMarks).sort();
+//       const trackerMonth = sortedKeys[sortedKeys.length - 1];
+//       const trackerMoment = moment(trackerMonth);
+  
+//       const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
+//       if (doesCurrentMonthMatch === true) {
+//         tracker.tallyMarks[trackerMonth] = tracker.tallyMarks[trackerMonth] - 1;
+//         }
+//         // } else {
+//       // //if it is not current month, delete the month
+//       //   tracker.tallyMarks[currentMonth.format('YYYY-MM-01')] = 1;
+//       // }
+//       tracker.markModified('tallyMarks');
+//       return tracker.save();
+//     // return tracker.save((err, trkr) => console.log('updated tracker -> ', trkr)); 
+//     })
+//     .then(tracker => {
+//       //return the whole tracker 
+//       res.status(201).json(tracker.toClient())
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       res.status(500).json({ message: "internal server error: " + err.message});        
+//     });
+// }
 
 //get single tracker -- query the tracker then query the user 
 /*const findOneTracker = (req, res) => {

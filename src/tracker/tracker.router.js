@@ -33,3 +33,6 @@ module.exports = router;
 
 // router.get('/trackers', )
 // router.get('/trackers/:trackerId', ) //query with user id?
+
+//remove mark from an existing tracker (decrement by 1)
+// router.put('/users/:userId/trackers/:trackerId', removeMark)
