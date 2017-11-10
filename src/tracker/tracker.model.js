@@ -9,7 +9,7 @@ const trackerSchema = mongoose.Schema ({
   status: Number, 
   createdDate: {type: Date, default: new Date()},
   notes: String,
-  tallyMarks: mongoose.Schema.Types.Mixed,
+  tallyMarks: mongoose.Schema.Types.Mixed
 });
 
 trackerSchema.methods.toClient = function() {
