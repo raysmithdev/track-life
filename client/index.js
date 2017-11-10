@@ -1,3 +1,5 @@
+"use strict";
+
 import $ from "jquery";
 
 import ChartComponents from "./chart.component";
@@ -10,9 +12,7 @@ const STATE = {
   trackers: []
 };
 
-
-("use strict");
-
+// render different views
 // render login screen
 
 // render dashboard
@@ -24,7 +24,7 @@ function renderDashboard() {
 
   STATE.trackers.forEach(trackerData => {
     const component = new TrackerComponents(trackerData);
-    $(".dashboard-container").append(component.getTrackerHtml());
+    $(".dashboard-container").append(component.getDashboardTrackerHtml());
   });
 
   $(".dashboard").show();
@@ -78,7 +78,7 @@ function renderIndividualTrackerSummary(id) {
   $(".tracker-summary").show();
 }
 
-//render archive page
+//render archive page -- change state to include archive?
 function renderArchivePage() {
   $(".main-section").hide();
   $(".archive-container").empty();
@@ -99,6 +99,11 @@ function renderProfilePage() {
   $(".main-section").hide();
   $(".profile").show();
 }
+
+//render description in input
+// function renderDescription() {
+//   ${this.description}
+// }
 
 //render log out
 function renderLogOutDashboard() {
@@ -124,7 +129,7 @@ function setUpHandlers() {
   $(".profile-link").click(renderProfilePage);
   $(".logout-btn").click(renderLogOutDashboard);
 
-  //dyanmic buttons created within trackers
+  //dynamic buttons created within trackers
   //add mark button
   $(".main-section").on("click", ".add-mark-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
@@ -151,14 +156,22 @@ function setUpHandlers() {
     // STATE.trackers.push(...data.trackers);
   });
 
-  //add delete button
-  //add archive button
-
-  //view summary button
+  //view summary button - open individual tracker
   $(".dashboard").on("click", ".view-sumry-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
     renderIndividualTrackerSummary(trackerId);
   });
+
+  //edit button - open individual tracker
+  //need to be able to edit description? 
+  $(".tracker-summary").on("click", ".edit-trkr-btn", e => {
+    const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    renderIndividualTrackerSummary(trackerId);
+  });
+
+    //add delete button
+    //add archive button
+
 
   //toggle chart type - line <> bar graph
   // $(".tracker-summary").on("click", ".toggle-chart", e => {
