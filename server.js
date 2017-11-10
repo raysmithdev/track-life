@@ -19,8 +19,12 @@ mongoose.Promise = global.Promise;
 
 //https://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
+// app.get("/", (request, response) => {
+//   response.sendFile(__dirname + '/views/index.html');
+// });
 
-app.use('/api', TrackerRouter); //why api
+//establish /api/routers 
+app.use('/api', TrackerRouter); 
 
 //establish dashboard path 
 app.get('/dashboard',  (req, res) => {
