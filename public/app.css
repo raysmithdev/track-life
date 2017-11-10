@@ -126,18 +126,19 @@ h2 {
 
 .tracker-month {
   /* color: #008ba3; */
+  text-align: center;
   font-size: 18px;
-}
-
-.tally-marks {
-  display: flex;
-  max-width: 200px;
 }
 
 .marks-container {
   /* max-width: 75%; */
   min-height: 35px;
   padding: 5px;
+}
+
+.tally-marks {
+  display: flex;
+  max-width: 200px;
 }
 
 .mark {
@@ -147,11 +148,26 @@ h2 {
   background-color: #aed581;
 }
 
+.notes-container {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+/* add .description-container for flex box if add box back */
+
+/* Add this back if add description edit in summary
+.existing-trkr-desc {
+  border: 1px solid #7da453;;
+  border-radius: 3px;
+} */
+
 .trkr-sumry-notes {
   resize: none;
-  width: 85%;
+  margin: 0 auto;
+  width: 90%;
   height: 100px;
-  outline: #7da453;
+  border: 1px solid #7da453;;
+  border-radius: 3px;
   padding: 5px;
 }
 
