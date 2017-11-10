@@ -97,7 +97,7 @@ export default class TrackerComponents {
               <ul class="tally-marks>${this.getTallyMarks()}</ul> 
             </div> 
           <div class="dashboard-btn-row">
-            <button type="button" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
+            <button type="button" data-section="dashboard" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
             <button type="button" data-trkr-id=${this.trackerId} class="view-sumry-btn trkr-btn">View Summary</button>
           </div>
       </div>
@@ -132,7 +132,7 @@ export default class TrackerComponents {
         </div>
         <div class="summary-btn-row">
           <button type="button" class="edit-trkr-btn trkr-btn">Edit?</button>
-          <button type="button" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" data-section="summary" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
           <button type="button" data-trkr-id=${this.trackerId} class="delete-btn trkr-btn">Delete</button> 
           <button type="button" data-trkr-id=${this.trackerId} class="archive-btn trkr-btn">Archive</button>
         </div>
@@ -197,8 +197,8 @@ export default class TrackerComponents {
         </div>
         <div class="summary-btn-row">
           <button type="button" class="edit-trkr-btn trkr-btn">Edit?</button>
-          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
-          <button type="button" class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" data-section="single" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" data-trkr-id=${this.trackerId} class="delete-btn trkr-btn">Delete</button> 
           <button type="button" class="archive-btn trkr-btn">Archive</button>
           <button type="button" class="close-btn trkr-btn">Close</button>
         </div>
