@@ -91,6 +91,42 @@ const addMark = (req, res) => {
     });
 }
 
+//remove a mark to a tracker (update by id)
+const removeMark = (req, res) => {
+  const trackerId = req.params.trackerId;
+  Tracker
+    //query for tracker by id
+    .findById(trackerId)
+    //check if it's the current month, then increment by 1
+    .then(tracker => { 
+      if(!tracker) res.status(400).json({message: 'Tracker Not Found'});
+      const currentMonth = moment();
+      const sortedKeys = Object.keys(tracker.tallyMarks).sort();
+      const trackerMonth = sortedKeys[sortedKeys.length - 1];
+      const trackerMoment = moment(trackerMonth);
+  
+      const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
+      if (doesCurrentMonthMatch === true) {
+        tracker.tallyMarks[trackerMonth] = tracker.tallyMarks[trackerMonth] - 1;
+        }
+        // } else {
+      // //if it is not current month, delete the month
+      //   tracker.tallyMarks[currentMonth.format('YYYY-MM-01')] = 1;
+      // }
+      tracker.markModified('tallyMarks');
+      return tracker.save();
+    // return tracker.save((err, trkr) => console.log('updated tracker -> ', trkr)); 
+    })
+    .then(tracker => {
+      //return the whole tracker 
+      res.status(201).json(tracker.toClient())
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "internal server error: " + err.message});        
+    });
+}
+
 //update fields within tracker (name, description, notes)
 const modifyTrackerDetails = (req, res) => {
   const trackerId = req.params.trackerId;
@@ -129,6 +165,7 @@ module.exports = {
   createNewTracker,
   findAllTrackers,
   modifyTrackerDetails,
+  removeMark
 };
 
 
@@ -136,41 +173,7 @@ module.exports = {
 // don't set the res.json yet because you have to finish your logic 
 // and then set it when you're done, you can't send the response twice
 
-//remove a mark to a tracker (update by id)
-// const removeMark = (req, res) => {
-//   const trackerId = req.params.trackerId;
-//   Tracker
-//     //query for tracker by id
-//     .findById(trackerId)
-//     //check if it's the current month, then increment by 1
-//     .then(tracker => { 
-//       if(!tracker) res.status(400).json({message: 'Tracker Not Found'});
-//       const currentMonth = moment();
-//       const sortedKeys = Object.keys(tracker.tallyMarks).sort();
-//       const trackerMonth = sortedKeys[sortedKeys.length - 1];
-//       const trackerMoment = moment(trackerMonth);
-  
-//       const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
-//       if (doesCurrentMonthMatch === true) {
-//         tracker.tallyMarks[trackerMonth] = tracker.tallyMarks[trackerMonth] - 1;
-//         }
-//         // } else {
-//       // //if it is not current month, delete the month
-//       //   tracker.tallyMarks[currentMonth.format('YYYY-MM-01')] = 1;
-//       // }
-//       tracker.markModified('tallyMarks');
-//       return tracker.save();
-//     // return tracker.save((err, trkr) => console.log('updated tracker -> ', trkr)); 
-//     })
-//     .then(tracker => {
-//       //return the whole tracker 
-//       res.status(201).json(tracker.toClient())
-//     })
-//     .catch(err => {
-//       console.error(err);
-//       res.status(500).json({ message: "internal server error: " + err.message});        
-//     });
-// }
+
 
 //get single tracker -- query the tracker then query the user 
 /*const findOneTracker = (req, res) => {

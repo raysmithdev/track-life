@@ -3,7 +3,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 //const {Tracker} = require('./tracker.model');
-const { addMark, createNewTracker, findAllTrackers } = require('./tracker.controller');
+const { addMark, createNewTracker, findAllTrackers, removeMark } = require('./tracker.controller');
 const router = express.Router(); 
 
 router.use(bodyParser.json());
@@ -16,7 +16,10 @@ router.get('/users/:userId/trackers', findAllTrackers)
 router.post('/users/:userId/trackers', createNewTracker);
 
 //add mark to an existing tracker (increment by 1)
-router.post('/users/:userId/trackers/:trackerId', addMark)
+router.post('/users/:userId/trackers/:trackerId/increment', addMark)
+
+//remove mark from an existing tracker (decrement by 1)
+router.post('/users/:userId/trackers/:trackerId/decrement', removeMark)
 
 //modify tracker details (name, description, notes)
 // router.put('/users/:userId/trackers/:trackerId', )
@@ -34,5 +37,3 @@ module.exports = router;
 // router.get('/trackers', )
 // router.get('/trackers/:trackerId', ) //query with user id?
 
-//remove mark from an existing tracker (decrement by 1)
-// router.put('/users/:userId/trackers/:trackerId', removeMark)

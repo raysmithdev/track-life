@@ -134,23 +134,49 @@ function setUpHandlers() {
   $(".main-section").on("click", ".add-mark-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
     const section = $(e.currentTarget).data("section");
-    $.post(`/api/users/123/trackers/${trackerId}`)
+    $.post(`/api/users/123/trackers/${trackerId}/increment`)
       .then((data) => {
         const index = STATE.trackers.findIndex(tracker => tracker._id === data._id);
         STATE.trackers[index] = data;
         switch(section){
           case 'dashboard':
-          renderDashboard();
-          break;
+            renderDashboard();
+            break;
           case 'summary':
-          renderSummaryPage();
-          break;
+            renderSummaryPage();
+            break;
           case 'single':
-          renderIndividualTrackerSummary();
-          break;
+            renderIndividualTrackerSummary();
+            break;
           default:
-          renderDashboard();
-          break;
+            renderDashboard();
+            break;
+        }
+      }) 
+    // STATE.trackers.push(...data.trackers);
+  });
+
+  //remove mark
+  $(".main-section").on("click", ".remove-mark-btn", e => {
+    const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    const section = $(e.currentTarget).data("section");
+    $.post(`/api/users/123/trackers/${trackerId}/decrement`)
+      .then((data) => {
+        const index = STATE.trackers.findIndex(tracker => tracker._id === data._id);
+        STATE.trackers[index] = data;
+        switch(section){
+          case 'dashboard':
+            renderDashboard();
+            break;
+          case 'summary':
+            renderSummaryPage();
+            break;
+          case 'single':
+            renderIndividualTrackerSummary();
+            break;
+          default:
+            renderDashboard();
+            break;
         }
       }) 
     // STATE.trackers.push(...data.trackers);

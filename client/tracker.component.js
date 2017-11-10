@@ -98,6 +98,7 @@ export default class TrackerComponents {
             </div> 
           <div class="dashboard-btn-row">
             <button type="button" data-section="dashboard" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
+            <button type="button" data-section="dashboard" data-trkr-id=${this.trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>            
             <button type="button" data-trkr-id=${this.trackerId} class="view-sumry-btn trkr-btn">View Summary</button>
           </div>
       </div>
@@ -132,6 +133,7 @@ export default class TrackerComponents {
         <div class="summary-btn-row">
           <button type="button" data-trkr-id=${this.trackerId} class="edit-trkr-btn trkr-btn">Edit</button>
           <button type="button" data-section="summary" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" data-section="summary" data-trkr-id=${this.trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>                      
           <button type="button" data-trkr-id=${this.trackerId} class="delete-btn trkr-btn">Delete</button> 
           <button type="button" data-trkr-id=${this.trackerId} class="archive-btn trkr-btn">Archive</button>
         </div>
@@ -168,6 +170,7 @@ export default class TrackerComponents {
         <div class="summary-btn-row">
           <button type="button" data-trkr-id=${this.trackerId} class="save-btn trkr-btn">Save</button>
           <button type="button" data-section="single" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" data-section="single" data-trkr-id=${this.trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>                      
           <button type="button" data-trkr-id=${this.trackerId} class="delete-btn trkr-btn">Delete</button> 
           <button type="button" data-trkr-id=${this.trackerId} class="archive-btn trkr-btn">Archive</button>
           <button type="button" class="close-btn trkr-btn">Close</button>
