@@ -128,7 +128,26 @@ function setUpHandlers() {
   //add mark button
   $(".main-section").on("click", ".add-mark-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
-    $.get('api/users/:userId/trackers/:trackerId').then() 
+    const section = $(e.currentTarget).data("section");
+    $.post(`/api/users/123/trackers/${trackerId}`)
+      .then((data) => {
+        const index = STATE.trackers.findIndex(tracker => tracker._id === data._id);
+        STATE.trackers[index] = data;
+        switch(section){
+          case 'dashboard':
+          renderDashboard();
+          break;
+          case 'summary':
+          renderSummaryPage();
+          break;
+          case 'single':
+          renderIndividualTrackerSummary();
+          break;
+          default:
+          renderDashboard();
+          break;
+        }
+      }) 
     // STATE.trackers.push(...data.trackers);
   });
 
