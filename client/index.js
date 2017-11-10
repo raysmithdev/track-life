@@ -15,7 +15,16 @@ const STATE = {
 
 // render login screen
 
-//pass in mockdata in renderDashboard as a test later
+// Call the API for trackers and store in STATE
+function getDashboardTrackers() {
+  // TODO: update the 123 to be an id when we are ready
+  return $.get('/api/users/123/trackers').then(data => {
+    console.log(data.trackers);
+    // STATE.trackers.push(...mockTrackerData);
+    STATE.trackers.push(...data.trackers);
+  });
+}
+
 // render dashboard
 function renderDashboard() {
   console.log('render dashboard');
@@ -106,13 +115,8 @@ function renderLogOutDashboard() {
   //return to landing-page
 }
 
-//add a mark to an existing tracker
-function addMarkToTracker() {
-  
-}
-
 function setUpHandlers() {
-  //sidebar navigation buttons
+  //navigation buttons
   $(".dashboard-link").click(renderDashboard);
   $(".summary-link").click(renderSummaryPage);
   $(".create-link").click(renderCreateTracker);
@@ -121,14 +125,19 @@ function setUpHandlers() {
   $(".logout-btn").click(renderLogOutDashboard);
 
   //dyanmic buttons created within trackers
+
   //add mark button
+  $(".main-section").on("click", ".add-mark-btn", e => {
+    const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    console.log($(e.currentTarget).data("trkr-id"));
+    //how to tell server to do the path? 
+  });
   //add delete button
   //add archive button
 
   //view summary button
   $(".dashboard").on("click", ".view-sumry-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
-    console.log($(e.currentTarget).data("trkr-id"));
     renderIndividualTrackerSummary(trackerId);
   });
 
@@ -141,21 +150,8 @@ function setUpHandlers() {
   //add close button - close individual summary & back to summary page
   $(".tracker-summary").on("click", ".close-btn", () => {
     renderSummaryPage();
-    console.log('close');
-  });
-  
-}
-
-function getDashboardTrackers() {
-  // this will call the api for trackers and store in STATE
-  
-  // TODO: update the 123 to be an id when we are ready
-  return $.get('/api/users/123/trackers').then(data => {
-    console.log(data.trackers);
-    // STATE.trackers.push(...mockTrackerData);
-    STATE.trackers.push(...data.trackers);
-  });
-}
+    });
+};
 
 $("document").ready(() => {
   setUpHandlers();
