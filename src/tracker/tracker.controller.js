@@ -7,9 +7,7 @@ const moment = require('moment');
 const TrackerStatuses = require('./tracker-status.enum');
 
 //get all existing trackers from user
-// (dashboard & summary display)
 const findAllTrackers = (req, res) => {
-  
   Tracker
     .find()
     .then(trackers => {
@@ -25,7 +23,18 @@ const findAllTrackers = (req, res) => {
 
 //create a new tracker -- get user by id and add
 const createNewTracker = (req, res) => {
+  const requiredFields = ['name', 'userId'];
+  for (let i = 0; i < requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if(! (field in req.body)) {
+      const message = `Missing \`${field}\` in request body`
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+
   const tallyMarks = {};
+  //confirm if format to 01 as DD is okay
   tallyMarks[moment().format('YYYY-MM-01')] = 1;
   Tracker
     .create({
@@ -34,7 +43,8 @@ const createNewTracker = (req, res) => {
       status: TrackerStatuses.ACTIVE, 
       createdDate: new Date(),
       notes: req.body.notes,
-      userId: req.params.userId, //how to handle this?
+      //how is userId saved when tracker is created? 
+      userId: req.params.userId, 
       tallyMarks
     })
     .then(tracker => {
@@ -48,6 +58,12 @@ const createNewTracker = (req, res) => {
 
 //add mark to a tracker (update by id)
 const addMark = (req, res) => {
+  if (!(req.params.trackerId && req.body.trackerId === req.body.trackerId)) {
+    res.status(400).json({
+      error: `Request path id and request body id values must match`
+    });
+  }
+
   Tracker
     //query for tracker by id
     .findById(req.params.trackerId)
@@ -78,24 +94,46 @@ const addMark = (req, res) => {
 }
 //remove a mark to a tracker (update by id)
 
-//modify description (update by id)
+//update fields within tracker (name, description, notes)
+const modifyTrackerDetails = (req, res) => {
+  if (!(req.params.trackerId && req.body.trackerId === req.body.trackerId)) {
+    res.status(400).json({
+      error: `Request path id and request body id values must match`
+    });
+  }
 
-//modify notes (update by id)
+  const updated = {};
+  const updateableFields = ['name', 'description', 'notes'];
+  updateableFields.forEach(field => {
+    if (field in req.body) {
+      updated[field] = req.body[field];
+    }
+  });
+
+  Tracker
+    .findByIdAndUpdate(req.params.trackerId, {$set: updated}, {new: true})
+    .then(updatedTracker => res.status(204).end()) //?
+    .catch(err => res.status(500).json({message: `tracker couldn't be updated`}));
+};
 
 //archive tracker (change status by id)
 const archiveTracker = (req, res) => {
-  const trackerId = '';
+  const updateField = ['status'];
+  // const trackerId = ''; //is this needed?
   Tracker
-    .findByIdAndUpdate()
+    .findByIdAndUpdate(req.params.trackerId)
+    .then()
 }
+
 //reactivate archived tracker (change status by id)
 
 //delete tracker 
 
 module.exports = {
+  addMark,
   createNewTracker,
   findAllTrackers,
-  addMark
+  modifyTrackerDetails
 };
 
 
