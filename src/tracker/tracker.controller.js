@@ -58,17 +58,14 @@ const createNewTracker = (req, res) => {
 
 //add mark to a tracker (update by id)
 const addMark = (req, res) => {
-  if (!(req.params.trackerId && req.body.trackerId === req.body.trackerId)) {
-    res.status(400).json({
-      error: `Request path id and request body id values must match`
-    });
-  }
-
+  console.log(req.params);
+  const trackerId = req.params.trackerId;
   Tracker
     //query for tracker by id
-    .findById(req.params.trackerId)
+    .findById(trackerId)
     //check if it's the current month, then increment by 1
     .then(tracker => { 
+      if(!tracker) res.status(400).json({message: 'Tracker Not Found'});
       const currentMonth = moment();
       const sortedKeys = Object.keys(tracker.tallyMarks).sort();
       const trackerMonth = sortedKeys[sortedKeys.length - 1];
@@ -76,12 +73,14 @@ const addMark = (req, res) => {
   
       const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
       if (doesCurrentMonthMatch === true) {
-        tracker.tallyMarks[trackerMonth]++
+        tracker.tallyMarks[trackerMonth] = tracker.tallyMarks[trackerMonth] + 1;
       } else {
       //if it is not current month, add new month & add 1 mark
         tracker.tallyMarks[currentMonth.format('YYYY-MM-01')] = 1;
       }
-    tracker.save(); 
+      tracker.markModified('tallyMarks');
+      return tracker.save();
+    // return tracker.save((err, trkr) => console.log('updated tracker -> ', trkr)); 
     })
     .then(tracker => {
       //return the whole tracker 
@@ -89,7 +88,7 @@ const addMark = (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ message: "internal server error"});        
+      res.status(500).json({ message: "internal server error: " + err.message});        
     });
 }
 //remove a mark to a tracker (update by id)
