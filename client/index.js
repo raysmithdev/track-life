@@ -4,7 +4,7 @@ import ChartComponents from "./chart.component";
 import TrackerComponents from "./tracker.component";
 
 import mockTrackerData from "./mock-data";
-import { debug } from "util";
+import { debug } from "util"; //?
 
 const STATE = {
   trackers: []
@@ -14,16 +14,6 @@ const STATE = {
 ("use strict");
 
 // render login screen
-
-// Call the API for trackers and store in STATE
-function getDashboardTrackers() {
-  // TODO: update the 123 to be an id when we are ready
-  return $.get('/api/users/123/trackers').then(data => {
-    console.log(data.trackers);
-    // STATE.trackers.push(...mockTrackerData);
-    STATE.trackers.push(...data.trackers);
-  });
-}
 
 // render dashboard
 function renderDashboard() {
@@ -115,6 +105,16 @@ function renderLogOutDashboard() {
   //return to landing-page
 }
 
+// Call the API for trackers and store in STATE
+function getDashboardTrackers() {
+  // TODO: update the 123 to be an id when we are ready
+  return $.get('/api/users/123/trackers').then(data => {
+    console.log(data.trackers);
+    // STATE.trackers.push(...mockTrackerData);
+    STATE.trackers.push(...data.trackers);
+  });
+}
+
 function setUpHandlers() {
   //navigation buttons
   $(".dashboard-link").click(renderDashboard);
@@ -125,13 +125,13 @@ function setUpHandlers() {
   $(".logout-btn").click(renderLogOutDashboard);
 
   //dyanmic buttons created within trackers
-
   //add mark button
   $(".main-section").on("click", ".add-mark-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
-    console.log($(e.currentTarget).data("trkr-id"));
-    //how to tell server to do the path? 
+    $.get('api/users/:userId/trackers/:trackerId').then() 
+    // STATE.trackers.push(...data.trackers);
   });
+
   //add delete button
   //add archive button
 
@@ -145,7 +145,6 @@ function setUpHandlers() {
   // $(".tracker-summary").on("click", ".toggle-chart", e => {
   //   toggleChartType();
   // })
-
 
   //add close button - close individual summary & back to summary page
   $(".tracker-summary").on("click", ".close-btn", () => {
