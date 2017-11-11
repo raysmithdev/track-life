@@ -90,7 +90,7 @@ function renderArchivePage() {
     const chartComponent = new ChartComponents(trackerData);
     chartComponent.renderChart();
   });
-
+  // console.log(STATE.archivedTrackers);
   $(".tracker-archive").show();
 }
 
@@ -221,5 +221,6 @@ function setUpHandlers() {
 $("document").ready(() => {
   setUpHandlers();
   //this should run after user logs in
-  getDashboardTrackers().then(renderDashboard)
+  getDashboardTrackers().then(renderDashboard);
+  getArchivedTrackers().then(renderArchivePage);
 });
