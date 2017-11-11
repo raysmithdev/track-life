@@ -157,6 +157,7 @@ const removeMark = (req, res) => {
 }
 
 //update fields within tracker (name, description, notes)
+//? - figure out how to render name & description fields
 const modifyTrackerDetails = (req, res) => {
   const trackerId = req.params.trackerId;
   const updated = {};
@@ -183,7 +184,7 @@ const archiveTracker = (req, res) => {
   Tracker
     .findByIdAndUpdate(trackerId)
     .then(tracker => {
-      tracker.set({ status: 2, });
+      tracker.set({ status: 2 });
       res.status(204).end()
     })
     .catch(err => 
@@ -198,7 +199,7 @@ const reactivateTracker = (req, res) => {
   Tracker
     .findByIdAndUpdate(trackerId)
     .then(tracker => {
-      tracker.set({ status: 1, });
+      tracker.set({ status: 1 });
       res.status(204).end()
     })
     .catch(err => 
@@ -206,11 +207,24 @@ const reactivateTracker = (req, res) => {
 }
 
 //delete tracker 
+const deleteTracker = (req, res) => {
+  const trackerId = req.params.trackerId;
+
+  Tracker
+    .findByIdAndUpdate(trackerId)
+    .then(tracker => {
+      tracker.set({ status: 3 });
+      res.status(204).end()
+    })
+    .catch(err => 
+      res.status(500).json({message: `tracker couldn't be archived`}));
+}
 
 module.exports = {
   addMark,
   archiveTracker,
   createNewTracker,
+  deleteTracker,
   findActiveTrackers,
   findArchivedTrackers,
   findAllTrackers,
@@ -223,7 +237,6 @@ module.exports = {
 // tracker code needs to go into that then of the User.findById statement.  
 // don't set the res.json yet because you have to finish your logic 
 // and then set it when you're done, you can't send the response twice
-
 
 
 //get single tracker -- query the tracker then query the user 

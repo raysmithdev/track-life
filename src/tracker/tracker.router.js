@@ -2,12 +2,10 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const { addMark, findActiveTrackers, archiveTracker, createNewTracker, findArchivedTrackers, findAllTrackers, reactivateTracker, removeMark } = require('./tracker.controller');
+const { addMark, archiveTracker, createNewTracker, deleteTracker, findArchivedTrackers, findActiveTrackers, findAllTrackers, reactivateTracker, removeMark } = require('./tracker.controller');
 const router = express.Router(); 
 
 router.use(bodyParser.json());
-
-//router.get('/', );
 
 //get all trackers from user
 router.get('/users/:userId/trackers', findAllTrackers)
@@ -30,16 +28,20 @@ router.post('/users/:userId/trackers/:trackerId/decrement', removeMark)
 //modify tracker details (name, description, notes)
 // router.put('/users/:userId/trackers/:trackerId', )
 
-// archive tracker
-router.put('/users/:userId/trackers/:trackerId/archive', archiveTracker)
+// archive tracker (change status code)
+router.post('/users/:userId/trackers/:trackerId/archive', archiveTracker)
 
-// reactivate archived tracker
-router.put('/users/:userId/trackers/:trackerId/reactivate', reactivateTracker)
+// reactivate archived tracker (change status code)
+router.post('/users/:userId/trackers/:trackerId/reactivate', reactivateTracker)
+
+// delete tracker
+router.post('/users/:userId/trackers/:trackerId/delete', deleteTracker)
 
 module.exports = router;
 
 //extra routes for now 
 
+//router.get('/', );
 //access individual tracker -- modify as needed
 //router.get('/users/:userId/trackers/:trackerId',)
 
