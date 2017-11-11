@@ -4,6 +4,7 @@ import $ from "jquery";
 
 import ChartComponents from "./chart.component";
 import TrackerComponents from "./tracker.component";
+import UserComponents from ".user.component";
 
 import mockTrackerData from "./mock-data";
 import { debug } from "util"; //?
@@ -94,9 +95,13 @@ function renderArchivePage() {
   $(".tracker-archive").show();
 }
 
-//render user profile page
+//render user profile page - ?
 function renderProfilePage() {
   $(".main-section").hide();
+
+  const userComponent = new UserComponents(userData);
+  $(".profile-container").append(userComponent.getProfileHtml());
+
   $(".profile").show();
 }
 
