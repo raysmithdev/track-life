@@ -28,7 +28,8 @@ export function renderDashboard() {
 
 //render create new tracker
 export function renderCreateTracker() {
-  $(".main-section").hide(); //need to empty everything displayed
+  //need to empty everything displayed
+  $(".main-section").hide(); 
   $(".create-tracker").show();
 }
 
@@ -37,7 +38,6 @@ export function renderSummaryPage() {
   $(".main-section").hide();
   $(".summary-container").empty();
 
-  // streamline summary by displaying all vs individually for now 11/7/17
   STATE.trackers.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
     $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
@@ -90,7 +90,7 @@ export function renderArchivePage() {
   $(".tracker-archive").show();
 }
 
-//render user profile page - ?
+//render user profile page - ??
 export function renderProfilePage() {
   $(".main-section").hide();
 

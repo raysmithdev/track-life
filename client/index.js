@@ -1,9 +1,6 @@
 "use strict";
 
 import $ from "jquery";
-import ChartComponents from "./chart.component";
-import TrackerComponents from "./tracker.component";
-import UserComponents from "./user.component";
 
 import {renderDashboard, renderCreateTracker, renderSummaryPage, 
 renderIndividualTrackerSummary, renderArchivePage, 
@@ -53,7 +50,7 @@ function setUpHandlers() {
         const index = STATE.trackers.findIndex(tracker => tracker._id === data._id);
         STATE.trackers[index] = data;
         switch(section){
-          case 'dashboard':
+          case 'dashboard': 
             renderDashboard();
             break;
           case 'summary': 
@@ -80,6 +77,7 @@ function setUpHandlers() {
         STATE.trackers[index] = data;
         switch(section){
           case 'dashboard':
+            // console.log('refresh page!')
             renderDashboard();
             break;
           case 'summary':
