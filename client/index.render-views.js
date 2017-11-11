@@ -4,7 +4,7 @@ import ChartComponents from "./chart.component";
 import TrackerComponents from "./tracker.component";
 import UserComponents from "./user.component";
 
-import STATE from "./index";
+import { STATE } from "./index";
 
 import mockTrackerData from "./mock-data";
 import { debug } from "util"; //?
@@ -18,7 +18,6 @@ export function renderDashboard() {
   $(".main-section").hide();
   $(".dashboard-container").empty(); //html('');
   // $('.tracker-container').empty();
-  console.log(STATE.tracker[0]);
   STATE.trackers.forEach(trackerData => {
     const component = new TrackerComponents(trackerData);
     $(".dashboard-container").append(component.getDashboardTrackerHtml());
@@ -39,7 +38,7 @@ export function renderSummaryPage() {
   $(".summary-container").empty();
 
   // streamline summary by displaying all vs individually for now 11/7/17
-  STATE.trackers[0].forEach(trackerData => {
+  STATE.trackers.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
     $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
     
@@ -65,7 +64,7 @@ export function renderIndividualTrackerSummary(id) {
   $(".main-section").hide();
   $(".summary-container").empty();
 
-  let trackerData = STATE.trackers[0].find(tracker => tracker.id === id);
+  let trackerData = STATE.trackers.find(tracker => tracker.id === id);
   const trackerComponent = new TrackerComponents(trackerData);
   $(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
 
@@ -80,7 +79,7 @@ export function renderArchivePage() {
   $(".main-section").hide();
   $(".archive-container").empty();
 
-  STATE.archivedTrackers[0].forEach(trackerData => {
+  STATE.archivedTrackers.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
     $(".archive-container").append(trackerComponent.getArchiveTrackerHtml());
 
