@@ -204,7 +204,27 @@ function setUpHandlers() {
   });
 
     //add delete button
+
     //add archive button
+    $(".tracker-summary").on("click", ".archive-btn", e => {
+      const trackerId = $(e.currentTarget).data("trkr-id");
+      $.post(`/users/123/trackers/${trackerId}/archive`)
+      .then((data) => {
+        const index = STATE.archiveTrackers.findIndex(tracker => tracker._id === data._id);
+        STATE.archivedTrackers[index] = data;
+        switch(section) {
+          case 'summary':
+            renderSummaryPage();
+            break;
+          case 'single':
+            renderSummaryPage();
+            break;
+          default:
+            renderSummaryPage();
+            break;
+        }
+      })
+    });
 
 
   //toggle chart type - line <> bar graph
