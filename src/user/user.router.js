@@ -2,7 +2,6 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const { User } = require('./user.model');
 const { getAllUsers, createNewUser } = require('./user.controller');
 const router = express.Router(); 
 
