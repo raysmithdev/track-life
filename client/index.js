@@ -1,119 +1,20 @@
 "use strict";
 
 import $ from "jquery";
-
 import ChartComponents from "./chart.component";
 import TrackerComponents from "./tracker.component";
 import UserComponents from "./user.component";
 
-import mockTrackerData from "./mock-data";
+import {renderDashboard, renderCreateTracker, renderSummaryPage, 
+renderIndividualTrackerSummary, renderArchivePage, 
+renderProfilePage, renderLogOutDashboard} from "./index.render-views"; 
+
 import { debug } from "util"; //?
 
-const STATE = {
+export const STATE = {
   trackers: [],
   archivedTrackers: []
 };
-
-// render different views
-// render login screen
-
-// render dashboard
-function renderDashboard() {
-  $(".main-section").hide();
-  $(".dashboard-container").empty(); //html('');
-  // $('.tracker-container').empty();
-
-  STATE.trackers.forEach(trackerData => {
-    const component = new TrackerComponents(trackerData);
-    $(".dashboard-container").append(component.getDashboardTrackerHtml());
-  });
-
-  $(".dashboard").show();
-}
-
-//render create new tracker
-function renderCreateTracker() {
-  $(".main-section").hide(); //need to empty everything displayed
-  $(".create-tracker").show();
-}
-
-//render summary page
-function renderSummaryPage() {
-  $(".main-section").hide();
-  $(".summary-container").empty();
-
-  // streamline summary by displaying all vs individually for now 11/7/17
-  STATE.trackers.forEach(trackerData => {
-    const trackerComponent = new TrackerComponents(trackerData);
-    $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
-    
-    const chartComponent = new ChartComponents(trackerData);
-    chartComponent.renderChart();
-  });
-
-  $(".tracker-summary").show();
-}
-
-// function toggleChartType() {
-
-//   let trackerData = STATE.trackers.find(tracker => tracker.id === id);
-//   const trackerComponent = new TrackerComponents(trackerData);
-//   $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
-
-//   const chartComponent = new ChartComponents(trackerData);
-//   chartComponent.renderChart();
-// }  
-
-//render individual tracker summary
-function renderIndividualTrackerSummary(id) {
-  $(".main-section").hide();
-  $(".summary-container").empty();
-
-  let trackerData = STATE.trackers.find(tracker => tracker.id === id);
-  const trackerComponent = new TrackerComponents(trackerData);
-  $(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
-
-  const chartComponent = new ChartComponents(trackerData);
-  chartComponent.renderChart();
-
-  $(".tracker-summary").show();
-}
-
-//render archive page -- change state to include archive?
-function renderArchivePage() {
-  $(".main-section").hide();
-  $(".archive-container").empty();
-
-  STATE.archivedTrackers.forEach(trackerData => {
-    const trackerComponent = new TrackerComponents(trackerData);
-    $(".archive-container").append(trackerComponent.getArchiveTrackerHtml());
-
-    const chartComponent = new ChartComponents(trackerData);
-    chartComponent.renderChart();
-  });
-  // console.log(STATE.archivedTrackers);
-  $(".tracker-archive").show();
-}
-
-//render user profile page - ?
-function renderProfilePage() {
-  $(".main-section").hide();
-
-  const userComponent = new UserComponents(userData);
-  $(".profile-container").append(userComponent.getProfileHtml());
-
-  $(".profile").show();
-}
-
-//render description in input
-// function renderDescription() {
-//   ${this.description}
-// }
-
-//render log out
-function renderLogOutDashboard() {
-  //return to landing-page
-}
 
 // Call the API for current trackers and store in STATE
 function getDashboardTrackers() {
