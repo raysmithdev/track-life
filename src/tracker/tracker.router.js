@@ -2,15 +2,21 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-//const {Tracker} = require('./tracker.model');
-const { addMark, createNewTracker, findAllTrackers, removeMark } = require('./tracker.controller');
+const { addMark, findActiveTrackers, archiveTracker, createNewTracker, findArchivedTrackers, findAllTrackers, reactivateTracker, removeMark } = require('./tracker.controller');
 const router = express.Router(); 
 
 router.use(bodyParser.json());
+
 //router.get('/', );
 
 //get all trackers from user
 router.get('/users/:userId/trackers', findAllTrackers)
+
+//get active trackers from user
+router.get('/users/:userId/trackers/active', findActiveTrackers)
+
+//get archived trackers from user
+router.get('/users/:userId/trackers/archived', findArchivedTrackers)
 
 //create new tracker
 router.post('/users/:userId/trackers', createNewTracker);
@@ -24,8 +30,11 @@ router.post('/users/:userId/trackers/:trackerId/decrement', removeMark)
 //modify tracker details (name, description, notes)
 // router.put('/users/:userId/trackers/:trackerId', )
 
-//archive a tracker
-//router.put('/users/:userId/trackers/:trackerId', )
+// archive tracker
+router.put('/users/:userId/trackers/:trackerId/archive', archiveTracker)
+
+// reactivate archived tracker
+router.put('/users/:userId/trackers/:trackerId/reactivate', reactivateTracker)
 
 module.exports = router;
 

@@ -9,7 +9,8 @@ import mockTrackerData from "./mock-data";
 import { debug } from "util"; //?
 
 const STATE = {
-  trackers: []
+  trackers: [],
+  archivedTrackers: []
 };
 
 // render different views
@@ -17,7 +18,6 @@ const STATE = {
 
 // render dashboard
 function renderDashboard() {
-  console.log('render dashboard');
   $(".main-section").hide();
   $(".dashboard-container").empty(); //html('');
   // $('.tracker-container').empty();
@@ -83,7 +83,7 @@ function renderArchivePage() {
   $(".main-section").hide();
   $(".archive-container").empty();
 
-  STATE.trackers.forEach(trackerData => {
+  STATE.archivedTrackers.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
     $(".archive-container").append(trackerComponent.getArchiveTrackerHtml());
 
@@ -110,13 +110,21 @@ function renderLogOutDashboard() {
   //return to landing-page
 }
 
-// Call the API for trackers and store in STATE
+// Call the API for current trackers and store in STATE
 function getDashboardTrackers() {
   // TODO: update the 123 to be an id when we are ready
-  return $.get('/api/users/123/trackers').then(data => {
-    console.log(data.trackers);
+  return $.get('/api/users/123/trackers/active').then(data => {
+    // console.log(data.trackers);
     // STATE.trackers.push(...mockTrackerData);
     STATE.trackers.push(...data.trackers);
+  });
+}
+
+// Call the API for archived trackers and store in STATE
+function getArchivedTrackers() {
+  // TODO: update the 123 to be an id when we are ready
+  return $.get('/api/users/123/trackers/archived').then(data => {
+    STATE.archivedTrackers.push(...data.trackers);
   });
 }
 
@@ -142,10 +150,10 @@ function setUpHandlers() {
           case 'dashboard':
             renderDashboard();
             break;
-          case 'summary':
+          case 'summary': 
             renderSummaryPage();
             break;
-          case 'single':
+          case 'single':  //single summary breaks, won't render
             renderIndividualTrackerSummary();
             break;
           default:
@@ -156,7 +164,7 @@ function setUpHandlers() {
     // STATE.trackers.push(...data.trackers);
   });
 
-  //remove mark
+  //remove mark button
   $(".main-section").on("click", ".remove-mark-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
     const section = $(e.currentTarget).data("section");

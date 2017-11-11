@@ -21,6 +21,36 @@ const findAllTrackers = (req, res) => {
     });
 };
 
+//get all existing active trackers from user
+const findActiveTrackers = (req, res) => {
+  Tracker
+    .find({ 'status' : 1 })
+    .then(trackers => {
+      res.json({
+        trackers: trackers.map(trackers => trackers.toClient())
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "internal server error"});
+    });
+};
+
+//get all archived trackers from user
+const findArchivedTrackers = (req, res) => {
+  Tracker
+    .find({ 'status' : 2 })
+    .then(trackers => {
+      res.json({
+        trackers: trackers.map(trackers => trackers.toClient())
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "internal server error"});
+    });
+};
+
 //create a new tracker -- get user by id and add
 const createNewTracker = (req, res) => {
   const requiredFields = ['name', 'userId'];
@@ -115,7 +145,6 @@ const removeMark = (req, res) => {
       // }
       tracker.markModified('tallyMarks');
       return tracker.save();
-    // return tracker.save((err, trkr) => console.log('updated tracker -> ', trkr)); 
     })
     .then(tracker => {
       //return the whole tracker 
@@ -141,7 +170,7 @@ const modifyTrackerDetails = (req, res) => {
   Tracker
   .findByIdAndUpdate(trackerId, {$set: updated}, {new: true})
   .then(updatedTracker => 
-    res.status(204).end()) //?
+    res.status(204).end()) 
   .catch(err => 
     res.status(500).json({message: `tracker couldn't be updated`}));
 };
@@ -149,22 +178,44 @@ const modifyTrackerDetails = (req, res) => {
 //archive tracker (change status by id)
 const archiveTracker = (req, res) => {
   const trackerId = req.params.trackerId;
-  const updateField = ['status'];
+  const updateField = ['status']; //not sure if this is necessary?
 
   Tracker
     .findByIdAndUpdate(trackerId)
-    .then()
+    .then(tracker => {
+      tracker.set({ status: 2, });
+      res.status(204).end()
+    })
+    .catch(err => 
+      res.status(500).json({message: `tracker couldn't be archived`}));
 }
 
 //reactivate archived tracker (change status by id)
+const reactivateTracker = (req, res) => {
+  const trackerId = req.params.trackerId;
+  const updateField = ['status']; //not sure if this is necessary?
+
+  Tracker
+    .findByIdAndUpdate(trackerId)
+    .then(tracker => {
+      tracker.set({ status: 1, });
+      res.status(204).end()
+    })
+    .catch(err => 
+      res.status(500).json({message: `tracker couldn't be archived`}));
+}
 
 //delete tracker 
 
 module.exports = {
   addMark,
+  archiveTracker,
   createNewTracker,
+  findActiveTrackers,
+  findArchivedTrackers,
   findAllTrackers,
   modifyTrackerDetails,
+  reactivateTracker,
   removeMark
 };
 
