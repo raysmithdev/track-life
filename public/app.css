@@ -136,6 +136,12 @@ h2 {
   padding: 5px;
 }
 
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .tally-marks {
   display: flex;
   max-width: 200px;
