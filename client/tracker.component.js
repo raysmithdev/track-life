@@ -134,8 +134,8 @@ export default class TrackerComponents {
           <button type="button" data-trkr-id=${this.trackerId} class="edit-trkr-btn trkr-btn">Edit</button>
           <button type="button" data-section="summary" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
           <button type="button" data-section="summary" data-trkr-id=${this.trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>                      
-          <button type="button" data-trkr-id=${this.trackerId} class="delete-btn trkr-btn">Delete</button> 
-          <button type="button" data-trkr-id=${this.trackerId} class="archive-btn trkr-btn">Archive</button>
+          <button type="button" data-section="summary" data-trkr-id=${this.trackerId} class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" data-section="summary" data-trkr-id=${this.trackerId} class="archive-btn trkr-btn">Archive</button>
         </div>
       </div>
     </div>
@@ -171,8 +171,8 @@ export default class TrackerComponents {
           <button type="button" data-trkr-id=${this.trackerId} class="save-btn trkr-btn">Save</button>
           <button type="button" data-section="single" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
           <button type="button" data-section="single" data-trkr-id=${this.trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>                      
-          <button type="button" data-trkr-id=${this.trackerId} class="delete-btn trkr-btn">Delete</button> 
-          <button type="button" data-trkr-id=${this.trackerId} class="archive-btn trkr-btn">Archive</button>
+          <button type="button" data-section="single" data-trkr-id=${this.trackerId} class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" data-section="single" data-trkr-id=${this.trackerId} class="archive-btn trkr-btn">Archive</button>
           <button type="button" class="close-btn trkr-btn">Close</button>
         </div>
       </div>
