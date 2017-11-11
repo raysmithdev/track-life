@@ -1,15 +1,6 @@
 import moment from "moment";
 import $ from "jquery";
 
-//for current tracker need to be able to identify current month and render marks for current month
-//if not current month, create new month object & add a mark
-
-//look at tallyMark object & get month/year
-//get system current month
-//after get month/year, check if it matches current month
-//if current month, render tally marks
-//if not current month, render blank unless new mark added
-
 export default class TrackerComponents {
   constructor(data) {
     this.trackerId = data.id;
@@ -29,7 +20,6 @@ export default class TrackerComponents {
     const trackerMoment = moment(trackerMonth);
 
     // console.log(this.tallyMarks[trackerMonth]);
-
     const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
     if (doesCurrentMonthMatch === true) {
       console.log({
@@ -99,7 +89,7 @@ export default class TrackerComponents {
           <div class="dashboard-btn-row">
             <button type="button" data-section="dashboard" data-trkr-id=${this.trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
             <button type="button" data-section="dashboard" data-trkr-id=${this.trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>            
-            <button type="button" data-trkr-id=${this.trackerId} class="view-sumry-btn trkr-btn">View Summary</button>
+            <button type="button" data-trkr-id=${this.trackerId} class="view-sumry-btn trkr-btn">View</button>
           </div>
       </div>
       `;
