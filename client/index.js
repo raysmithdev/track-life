@@ -4,7 +4,7 @@ import $ from "jquery";
 
 import ChartComponents from "./chart.component";
 import TrackerComponents from "./tracker.component";
-import UserComponents from ".user.component";
+import UserComponents from "./user.component";
 
 import mockTrackerData from "./mock-data";
 import { debug } from "util"; //?
@@ -247,5 +247,6 @@ $("document").ready(() => {
   setUpHandlers();
   //this should run after user logs in
   getDashboardTrackers().then(renderDashboard);
-  getArchivedTrackers().then(renderArchivePage);
+  getArchivedTrackers();
+  // getArchivedTrackers().then(renderArchivePage);
 });
