@@ -191,7 +191,7 @@ export default class TrackerComponents {
           </div>
         <div class="summary-btn-row">
           <button type="button" class="delete-btn trkr-btn">Delete</button> 
-          <button type="button" class="reactivate-btn trkr-btn">Reactivate</button>
+          <button type="button" data-trkr-id=${this.trackerId} class="reactivate-btn trkr-btn">Reactivate</button>
         </div>
       </div>
     </div>
