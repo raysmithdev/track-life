@@ -179,31 +179,27 @@ const modifyTrackerDetails = (req, res) => {
 //archive tracker (change status by id)
 const archiveTracker = (req, res) => {
   const trackerId = req.params.trackerId;
-  const updateField = ['status']; //not sure if this is necessary?
+  const updateStatus = { $set: { status: 2 }}; 
 
   Tracker
-    .findByIdAndUpdate(trackerId)
-    .then(tracker => {
-      tracker.set({ status: 2 });
-      res.status(204).end()
-    })
-    .catch(err => 
-      res.status(500).json({message: `tracker couldn't be archived`}));
+    .findByIdAndUpdate(trackerId, updateStatus, {new: true})
+      .then(tracker => 
+        res.status(200).json(tracker.toClient()).end())
+      .catch(err => 
+        res.status(500).json({message: `tracker couldn't be archived`}));
 }
 
 //reactivate archived tracker (change status by id)
 const reactivateTracker = (req, res) => {
   const trackerId = req.params.trackerId;
-  const updateField = ['status']; //not sure if this is necessary?
-
-  Tracker
-    .findByIdAndUpdate(trackerId)
-    .then(tracker => {
-      tracker.set({ status: 1 });
-      res.status(204).end()
-    })
-    .catch(err => 
-      res.status(500).json({message: `tracker couldn't be archived`}));
+  const updateStatus = { $set: { status: 1 }}; 
+  
+    Tracker
+      .findByIdAndUpdate(trackerId, updateStatus, {new: true})
+        .then(tracker => 
+          res.status(200).json(tracker.toClient()).end())
+        .catch(err => 
+          res.status(500).json({message: `tracker couldn't be reactivated`}));
 }
 
 //delete tracker 
