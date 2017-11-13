@@ -191,6 +191,25 @@ const reactivateTracker = (req, res) => {
     });
 };
 
+//update fields within tracker (name, description, notes)
+//? - figure out how to render name & description fields
+const modifyTrackerDetails = (req, res) => {
+  const trackerId = req.params.trackerId;
+  const updated = {};
+  const updateableFields = ["name", "description", "notes"];
+  updateableFields.forEach(field => {
+    if (field in req.body) {
+      updated[field] = req.body[field];
+    }
+  });
+
+  Tracker.findByIdAndUpdate(trackerId, { $set: updated }, { new: true })
+    .then(updatedTracker => res.status(204).end())
+    .catch(err =>
+      res.status(500).json({ message: `tracker couldn't be deleted` })
+    );
+};
+
 //delete tracker
 const deleteTracker = (req, res) => {
   const trackerId = req.params.trackerId;
@@ -234,21 +253,3 @@ module.exports = {
 //     );
 // };
 
-//update fields within tracker (name, description, notes)
-//? - figure out how to render name & description fields
-// const modifyTrackerDetails = (req, res) => {
-//   const trackerId = req.params.trackerId;
-//   const updated = {};
-//   const updateableFields = ["name", "description", "notes"];
-//   updateableFields.forEach(field => {
-//     if (field in req.body) {
-//       updated[field] = req.body[field];
-//     }
-//   });
-
-//   Tracker.findByIdAndUpdate(trackerId, { $set: updated }, { new: true })
-//     .then(updatedTracker => res.status(204).end())
-//     .catch(err =>
-//       res.status(500).json({ message: `tracker couldn't be deleted` })
-//     );
-// };
