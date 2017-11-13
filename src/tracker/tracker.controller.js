@@ -138,11 +138,10 @@ const removeMark = (req, res) => {
       const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
       if (doesCurrentMonthMatch === true) {
         tracker.tallyMarks[trackerMonth] = tracker.tallyMarks[trackerMonth] - 1;
-        }
-        // } else {
-      // //if it is not current month, delete the month
-      //   tracker.tallyMarks[currentMonth.format('YYYY-MM-01')] = 1;
-      // }
+        } else {
+      //if it is not current month, set count to 0 so nothing will render
+        tracker.tallyMarks[currentMonth.format('YYYY-MM-01')] = 0;
+      }
       tracker.markModified('tallyMarks');
       return tracker.save();
     })
@@ -155,26 +154,6 @@ const removeMark = (req, res) => {
       res.status(500).json({ message: "internal server error: " + err.message});        
     });
 }
-
-//update fields within tracker (name, description, notes)
-//? - figure out how to render name & description fields
-const modifyTrackerDetails = (req, res) => {
-  const trackerId = req.params.trackerId;
-  const updated = {};
-  const updateableFields = ['name', 'description', 'notes'];
-  updateableFields.forEach(field => {
-    if (field in req.body) {
-      updated[field] = req.body[field];
-    }
-  });
-
-  Tracker
-  .findByIdAndUpdate(trackerId, {$set: updated}, {new: true})
-  .then(updatedTracker => 
-    res.status(204).end()) 
-  .catch(err => 
-    res.status(500).json({message: `tracker couldn't be updated`}));
-};
 
 //archive tracker (change status by id)
 const archiveTracker = (req, res) => {
@@ -215,6 +194,26 @@ const deleteTracker = (req, res) => {
     .catch(err => 
       res.status(500).json({message: `tracker couldn't be archived`}));
 }
+
+//update fields within tracker (name, description, notes)
+//? - figure out how to render name & description fields
+const modifyTrackerDetails = (req, res) => {
+  const trackerId = req.params.trackerId;
+  const updated = {};
+  const updateableFields = ['name', 'description', 'notes'];
+  updateableFields.forEach(field => {
+    if (field in req.body) {
+      updated[field] = req.body[field];
+    }
+  });
+
+  Tracker
+  .findByIdAndUpdate(trackerId, {$set: updated}, {new: true})
+  .then(updatedTracker => 
+    res.status(204).end()) 
+  .catch(err => 
+    res.status(500).json({message: `tracker couldn't be updated`}));
+};
 
 module.exports = {
   addMark,
