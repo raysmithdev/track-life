@@ -9,28 +9,20 @@ import { STATE } from "./index";
 import mockTrackerData from "./mock-data";
 import { debug } from "util"; //?
 
-
-// render different views
 // render login screen
 
 // render dashboard
 export function renderDashboard() {
   $(".main-section").hide();
   $(".dashboard-container").empty(); //html('');
-  // $('.tracker-container').empty();
+  // $(".tracker-container").empty(); //try to fix duplicate render
+
   STATE.trackers.forEach(trackerData => {
     const component = new TrackerComponents(trackerData);
     $(".dashboard-container").append(component.getDashboardTrackerHtml());
   });
 
   $(".dashboard").show();
-}
-
-//render create new tracker
-export function renderCreateTracker() {
-  //need to empty everything displayed
-  $(".main-section").hide(); 
-  $(".create-tracker").show();
 }
 
 //render summary page
@@ -41,7 +33,7 @@ export function renderSummaryPage() {
   STATE.trackers.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
     $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
-    
+
     const chartComponent = new ChartComponents(trackerData);
     chartComponent.renderChart();
   });
@@ -57,7 +49,7 @@ export function renderSummaryPage() {
 
 //   const chartComponent = new ChartComponents(trackerData);
 //   chartComponent.renderChart();
-// }  
+// }
 
 //render individual tracker summary
 export function renderIndividualTrackerSummary(id) {
@@ -88,6 +80,13 @@ export function renderArchivePage() {
   });
   // console.log(STATE.archivedTrackers);
   $(".tracker-archive").show();
+}
+
+//render create new tracker
+export function renderCreateTracker() {
+  $(".main-section").hide();
+  // $(".create-container").empty(); 
+  $(".create-tracker").show();
 }
 
 //render user profile page - ??
