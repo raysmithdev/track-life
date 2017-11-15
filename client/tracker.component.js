@@ -218,6 +218,27 @@ export default class TrackerComponents {
     `;
     return template;
   }
+
+  static getCreateTrackerHtml() {
+    const template = `
+    <h2>Create a Tracker</h2>
+    <form method="post" class="create-form">
+      <label for="tracker-name">New Tracker Name</label>
+      <input class="new-tkr-input" type="text" placeholder="enter new tracker name">
+
+      <label for="tracker-description">Description</label>
+      <input class="new-tkr-input" type="text" placeholder="Add a description (optional)">
+
+      <label for="notes">Notes</label>
+      <textarea class="tracker-notes" placeholder="Add any notes for yourself (optional)"></textarea>
+      <div class="form-btn-row">
+        <button type="submit" class="create-trkr-btn new-trkr-btn">Create</button>
+        <button type="button" class="cancel-btn new-trkr-btn">Cancel</button>
+      </div>
+    </form>
+    `;
+    return template;
+  }
 }
 
 //decide whether or not to add description box in individual tracker summary html
