@@ -50,13 +50,14 @@ function setUpHandlers() {
   $(".main-section").on("click", ".add-mark-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
     const section = $(e.currentTarget).data("section");
+
     $.post(`/api/users/123/trackers/${trackerId}/increment`).then(data => {
       const index = STATE.trackers.findIndex(
         tracker => tracker._id === data._id
       );
       STATE.trackers[index] = data;
       switch (section) {
-        case "dashboard":
+        case "dashboard": 
           renderDashboard();
           break;
         case "summary":
@@ -77,6 +78,7 @@ function setUpHandlers() {
   $(".main-section").on("click", ".remove-mark-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
     const section = $(e.currentTarget).data("section");
+
     $.post(`/api/users/123/trackers/${trackerId}/decrement`).then(data => {
       const index = STATE.trackers.findIndex(
         tracker => tracker._id === data._id
@@ -118,61 +120,64 @@ function setUpHandlers() {
   $(".tracker-summary").on("click", ".close-btn", () => {
     renderSummaryPage();
   });
+
+
+  //add archive button
+  $(".tracker-summary").on("click", ".archive-btn", e => {
+    console.log("call archive button!");
+    const trackerId = $(e.currentTarget).data("trkr-id");
+    const section = $(e.currentTarget).data("section");
+
+    $.post(`/api/users/123/trackers/${trackerId}/archive`).then(data => {
+      const index = STATE.trackers.findIndex(tracker => tracker._id === data._id);
+      STATE.trackers[index] = data;
+      switch (section) {
+        case "summary":
+          renderSummaryPage();
+          break;
+        case "single":
+          renderSummaryPage();
+          break;
+        default:
+          renderSummaryPage();
+          break;
+      }
+    });
+  });
+
+  //add reactivate button
+  $(".tracker-archive").on("click", ".reactivate-btn", e => {
+    const trackerId = $(e.currentTarget).data("trkr-id");
+    const section = $(e.currentTarget).data("section");
+      //check how STATE is being managed
+      //find the tracker in archivetrackers and add it back to trackers
+      //OR create refresh method so it does API call to active trackers & reset the state
+    $.post(`/api/users/123/trackers/${trackerId}/reactivate`).then(data => {
+      const index = STATE.archiveTrackers.findIndex(
+        tracker => tracker._id === data._id
+      );
+      STATE.archiveTrackers[index] = data; //maybe need to look at active vs archive state
+      switch (section) {
+        case "summary":
+          renderSummaryPage();
+          break;
+        case "single":
+          renderSummaryPage();
+          break;
+        default:
+          renderSummaryPage();
+          break;
+      }
+    });
+  });
+
+  //add delete button
+
+  //toggle chart type - line <> bar graph
+  // $(".tracker-summary").on("click", ".toggle-chart", e => {
+  //   toggleChartType();
+  // })
 }
-
-//add archive button
-$(".tracker-summary").on("click", ".archive-btn", e => {
-  console.log("call archive button!");
-  const trackerId = $(e.currentTarget).data("trkr-id");
-  $.post(`/api/users/123/trackers/${trackerId}/archive`).then(data => {
-    const index = STATE.trackers.findIndex(tracker => tracker._id === data._id);
-    STATE.trackers[index] = data;
-    switch (section) {
-      case "summary":
-        renderSummaryPage();
-        break;
-      case "single":
-        renderSummaryPage();
-        break;
-      default:
-        renderSummaryPage();
-        break;
-    }
-  });
-});
-
-//add reactivate button
-$(".tracker-archive").on("click", ".reactivate-btn", e => {
-  console.log("call reactivate");
-  const trackerId = $(e.currentTarget).data("trkr-id");
-  $.post(`/api/users/123/trackers/${trackerId}/reactivate`).then(data => {
-    //check how STATE is being managed
-    //find the tracker in archivetrackers and add it back to trackers
-    //OR create refresh method so it does API call to active trackers & reset the state
-    const index = STATE.archiveTrackers.findIndex(
-      tracker => tracker._id === data._id
-    );
-    STATE.archiveTrackers[index] = data; //maybe need to look at active vs archive state
-    switch (section) {
-      case "summary":
-        renderSummaryPage();
-        break;
-      case "single":
-        renderSummaryPage();
-        break;
-      default:
-        renderSummaryPage();
-        break;
-    }
-  });
-});
-
-//add delete button
-
-//toggle chart type - line <> bar graph
-// $(".tracker-summary").on("click", ".toggle-chart", e => {
-//   toggleChartType();
-// })
 
 $("document").ready(() => {
   setUpHandlers();
