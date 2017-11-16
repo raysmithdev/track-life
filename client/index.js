@@ -4,7 +4,7 @@ import $ from "jquery";
 
 import {
   renderDashboard,
-  renderCreateTracker,
+  renderCreateTrackerPage,
   renderSummaryPage,
   renderIndividualTrackerSummary,
   renderArchivePage,
@@ -40,7 +40,7 @@ function setUpHandlers() {
   //navigation buttons
   $(".dashboard-link").click(renderDashboard);
   $(".summary-link").click(renderSummaryPage);
-  $(".create-link").click(renderCreateTracker);
+  $(".create-link").click(renderCreateTrackerPage);
   $(".archive-link").click(renderArchivePage);
   $(".profile-link").click(renderProfilePage);
   $(".logout-btn").click(renderLogOutDashboard);
@@ -53,9 +53,9 @@ function setUpHandlers() {
 
     $.post(`/api/users/123/trackers/${trackerId}/increment`).then(data => {
       const index = STATE.trackers.findIndex(
-        tracker => tracker._id === data._id
+        tracker => tracker.id === data.id
       );
-      STATE.trackers[index] = data;
+      STATE.trackers[index] = data; 
       switch (section) {
         case "dashboard": 
           renderDashboard();
@@ -64,7 +64,7 @@ function setUpHandlers() {
           renderSummaryPage();
           break;
         case "single": //single summary breaks, won't render
-          renderIndividualTrackerSummary();
+          renderIndividualTrackerSummary(data.id);
           break;
         default:
           renderDashboard();
@@ -81,7 +81,7 @@ function setUpHandlers() {
 
     $.post(`/api/users/123/trackers/${trackerId}/decrement`).then(data => {
       const index = STATE.trackers.findIndex(
-        tracker => tracker._id === data._id
+        tracker => tracker.id === data.id
       );
       STATE.trackers[index] = data;
       switch (section) {
@@ -93,7 +93,7 @@ function setUpHandlers() {
           renderSummaryPage();
           break;
         case "single":
-          renderIndividualTrackerSummary();
+          renderIndividualTrackerSummary(data.id);
           break;
         default:
           renderDashboard();
@@ -129,7 +129,7 @@ function setUpHandlers() {
     const section = $(e.currentTarget).data("section");
 
     $.post(`/api/users/123/trackers/${trackerId}/archive`).then(data => {
-      const index = STATE.trackers.findIndex(tracker => tracker._id === data._id);
+      const index = STATE.trackers.findIndex(tracker => tracker.id === data.id);
       STATE.trackers[index] = data;
       switch (section) {
         case "summary":
@@ -154,7 +154,7 @@ function setUpHandlers() {
       //OR create refresh method so it does API call to active trackers & reset the state
     $.post(`/api/users/123/trackers/${trackerId}/reactivate`).then(data => {
       const index = STATE.archiveTrackers.findIndex(
-        tracker => tracker._id === data._id
+        tracker => tracker.id === data.id
       );
       STATE.archiveTrackers[index] = data; //maybe need to look at active vs archive state
       switch (section) {

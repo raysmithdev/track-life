@@ -83,7 +83,7 @@ export function renderArchivePage() {
 }
 
 //render create new tracker
-export function renderCreateTracker() {
+export function renderCreateTrackerPage() {
   $(".main-section").hide();
   $(".create-container").empty(); 
 
