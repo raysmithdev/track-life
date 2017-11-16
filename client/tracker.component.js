@@ -19,14 +19,8 @@ export default class TrackerComponents {
     const trackerMonth = sortedKeys[sortedKeys.length - 1];
     const trackerMoment = moment(trackerMonth);
 
-    // console.log(this.tallyMarks[trackerMonth]);
     const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
     if (doesCurrentMonthMatch === true) {
-      // console.log({
-      //   currentTrackerMonth: trackerMoment.format("MMMM YYYY"),
-      //   monthCount: this.tallyMarks[trackerMonth]
-      // });
-
       return {
         currentTrackerMonth: trackerMoment.format("MMMM YYYY"),
         monthCount: this.tallyMarks[trackerMonth]
@@ -59,33 +53,16 @@ export default class TrackerComponents {
     return markBlocks.join("");
   }
 
-  //last 6 months?
-  // calculateAverage() {
-  //   const sortedKeys = Object.keys(this.tallyMarks).sort();
-  //   let totalMarks = 0;
-  //   let avgMarks = 0;
-  //   //add sum of last 6 months marks
-  //   //divide sum by 6 or max length?
-  //   for (let i = 0; i <= this.sortedKeys.length; i++) {
-  //     // console.log(this.sortedKeys);
-  //     totalMarks += this.tallyMarks[sortedKeys[i]];
-  //     console.log(totalMarks);
-  //   }
-  //   avgMarks.push(totalMarks / this.sortedKeys.length);
-  //   //avgMarks = totalMarks / this.sortedKeys.length;
-  //   console.log(avgMarks);
-  // }
-
   calculateAvgMarks() {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const tallyMarks = this.tallyMarks;
 
     let avgMarks =
-      sortedKeys.reduce(function(sum, value) {
+      sortedKeys.reduce(function(sum, value) { 
         return sum + tallyMarks[value];
       }, 0) / sortedKeys.length;
     // console.log({average: avgMarks, numOfMonths: sortedKeys.length });
-    return { count: avgMarks, numOfMonths: sortedKeys.length };
+    return { count: avgMarks.toFixed(), numOfMonths: sortedKeys.length };
   }
 
   //marks are rendering outside of container?
