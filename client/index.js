@@ -118,15 +118,18 @@ function setUpHandlers() {
   // save notes on blur 
   // create a class on all 3 text areas (name/desc/notes) & add to inputs
   // add different data attribute to distinguish data type - name/des/notes 
-  // >> bracket notation to create object = makes universal 
-  $(".tracker-summary").on("blur", ".trkr-sumry-notes", e => {
+  // apply .trkr-form-field class to all fields
+  $(".tracker-summary").on("blur", ".trkr-form-field", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); 
-    const currentNotes = $(e.currentTarget).val(); 
+    const fieldName = $(e.currentTarget).data("field-name");
+    const fieldValue = $(e.currentTarget).val(); 
+    const updatedData = {};
+      updatedData[fieldName] = fieldValue; 
     //change :userId when ready? 
     $.ajax({
       method: 'PUT',
       url: `/api/users/123/trackers/${trackerId}`,
-      data: JSON.stringify({ notes: currentNotes }),
+      data: JSON.stringify(updatedData),
       contentType: 'application/json', 
     })
   });
