@@ -77,9 +77,9 @@ export default class TrackerComponents {
 
         <div class="dashboard-btn-row">
           <button type="button" data-section="dashboard" data-trkr-id=${this
-            .trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
+            .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
           <button type="button" data-section="dashboard" data-trkr-id=${this
-            .trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>            
+            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>            
           <button type="button" data-trkr-id=${this
             .trackerId} class="view-sumry-btn trkr-btn">View</button>
         </div>
@@ -118,9 +118,9 @@ export default class TrackerComponents {
           <button type="button" data-trkr-id=${this
             .trackerId} class="edit-trkr-btn trkr-btn">Edit</button>
           <button type="button" data-section="summary" data-trkr-id=${this
-            .trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
+            .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
           <button type="button" data-section="summary" data-trkr-id=${this
-            .trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>                      
+            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>                      
           <button type="button" data-section="summary" data-trkr-id=${this
             .trackerId} class="delete-btn trkr-btn">Delete</button> 
           <button type="button" data-section="summary" data-trkr-id=${this
@@ -168,9 +168,9 @@ export default class TrackerComponents {
 
         <div class="summary-btn-row">
           <button type="button" data-section="single" data-trkr-id=${this
-            .trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
+            .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
           <button type="button" data-section="single" data-trkr-id=${this
-            .trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>                      
+            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>                      
           <button type="button" data-section="single" data-trkr-id=${this
             .trackerId} class="delete-btn trkr-btn">Delete</button> 
           <button type="button" data-section="single" data-trkr-id=${this
