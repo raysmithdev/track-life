@@ -58,7 +58,7 @@ export default class TrackerComponents {
     const tallyMarks = this.tallyMarks;
 
     let avgMarks =
-      sortedKeys.reduce(function(sum, value) { 
+      sortedKeys.reduce(function(sum, value) {
         return sum + tallyMarks[value];
       }, 0) / sortedKeys.length;
     // console.log({average: avgMarks, numOfMonths: sortedKeys.length });
@@ -70,19 +70,19 @@ export default class TrackerComponents {
     const template = `
       <div class="tracker-container dash-trkr-box">
         <h3 class="tracker-name">${this.name}</h3>
-          <h4 class="tracker-month">${this.currentMarks
-            .currentTrackerMonth}</h4>
-            <div class="marks-container">
-              <ul class="tally-marks>${this.getTallyMarks()}</ul> 
-            </div> 
-          <div class="dashboard-btn-row">
-            <button type="button" data-section="dashboard" data-trkr-id=${this
-              .trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
-            <button type="button" data-section="dashboard" data-trkr-id=${this
-              .trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>            
-            <button type="button" data-trkr-id=${this
-              .trackerId} class="view-sumry-btn trkr-btn">View</button>
-          </div>
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+          <div class="marks-container">
+            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+          </div> 
+
+        <div class="dashboard-btn-row">
+          <button type="button" data-section="dashboard" data-trkr-id=${this
+            .trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
+          <button type="button" data-section="dashboard" data-trkr-id=${this
+            .trackerId} class="remove-mark-btn trkr-btn">Remove Mark</button>            
+          <button type="button" data-trkr-id=${this
+            .trackerId} class="view-sumry-btn trkr-btn">View</button>
+        </div>
       </div>
       `;
     return template;
@@ -99,13 +99,10 @@ export default class TrackerComponents {
             <ul class="tally-marks>${this.getTallyMarks()}</ul> 
           </div>
           <div class="summary-statements">
-            <p class="summary-sentence">You marked ${this.name} ${this
-      .currentMarks.monthCount} times this month!</p>
-            <p class="summary-sentence">You marked ${this.name} ${this
-      .oneMonthBack.monthCount} times last month!</p>
-            <p class="summary-sentence"> On average, you mark ${this
-              .name} ${this.averageMarks.count} times in the past ${this
-      .averageMarks.numOfMonths} month(s).</p> 
+            <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
+            <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
+            <p class="summary-sentence"> On average, you mark ${this.name} ${this.averageMarks.count} 
+              times in the past ${this.averageMarks.numOfMonths} month(s).</p> 
           </div>
       </div>
       <div class="col-2">
@@ -114,9 +111,8 @@ export default class TrackerComponents {
         </div>
         <div class="notes-container">
           <label for="notes">Notes</label>
-          <textarea data-trkr-id=${this
-            .trackerId} data-field-name="notes" class="trkr-sumry-notes trkr-form-field">${this
-      .notes}</textarea>
+          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes trkr-form-field">
+            ${this.notes}</textarea>
         </div>
         <div class="summary-btn-row">
           <button type="button" data-trkr-id=${this
@@ -140,23 +136,24 @@ export default class TrackerComponents {
     const template = `
       <div class="tracker-container inner-flexbox">
       <div class="col-1">
-        <input data-trkr-id=${this
-          .trackerId} data-field-name="name" class="tracker-name trkr-form-field" value="${this
-      .name}"/>
+        <label for="edit-trkr-label tracker-name">Edit Tracker Name</label>      
+        <input data-trkr-id=${this.trackerId} data-field-name="name" 
+          class="tracker-name edit-trkr-field" value="${this.name}"/>
+        <label for="edit-trkr-label tracker-description">Edit Description</label>        
+        <input data-trkr-id=${this.trackerId} data-field-name="description" 
+          class="description edit-trkr-field" value="${this.description}"/>
+
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
-        <input data-trkr-id=${this
-          .trackerId} data-field-name="description" class="description trkr-form-field" value="${this
-      .description}"/>
+          
         <div class="marks-container">
           <ul class="tally-marks>${this.getTallyMarks()}</ul> 
         </div>
+
         <div class="summary-statements">
-          <p class="summary-sentence">You marked ${this.name} ${this
-      .currentMarks.monthCount} times this month!</p>
-          <p class="summary-sentence">You marked ${this.name} ${this
-      .oneMonthBack.monthCount} times last month!</p>
-          <p class="summary-sentence"> On average, you mark ${this
-            .name} ${/*this.averageMarks*/ ""} </p>             
+          <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
+          <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
+          <p class="summary-sentence"> On average, you mark ${this.name} ${this.averageMarks.count} 
+            times in the past ${this.averageMarks.numOfMonths} month(s).</p>        
         </div>
       </div>
       <div class="col-2">
@@ -164,14 +161,12 @@ export default class TrackerComponents {
           <canvas class="myChart-${this.trackerId}"></canvas>
         </div>
         <div class="notes-container">
-          <label for="notes">Notes</label>
-          <textarea data-trkr-id=${this
-            .trackerId} data-field-name="notes" class="trkr-sumry-notes trkr-form-field">${this
-      .notes}</textarea>
+          <label for="edit-trkr-label notes">Notes</label>
+          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">
+            ${this.notes}</textarea>
           </div>
+
         <div class="summary-btn-row">
-          <button type="button" data-trkr-id=${this
-            .trackerId} class="save-btn trkr-btn">Save</button>
           <button type="button" data-section="single" data-trkr-id=${this
             .trackerId} class="add-mark-btn trkr-btn">Add Mark</button>
           <button type="button" data-section="single" data-trkr-id=${this
@@ -221,14 +216,14 @@ export default class TrackerComponents {
     const template = `
     <h2>Create a Tracker</h2>
     <form method="post" class="create-form">
-      <label for="tracker-name">New Tracker Name</label>
-      <input class="new-tkr-input" type="text" placeholder="enter new tracker name">
+      <label for="new-trkr-label tracker-name">New Tracker Name</label>
+      <input class="new-trkr-input" type="text" placeholder="enter new tracker name">
 
-      <label for="tracker-description">Description</label>
-      <input class="new-tkr-input" type="text" placeholder="Add a description (optional)">
+      <label for="new-trkr-label tracker-description">Description</label>
+      <input class="new-trkr-input" type="text" placeholder="Add a description (optional)">
 
-      <label for="notes">Notes</label>
-      <textarea class="tracker-notes" placeholder="Add any notes for yourself (optional)"></textarea>
+      <label for="new-trkr-label notes">Notes</label>
+      <textarea class="new-trkr-input tracker-notes" placeholder="Add any notes for yourself (optional)"></textarea>
       <div class="form-btn-row">
         <button type="submit" class="create-trkr-btn new-trkr-btn">Create</button>
         <button type="button" class="cancel-btn new-trkr-btn">Cancel</button>
