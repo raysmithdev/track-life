@@ -109,23 +109,19 @@ function setUpHandlers() {
   });
 
   // edit button - open individual tracker view
-  // need to be able to edit description?
   $(".tracker-summary").on("click", ".edit-trkr-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
     renderIndividualTrackerSummary(trackerId);
   });
 
-  // save notes on blur 
-  // create a class on all 3 text areas (name/desc/notes) & add to inputs
-  // add different data attribute to distinguish data type - name/des/notes 
-  // apply .trkr-form-field class to all fields
+  // save input fields on blur in individual summary view
   $(".tracker-summary").on("blur", ".trkr-form-field", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); 
     const fieldName = $(e.currentTarget).data("field-name");
     const fieldValue = $(e.currentTarget).val(); 
     const updatedData = {};
       updatedData[fieldName] = fieldValue; 
-    //change :userId when ready? 
+    // change :userId when ready? 
     $.ajax({
       method: 'PUT',
       url: `/api/users/123/trackers/${trackerId}`,
