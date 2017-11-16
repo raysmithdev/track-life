@@ -10,7 +10,7 @@ export default class TrackerComponents {
     this.tallyMarks = data.tallyMarks;
     this.currentMarks = this.checkTrackerMonth();
     this.oneMonthBack = this.getPreviousCount();
-    // this.averageMarks = this.calculateAvgMarks();
+    this.averageMarks = this.calculateAvgMarks();
   }
 
   checkTrackerMonth() {
@@ -78,13 +78,15 @@ export default class TrackerComponents {
 
   calculateAvgMarks() {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
-    // let avgMarks = 0;
-    
-    let avgMarks = sortedKeys.reduce(function (a, b) {
-      return a + b.avgMarks;
-      }, 0) / avgMarks.length;
-      console.log(avgMarks);
-    }
+    const tallyMarks = this.tallyMarks;
+
+    let avgMarks =
+      sortedKeys.reduce(function(sum, value) {
+        return sum + tallyMarks[value];
+      }, 0) / sortedKeys.length;
+    // console.log({average: avgMarks, numOfMonths: sortedKeys.length });
+    return { count: avgMarks, numOfMonths: sortedKeys.length };
+  }
 
   //marks are rendering outside of container?
   getDashboardTrackerHtml() {
@@ -125,7 +127,8 @@ export default class TrackerComponents {
             <p class="summary-sentence">You marked ${this.name} ${this
       .oneMonthBack.monthCount} times last month!</p>
             <p class="summary-sentence"> On average, you mark ${this
-              .name} ${this.averageMarks} </p> 
+              .name} ${this.averageMarks.count} times in the past ${this
+      .averageMarks.numOfMonths} month(s).</p> 
           </div>
       </div>
       <div class="col-2">
@@ -134,7 +137,9 @@ export default class TrackerComponents {
         </div>
         <div class="notes-container">
           <label for="notes">Notes</label>
-          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes trkr-form-field">${this.notes}</textarea>
+          <textarea data-trkr-id=${this
+            .trackerId} data-field-name="notes" class="trkr-sumry-notes trkr-form-field">${this
+      .notes}</textarea>
         </div>
         <div class="summary-btn-row">
           <button type="button" data-trkr-id=${this
@@ -158,9 +163,13 @@ export default class TrackerComponents {
     const template = `
       <div class="tracker-container inner-flexbox">
       <div class="col-1">
-        <input data-trkr-id=${this.trackerId} data-field-name="name" class="tracker-name trkr-form-field" value="${this.name}"/>
+        <input data-trkr-id=${this
+          .trackerId} data-field-name="name" class="tracker-name trkr-form-field" value="${this
+      .name}"/>
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
-        <input data-trkr-id=${this.trackerId} data-field-name="description" class="description trkr-form-field" value="${this.description}"/>
+        <input data-trkr-id=${this
+          .trackerId} data-field-name="description" class="description trkr-form-field" value="${this
+      .description}"/>
         <div class="marks-container">
           <ul class="tally-marks>${this.getTallyMarks()}</ul> 
         </div>
@@ -179,7 +188,9 @@ export default class TrackerComponents {
         </div>
         <div class="notes-container">
           <label for="notes">Notes</label>
-          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes trkr-form-field">${this.notes}</textarea>
+          <textarea data-trkr-id=${this
+            .trackerId} data-field-name="notes" class="trkr-sumry-notes trkr-form-field">${this
+      .notes}</textarea>
           </div>
         <div class="summary-btn-row">
           <button type="button" data-trkr-id=${this
