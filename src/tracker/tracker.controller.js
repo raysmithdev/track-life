@@ -192,7 +192,6 @@ const reactivateTracker = (req, res) => {
 };
 
 //update fields within tracker (name, description, notes)
-//? - figure out how to render name & description fields
 const modifyTrackerDetails = (req, res) => {
   const trackerId = req.params.trackerId;
   const updated = {};
