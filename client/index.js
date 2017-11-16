@@ -86,7 +86,6 @@ function setUpHandlers() {
       STATE.trackers[index] = data;
       switch (section) {
         case "dashboard":
-          // console.log('refresh page!')
           renderDashboard();
           break;
         case "summary":
@@ -103,28 +102,43 @@ function setUpHandlers() {
     // STATE.trackers.push(...data.trackers);
   });
 
-  //view summary button - open individual tracker
+  // view summary button - open individual tracker
   $(".dashboard").on("click", ".view-sumry-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
     renderIndividualTrackerSummary(trackerId);
   });
 
-  //edit button - open individual tracker
-  //need to be able to edit description?
+  // edit button - open individual tracker view
+  // need to be able to edit description?
   $(".tracker-summary").on("click", ".edit-trkr-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
     renderIndividualTrackerSummary(trackerId);
   });
 
-  //close button
+  // save notes on blur 
+  // create a class on all 3 text areas (name/desc/notes) & add to inputs
+  // add different data attribute to distinguish data type - name/des/notes 
+  // >> bracket notation to create object = makes universal 
+  $(".tracker-summary").on("blur", ".trkr-sumry-notes", e => {
+    const trackerId = $(e.currentTarget).data("trkr-id"); 
+    const currentNotes = $(e.currentTarget).val(); 
+    //change :userId when ready? 
+    $.ajax({
+      method: 'PUT',
+      url: `/api/users/123/trackers/${trackerId}`,
+      data: JSON.stringify({ notes: currentNotes }),
+      contentType: 'application/json', 
+    })
+  });
+
+  // close button
   $(".tracker-summary").on("click", ".close-btn", () => {
     renderSummaryPage();
   });
 
 
-  //add archive button
+  // add archive button
   $(".tracker-summary").on("click", ".archive-btn", e => {
-    console.log("call archive button!");
     const trackerId = $(e.currentTarget).data("trkr-id");
     const section = $(e.currentTarget).data("section");
 
