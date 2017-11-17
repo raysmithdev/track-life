@@ -111,7 +111,7 @@ export default class TrackerComponents {
         </div>
         <div class="notes-container">
           <label for="notes">Notes</label>
-          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes trkr-form-field">
+          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">
             ${this.notes}</textarea>
         </div>
         <div class="summary-btn-row">

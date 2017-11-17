@@ -115,7 +115,7 @@ function setUpHandlers() {
   });
 
   // save input fields on blur in individual summary view
-  $(".tracker-summary").on("blur", ".trkr-form-field", e => {
+  $(".tracker-summary").on("blur", ".edit-trkr-field", e => {
     const trackerId = $(e.currentTarget).data("trkr-id"); 
     const fieldName = $(e.currentTarget).data("field-name");
     const fieldValue = $(e.currentTarget).val(); 
