@@ -98,10 +98,18 @@ h2 {
   vertical-align: center;
 }
 
+.dashboard-tracker-container {
+  /* flex-basis: 50%; */
+  max-width: 400px;
+  margin: 5px;
+  padding: 10px;
+  border: 1.5px solid #ffd54f;
+  border-radius: 3px;
+}
+
 .tracker-container {
   flex-grow: 1;
-  /* flex-basis: 50%; */
-  max-width: 95%;
+  max-width: 90%;
   margin: 5px;
   padding: 10px;
   border: 1.5px solid #ffd54f;
@@ -136,6 +144,7 @@ h2 {
 
 .marks-container {
   /* max-width: 50%; */
+  margin: auto 0;
   min-height: 35px;
   padding: 5px;
 }

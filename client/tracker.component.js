@@ -68,7 +68,7 @@ export default class TrackerComponents {
   //marks are rendering outside of container?
   getDashboardTrackerHtml() {
     const template = `
-      <div class="tracker-container dash-trkr-box">
+      <div class="dashboard-tracker-container">
         <h3 class="tracker-name">${this.name}</h3>
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
           <div class="marks-container">
