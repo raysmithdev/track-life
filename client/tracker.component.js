@@ -111,8 +111,7 @@ export default class TrackerComponents {
         </div>
         <div class="notes-container">
           <label for="notes">Notes</label>
-          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">
-            ${this.notes}</textarea>
+          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">${this.notes}</textarea>
         </div>
         <div class="summary-btn-row">
           <button type="button" data-trkr-id=${this
@@ -162,9 +161,8 @@ export default class TrackerComponents {
         </div>
         <div class="notes-container">
           <label for="edit-trkr-label notes">Notes</label>
-          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">
-            ${this.notes}</textarea>
-          </div>
+          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">${this.notes}</textarea>
+        </div>
 
         <div class="summary-btn-row">
           <button type="button" data-section="single" data-trkr-id=${this
