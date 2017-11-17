@@ -135,7 +135,6 @@ function setUpHandlers() {
     renderSummaryPage();
   });
 
-
   // add archive button
   $(".tracker-summary").on("click", ".archive-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id");
