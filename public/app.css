@@ -56,12 +56,6 @@ button {
   flex-wrap: wrap;
 }
 
-/* .app-name-container,
-.nav-btn-container {
-  display: flex;
-  align-items: center;
-} */
-
 /* add highlight when clicked */
 .nav-btn {
   height: auto;
@@ -120,7 +114,6 @@ h2 {
 }
 
 /* dashboard page */
-
 .dashboard-container {
   display: flex;
   width: 95%;
@@ -170,6 +163,7 @@ h2 {
   background-color: #eceff1;
   text-align: center;
   vertical-align: center;
+  margin-top: 10px;
 }
 
 .tracker-month {
@@ -187,11 +181,10 @@ h2 {
 .marks-container {
   /* max-width: 50%; */
   /* margin: auto 0; */
-  /* display: flex;
-  justify-content: flex-start;
-  flex-flow: wrap; */
+  display: flex;
+  justify-content: space-between;
   min-height: 35px;
-  padding: 5px;
+  /* padding: 5px; */
 }
 
 ul {
@@ -207,8 +200,8 @@ ul {
 
 .mark {
   display: inline-block; /* this makes it into square */
-  padding: 10px;
-  margin-right: 5px;
+  padding: 11px;
+  margin-right: 3px;
   background-color: #aed581;
 }
 
@@ -275,7 +268,7 @@ ul {
   display: flex;
   /* align-content: flex-end; */
   justify-content: center;
-  margin-top: 5px;
+  margin: 25px 0 7px;
 }
 
 .summary-btn-row {
