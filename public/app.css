@@ -86,25 +86,6 @@ button {
   }
 }
 
-/* .app-name-container,
-.nav-btn-container {
-  display: flex;
-  align-items: center;
-}
-.nav-btn-container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-} */
-
-/* .app-name,
-.nav-btn-container {
-  margin: 0;
-  padding: 0;
-  width: 50%;
-} */
-
-
 h2 {
   font-weight: bold;
   padding: 0.25em;
@@ -124,9 +105,6 @@ h2 {
 }
 
 .dashboard-tracker-container {
-  /* flex-grow: 1; */
-  /* max-width: 45%; */
-  /* min-width: 300px; */
   flex-basis: 75%;
   max-width: 400px;
   margin: 5px;
@@ -154,7 +132,6 @@ h2 {
   .col-1,
   .col-2 {
     width: 50%;
-    /* or min-width? */
   }
 }
 
@@ -193,13 +170,10 @@ ul {
   margin: 0;
 }
 
-/* .tally-marks {
-  display: flex;
-  max-width: 200px;
-} */
-
 .mark {
-  display: inline-block; /* this makes it into square */
+  /* this makes it into square */
+  display: inline-block; 
+  /* marks are actually the padding */
   padding: 11px;
   margin-right: 3px;
   background-color: #aed581;
@@ -219,6 +193,7 @@ ul {
   border-radius: 3px;
   background-color: white; 
   font-size: 15px;
+  text-align: left;
 } 
 
 .notes-container {
