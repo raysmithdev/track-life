@@ -71,10 +71,9 @@ export default class TrackerComponents {
       <div class="dashboard-tracker-container">
         <h3 class="tracker-name">${this.name}</h3>
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
-          <div class="marks-container">
-            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
-          </div> 
-
+        <div class="marks-container">
+          <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+        </div> 
         <div class="dashboard-btn-row">
           <button type="button" data-section="dashboard" data-trkr-id=${this
             .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
@@ -214,13 +213,13 @@ export default class TrackerComponents {
     const template = `
     <h2>Create a Tracker</h2>
     <form method="post" class="create-form">
-      <label for="new-trkr-label tracker-name">New Tracker Name</label>
+      <label for="tracker-name" class="new-trkr-label">New Tracker Name</label>
       <input class="new-trkr-input" type="text" placeholder="enter new tracker name">
 
-      <label for="new-trkr-label tracker-description">Description</label>
+      <label for="tracker-description" class="new-trkr-label">Description</label>
       <input class="new-trkr-input" type="text" placeholder="Add a description (optional)">
 
-      <label for="new-trkr-label notes">Notes</label>
+      <label for="notes" class="new-trkr-label">Notes</label>
       <textarea class="new-trkr-input tracker-notes" placeholder="Add any notes for yourself (optional)"></textarea>
       <div class="form-btn-row">
         <button type="submit" class="create-trkr-btn new-trkr-btn">Create</button>
@@ -231,9 +230,3 @@ export default class TrackerComponents {
     return template;
   }
 }
-
-//decide whether or not to add description box in individual tracker summary html
-//<div class="description-container">
-//<label for="existing-tracker-description">Description</label>
-//<input class="existing-trkr-desc" type="text"></input>
-//</div>
