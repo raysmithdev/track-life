@@ -135,10 +135,10 @@ export default class TrackerComponents {
     const template = `
       <div class="tracker-container inner-flexbox">
       <div class="col-1">
-        <label for="edit-trkr-label tracker-name">Edit Tracker Name</label>      
+        <label for="tracker-name" class="edit-trkr-label">Edit Tracker Name</label>      
         <input data-trkr-id=${this.trackerId} data-field-name="name" 
           class="tracker-name edit-trkr-field" value="${this.name}"/>
-        <label for="edit-trkr-label tracker-description">Edit Description</label>        
+        <label for="tracker-description" class="edit-trkr-label">Edit Description</label>        
         <input data-trkr-id=${this.trackerId} data-field-name="description" 
           class="description edit-trkr-field" value="${this.description}"/>
 
@@ -160,7 +160,7 @@ export default class TrackerComponents {
           <canvas class="myChart-${this.trackerId}"></canvas>
         </div>
         <div class="notes-container">
-          <label for="edit-trkr-label notes">Notes</label>
+          <label for="notes" class="edit-trkr-label">Notes</label>
           <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">${this.notes}</textarea>
         </div>
 
