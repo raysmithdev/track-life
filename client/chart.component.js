@@ -1,6 +1,7 @@
 import moment from 'moment';
 import $ from 'jquery';
 import {Chart} from 'chart.js';
+// import {annotation} from 'chartjs-plugin-annotation';
 
 export default class ChartComponents {
   constructor(data) {
@@ -8,9 +9,11 @@ export default class ChartComponents {
     this.name = data.name;
     this.tallyMarks = data.tallyMarks;
     this.previousMarks = this.getPreviousMarks();
+    this.averageMarks = this.calculateAvgMarks();
     // this.lineGraph = this.changeLineGraph();
   }
-// get last 6 months of marks to put in chart 
+
+  // get up to last 6 months of marks to put in chart 
   getPreviousMarks() {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const pastMonths = [];
@@ -25,8 +28,20 @@ export default class ChartComponents {
     return {month: pastMonths, count: pastMarks};
   }
 
-  //can use .destroy() to remove instances of chart created 
-  //put data gathered from getMarksToChart() and plug into chart 
+  //how to cap this at 6 months at most? 
+  calculateAvgMarks() {
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const tallyMarks = this.tallyMarks;
+
+    let avgMarks =
+      sortedKeys.reduce(function(sum, value) {
+        return sum + tallyMarks[value];
+      }, 0) / sortedKeys.length;
+    // console.log({average: avgMarks, numOfMonths: sortedKeys.length });
+    return { count: avgMarks.toFixed(), numOfMonths: sortedKeys.length };
+  }
+
+  //can use .destroy() to remove instances of chart created  
   renderChart() {
     var ctx = document.getElementsByClassName(`myChart-${this.trackerId}`)[0].getContext('2d');
     var chart = new Chart(ctx, {
@@ -34,13 +49,15 @@ export default class ChartComponents {
         type: 'bar', //or 'line'
         // The data for our dataset
         data: {
-            labels: this.previousMarks.month, //months 
+            // month(s)
+            labels: this.previousMarks.month, 
             datasets: [{
                 label: `Marks for ${this.name}`,
                 backgroundColor: 'rgba(79, 195, 247, 0.3)',
                 borderColor: 'rgb(0, 147, 196)',
                 borderWidth: 1,
-                data: this.previousMarks.count, //marks
+                //number of marks per month
+                data: this.previousMarks.count, 
             }]
         },
         // Configuration options go here
@@ -56,10 +73,28 @@ export default class ChartComponents {
           },
           title: {
             display: true,
-            text: 'Last 6 Months'
+            text: 'Up to last 6 months'
           },
           responsive: true,
-        }
+          // add average line
+          annotation: {
+            annotations: [{
+              id: 'average',
+              type: 'line',
+              mode: 'horizontal',
+              scaleID: 'y-axis-0',
+              value: 4, // this.averageMarks.count,
+              borderColor: 'tomato',
+              borderWidth: 1,
+                label: {
+                  backgroundColor: 'green',
+                  enabled: true,
+                  content: 'average'
+                },
+            }],
+            drawTime: 'afterDraw',
+          },
+        },
     });
   }
 
