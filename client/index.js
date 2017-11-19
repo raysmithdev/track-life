@@ -145,6 +145,10 @@ function setUpHandlers() {
       STATE.trackers[index] = data;
       switch (section) {
         case "summary":
+        //every time a button is pushed
+        //need to update the STATE and pull from the state
+        //look into the process 
+        // getDashboardTrackers().then(renderSummaryPage);
           renderSummaryPage();
           break;
         case "single":

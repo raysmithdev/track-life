@@ -228,7 +228,6 @@ ul {
 }
 
 /* make flex container for dashboard & trackers */
-/* .dashboard-container, */
 .summary-container,
 .archive-container {
   display: flex;
