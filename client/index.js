@@ -119,7 +119,12 @@ function setUpHandlers() {
     const fieldName = $(e.currentTarget).data("field-name");
     const fieldValue = $(e.currentTarget).val(); 
     const updatedData = {};
-      updatedData[fieldName] = fieldValue; 
+    updatedData[fieldName] = fieldValue; 
+
+    const index = STATE.trackers.findIndex(tracker => tracker.id === trackerId);
+    const updatedTracker = STATE.trackers[index];
+    updatedTracker[fieldName] = fieldValue;
+
     // change :userId when ready? 
     $.ajax({
       method: 'PUT',
@@ -134,20 +139,19 @@ function setUpHandlers() {
     renderSummaryPage();
   });
 
-  // add archive button
+  // archive button
   $(".tracker-summary").on("click", ".archive-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id");
     const section = $(e.currentTarget).data("section");
 
     $.post(`/api/users/123/trackers/${trackerId}/archive`).then(data => {
       const index = STATE.trackers.findIndex(tracker => tracker.id === data.id);
-      STATE.trackers[index] = data;
+      //STATE.trackers[index] = data;
+      STATE.trackers.splice(index, 1); //look at index position & remove 1 item following
+      STATE.archivedTrackers.push(data); //push data that comes back from API 
+
       switch (section) {
         case "summary":
-        //every time a button is pushed
-        //need to update the STATE and pull from the state
-        //look into the process 
-        // getDashboardTrackers().then(renderSummaryPage);
           renderSummaryPage();
           break;
         case "single":
@@ -160,29 +164,19 @@ function setUpHandlers() {
     });
   });
 
-  //add reactivate button
+  // reactivate button
   $(".tracker-archive").on("click", ".reactivate-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id");
     const section = $(e.currentTarget).data("section");
-      //check how STATE is being managed
-      //find the tracker in archivetrackers and add it back to trackers
-      //OR create refresh method so it does API call to active trackers & reset the state
+
     $.post(`/api/users/123/trackers/${trackerId}/reactivate`).then(data => {
-      const index = STATE.archiveTrackers.findIndex(
-        tracker => tracker.id === data.id
-      );
-      STATE.archiveTrackers[index] = data; //maybe need to look at active vs archive state
-      switch (section) {
-        case "summary":
-          renderSummaryPage();
-          break;
-        case "single":
-          renderSummaryPage();
-          break;
-        default:
-          renderSummaryPage();
-          break;
-      }
+      console.log('state =', STATE, data);
+      const index = STATE.archivedTrackers.findIndex(tracker => tracker.id === data.id);
+
+      STATE.archivedTrackers.splice(index, 1);
+      STATE.trackers.push(data);
+
+      renderArchivePage();
     });
   });
 
