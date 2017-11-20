@@ -10,7 +10,7 @@
     "build": "webpack",
     "test": "mocha --exit",
     "start": "node server.js",
-    "bundle": "webpack --watch",
+    "bundle": "webpack --progress --colors --watch",
     "serverReload": "nodemon --watch src server.js",
     "dev": "npm-run-all --parallel bundle serverReload"
   },
