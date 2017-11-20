@@ -10,6 +10,7 @@ export default class ChartComponents {
     this.tallyMarks = data.tallyMarks;
     this.previousMarks = this.getPreviousMarks();
     this.averageMarks = this.calculateAvgMarks();
+    this.totalMarks = this.getTotalMarks();
     // this.lineGraph = this.changeLineGraph();
   }
 
@@ -26,6 +27,17 @@ export default class ChartComponents {
       i++;
     }
     return { month: pastMonths, count: pastMarks };
+  }
+
+  // to set max value for y axis
+  getTotalMarks() {
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const tallyMarks = this.tallyMarks;
+
+    let totalCount = sortedKeys.reduce(function (sum, value) {
+      return sum + tallyMarks[value];
+    }, 0)
+    return { total: totalCount };
   }
 
   //how to cap this at 6 months at most?
@@ -51,7 +63,7 @@ export default class ChartComponents {
       type: "bar", //or 'line'
       // The data for our dataset
       data: {
-        // month(s)
+        // month & year 
         labels: this.previousMarks.month,
         datasets: [
           {
@@ -70,9 +82,8 @@ export default class ChartComponents {
           yAxes: [
             {
               ticks: {
-                beginAtZero: true
-                //look up the setting for highest y axis value
-                //take highest value of the marks and + 2
+                beginAtZero: true,
+                max: this.getTotalMarks.total
               }
             }
           ]
