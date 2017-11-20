@@ -1,105 +1,92 @@
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-    <title>Track Life</title>
-    <meta charset="UTF-8">
-    <meta description="app to track various activities, habits, routines, in one's life">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Roboto:400,900i">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    
-    <link rel="stylesheet" href="app.css">
-    <link rel="stylesheet" href="grid.css">
-  </head>
 
-  <body>
-    <!-- fixed header navigation -->
-    <nav class="header-container">
-      <div class="app-name-container">
-        <h1 class="app-name">/ / Track Life / / </h1>
-      </div>
-      <div class="nav-btn-container">
-        <button type=button class="dashboard-link nav-btn">Dashboard</button>
-        <button type=button class="summary-link nav-btn">Summary</button>
-        <button type=button class="archive-link nav-btn">Archive</button>
-        <button type=button class="create-link nav-btn">Create</button>
-        <button type=button class="profile-link nav-btn">Profile</button>
-        <button type=button class="logout-btn nav-btn">Logout</button>
-      </div>
-    </nav>
+<head>
+  <title>Track Life</title>
+  <meta charset="UTF-8">
+  <meta description="app to track various activities, habits, routines, in one's life">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <main>
-      <!-- login screen -->
-      <section class="login main-section">
-        <h2>Login</h2>
-        <form action="" method="get">
-          <!-- <legend>Login to Track</legend> -->
-              <label for="username">Username:</label> 
-              <input id="username" type="text" placeholder="enter username">
-              
-              <label for="password">Password:</label>
-              <input id="password" type="password" placeholder="enter password" required>
-              
-              <button type="submit" class="login">Login</button>
-              <button type="reset" class="reset">Reset</button>
-          </form>
-        </section>
-      <!-- dashboard page -->
-      <section class="dashboard main-section">
-        <h2>Dashboard</h2>
-        <article class="dashboard-container"> </article>
-      </section>
-      <!-- create a new tracker screen -->
-      <section class="create-tracker main-section">
-        <h2>Create a Tracker</h2>
-        <form action="" method="post" class="create-form">
-          <label for="tracker-name">New Tracker Name</label>
-          <input id="tracker-name" type="text" placeholder="enter new tracker name">
-          
-          <label for="tracker-description">Description</label>
-          <input id="tracker-description" type="text" placeholder="description (optional)">
-          
-          <label for="notes">Notes</label>
-          <!-- add text formatting?  -->
-          <textarea class="tracker-notes" placeholder="Add any notes for yourself (optional)"></textarea>
-          <div class="form-btn-row">              
-            <!-- <button type="button" class="add-mark-btn new-trkr-btn">Add Mark</button> -->
-            <button type="submit" class="create-trkr-btn new-trkr-btn">Create</button>
-            <button type="button" class="cancel-btn new-trkr-btn">Cancel</button>
-          </div>
-        </form>
-      </section>
-      <!-- tracker summary page -->
-      <section class="tracker-summary main-section">
-        <h2>Tracker Summary</h2>
-        <article class="summary-container"> </article>
-      </section>
-      
-      <!-- profile page -->
-      <section class="profile main-section">
-        <h2>Profile</h2>
-        <article class="profile-container">
-          <h4>Username</h4>
-          <h4>Password</h4>
-        </article>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:200,300,400|Roboto:400,900i">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-      </section>
-      <!-- tracker archive page -->
-      <section class="tracker-archive main-section">
-        <h2>Archived Trackers</h2>
-        <article class="archive-container"> </article>
-        <!-- add ability to un-archive? -->
-      </section>
-      
-    </main>
+  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="grid.css">
+</head>
 
-    <footer>
-      <p class="footer">created by <a href="www.codebear.io">codebear</a> 2017</p>
-    </footer>
+<body>
+  <!-- fixed header navigation -->
+  <nav class="header-container">
+    <div class="app-name-container">
+      <h1 class="app-name">/ / Track Life / / </h1>
+    </div>
+    <div class="nav-btn-container">
+      <button type=button class="dashboard-link nav-btn">Dashboard</button>
+      <button type=button class="summary-link nav-btn">Summary</button>
+      <button type=button class="archive-link nav-btn">Archive</button>
+      <button type=button class="create-link nav-btn">Create</button>
+      <!-- <button type=button class="profile-link nav-btn">Profile</button> -->
+      <button type=button class="logout-btn nav-btn">Logout</button>
+    </div>
+  </nav>
 
-    <script src="js/bundle.js"></script>
+  <main>
+    <!-- login screen -->
+    <section class="login main-section">
+      <h2>Login</h2>
+      <form action="" method="get">
 
-  </body>
+        <label for="username">Username:</label>
+        <input id="username" type="text" placeholder="enter username">
+
+        <label for="password">Password:</label>
+        <input id="password" type="password" placeholder="enter password" required>
+
+        <button type="submit" class="login">Login</button>
+        <button type="reset" class="reset">Reset</button>
+      </form>
+    </section>
+
+    <!-- dashboard page -->
+    <section class="dashboard main-section">
+      <h2>Dashboard</h2>
+      <article class="dashboard-container"> </article>
+    </section>
+
+    <!-- create a new tracker screen -->
+    <section class="create-tracker main-section">
+      <div class="create-container"> </div>
+    </section>
+
+    <!-- tracker summary page -->
+    <section class="tracker-summary main-section">
+      <h2>Tracker Summary</h2>
+      <article class="summary-container"> </article>
+    </section>
+
+    <!-- profile page -->
+    <section class="profile main-section">
+      <h2>Profile</h2>
+      <article class="profile-container">
+        <h4>Username</h4>
+        <h4>Password</h4>
+      </article>
+
+    </section>
+
+    <!-- tracker archive page -->
+    <section class="tracker-archive main-section">
+      <h2>Archived Trackers</h2>
+      <article class="archive-container"> </article>
+    </section>
+  </main>
+
+  <footer>
+    <p class="footer">created by
+      <a href="www.codebear.io">codebear</a> 2017</p>
+  </footer>
+  <script src="../node_modules/chartjs-plugin-annotation/chartjs-plugin-annotation.min.js"></script>
+  <script src="js/bundle.js"></script>
+</body>
 </html>

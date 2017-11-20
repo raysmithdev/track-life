@@ -20043,7 +20043,599 @@ helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 
 
 /***/ }),
-/* 9 */,
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = __webpack_require__(304);
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = __webpack_require__(303);
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(305), __webpack_require__(302)))
+
+/***/ }),
 /* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -20051,132 +20643,199 @@ helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__chart_component__ = __webpack_require__(249);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tracker_component__ = __webpack_require__(251);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mock_data__ = __webpack_require__(250);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__index_render_views__ = __webpack_require__(248);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_util__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_util___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_util__);
 
 
 
 
 
 
+ //?
 
-("use strict");
+const STATE = {
+  trackers: [],
+  archivedTrackers: []
+};
+/* harmony export (immutable) */ __webpack_exports__["STATE"] = STATE;
 
-// render login screen
 
-//pass in mockdata in renderDashboard as a test later
-// render dashboard
-function renderDashboard() {
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard-container").empty(); //html('');
-  // $('.tracker-container').empty();
-
-  __WEBPACK_IMPORTED_MODULE_3__mock_data__["a" /* default */].forEach(trackerData => {
-    const component = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard-container").append(component.getTrackerHtml());
+// Call the API for current trackers and store in STATE
+function getDashboardTrackers() {
+  // TODO: update the 123 to be an id when we are ready
+  return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.get("/api/users/123/trackers/active").then(data => {
+    // console.log(data.trackers);
+    // STATE.trackers.push(...mockTrackerData);
+    STATE.trackers.push(...data.trackers);
   });
-
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard").show();
 }
 
-//render create new tracker
-function renderCreateTracker() {
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide(); //need to empty everything displayed
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-tracker").show();
-}
-
-//render summary page
-function renderSummaryPage() {
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").empty();
-
-  __WEBPACK_IMPORTED_MODULE_3__mock_data__["a" /* default */].forEach(trackerData => {
-    const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
-
-    const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](trackerData);
-    chartComponent.renderChart();
+function getArchivedTrackers() {
+  // TODO: update the 123 to be an id when we are ready
+  return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.get("/api/users/123/trackers/archived").then(data => {
+    STATE.archivedTrackers.push(...data.trackers);
   });
-
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").show();
-}
-
-//render individual tracker summary
-function renderIndividualTrackerSummary(id) {
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").empty();
-
-  let trackerData = __WEBPACK_IMPORTED_MODULE_3__mock_data__["a" /* default */].find(tracker => tracker.id === id);
-  const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
-
-  const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](trackerData);
-  chartComponent.renderChart();
-
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").show();
-}
-
-//render archive page
-function renderArchivePage() {
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-container").empty();
-
-  __WEBPACK_IMPORTED_MODULE_3__mock_data__["a" /* default */].forEach(trackerData => {
-    const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-container").append(trackerComponent.getArchiveTrackerHtml());
-
-    const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](trackerData);
-    chartComponent.renderChart();
-  });
-
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-archive").show();
-}
-
-//render user profile page
-function renderProfilePage() {
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".profile").show();
-}
-
-//render log out
-function renderLogOutDashboard() {
-  //return to landing-page
-}
-
-//add a mark to an existing tracker
-function addMarkToTracker() {
-  //check if current month exists & increment by 1
-  //if current month does not exist, add new and increment by 1
 }
 
 function setUpHandlers() {
-  //sidebar navigation buttons
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard-link").click(renderDashboard);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-link").click(renderSummaryPage);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-link").click(renderCreateTracker);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-link").click(renderArchivePage);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".profile-link").click(renderProfilePage);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".logout-btn").click(renderLogOutDashboard);
+  //navigation buttons
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard-link").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["a" /* renderDashboard */]);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-link").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */]);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-link").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["c" /* renderCreateTrackerPage */]);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-link").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["d" /* renderArchivePage */]);
+  // $(".profile-link").click(renderProfilePage);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".logout-btn").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["e" /* renderLogOutDashboard */]);
 
-  //dyanmic buttons created within trackers
-
-  //view summary button
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard").on("click", ".view-sumry-btn", e => {
+  //dynamic buttons created within trackers
+  //add mark button
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").on("click", ".add-mark-btn", e => {
     const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
-    console.log(__WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"));
-    renderIndividualTrackerSummary(trackerId);
+    const section = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("section");
+
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post(`/api/users/123/trackers/${trackerId}/increment`).then(data => {
+      const index = STATE.trackers.findIndex(
+        tracker => tracker.id === data.id
+      );
+      STATE.trackers[index] = data; 
+      switch (section) {
+        case "dashboard": 
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["a" /* renderDashboard */])();
+          break;
+        case "summary":
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
+          break;
+        case "single": //single summary breaks, won't render
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["f" /* renderIndividualTrackerSummary */])(data.id);
+          break;
+        default:
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["a" /* renderDashboard */])();
+          break;
+      }
+    });
+    // STATE.trackers.push(...data.trackers);
   });
 
-  //add mark button
+  //remove mark button
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").on("click", ".remove-mark-btn", e => {
+    const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    const section = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("section");
+
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post(`/api/users/123/trackers/${trackerId}/decrement`).then(data => {
+      const index = STATE.trackers.findIndex(
+        tracker => tracker.id === data.id
+      );
+      STATE.trackers[index] = data;
+      switch (section) {
+        case "dashboard":
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["a" /* renderDashboard */])();
+          break;
+        case "summary":
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
+          break;
+        case "single":
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["f" /* renderIndividualTrackerSummary */])(data.id);
+          break;
+        default:
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["a" /* renderDashboard */])();
+          break;
+      }
+    });
+    // STATE.trackers.push(...data.trackers);
+  });
+
+  // view summary button - open individual tracker
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard").on("click", ".view-sumry-btn", e => {
+    const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["f" /* renderIndividualTrackerSummary */])(trackerId);
+  });
+
+  // edit button - open individual tracker view
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").on("click", ".edit-trkr-btn", e => {
+    const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["f" /* renderIndividualTrackerSummary */])(trackerId);
+  });
+
+  // save input fields on blur in individual summary view
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").on("blur", ".edit-trkr-field", e => {
+    const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"); 
+    const fieldName = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("field-name");
+    const fieldValue = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).val(); 
+    const updatedData = {};
+    updatedData[fieldName] = fieldValue; 
+
+    const index = STATE.trackers.findIndex(tracker => tracker.id === trackerId);
+    const updatedTracker = STATE.trackers[index];
+    updatedTracker[fieldName] = fieldValue;
+
+    // change :userId when ready? 
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.ajax({
+      method: 'PUT',
+      url: `/api/users/123/trackers/${trackerId}`,
+      data: JSON.stringify(updatedData),
+      contentType: 'application/json', 
+    })
+  });
+
+  // close button
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").on("click", ".close-btn", () => {
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
+  });
+
+  // archive button
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").on("click", ".archive-btn", e => {
+    const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id");
+    const section = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("section");
+
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post(`/api/users/123/trackers/${trackerId}/archive`).then(data => {
+      const index = STATE.trackers.findIndex(tracker => tracker.id === data.id);
+
+      STATE.trackers.splice(index, 1); //look at index position & remove 1 item following
+      STATE.archivedTrackers.push(data); //push data that comes back from API 
+
+      switch (section) {
+        case "summary":
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
+          break;
+        case "single":
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
+          break;
+        default:
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
+          break;
+      }
+    });
+  });
+
+  // reactivate button
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-archive").on("click", ".reactivate-btn", e => {
+    const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id");
+
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post(`/api/users/123/trackers/${trackerId}/reactivate`).then(data => {
+      console.log('state =', STATE, data);
+      const index = STATE.archivedTrackers.findIndex(tracker => tracker.id === data.id);
+
+      STATE.archivedTrackers.splice(index, 1);
+      STATE.trackers.push(data);
+
+      __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["d" /* renderArchivePage */])();
+    });
+  });
+
   //add delete button
-  //add archive button
-  //add close button
+
+  //toggle chart type - line <> bar graph
+  // $(".tracker-summary").on("click", ".toggle-chart", e => {
+  //   toggleChartType();
+  // })
 }
 
 __WEBPACK_IMPORTED_MODULE_0_jquery___default()("document").ready(() => {
   setUpHandlers();
-  renderDashboard(); //this should run after user logs in
+  //this should run after user logs in
+  getDashboardTrackers().then(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["a" /* renderDashboard */]);
+  getArchivedTrackers();
+  // getArchivedTrackers().then(renderArchivePage);
 });
 
 
@@ -43609,7 +44268,137 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 248 */,
+/* 248 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = renderDashboard;
+/* harmony export (immutable) */ __webpack_exports__["b"] = renderSummaryPage;
+/* harmony export (immutable) */ __webpack_exports__["f"] = renderIndividualTrackerSummary;
+/* harmony export (immutable) */ __webpack_exports__["d"] = renderArchivePage;
+/* harmony export (immutable) */ __webpack_exports__["c"] = renderCreateTrackerPage;
+/* harmony export (immutable) */ __webpack_exports__["e"] = renderLogOutDashboard;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__chart_component__ = __webpack_require__(249);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tracker_component__ = __webpack_require__(251);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__user_component__ = __webpack_require__(252);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__index__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__mock_data__ = __webpack_require__(250);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_util__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_util___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_util__);
+
+
+
+
+
+
+
+
+
+ //?
+
+// render login screen
+
+// render dashboard
+function renderDashboard() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard-container").empty(); //html('');
+  // $(".tracker-container").empty(); //try to fix duplicate render
+
+  __WEBPACK_IMPORTED_MODULE_4__index__["STATE"].trackers.forEach(trackerData => {
+    const component = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard-container").append(component.getDashboardTrackerHtml());
+  });
+
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard").show();
+}
+
+// render chart function
+function renderChartComponent(data) {
+  const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](data);
+  chartComponent.renderChart();
+}
+
+//render summary page
+function renderSummaryPage() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").empty();
+
+  __WEBPACK_IMPORTED_MODULE_4__index__["STATE"].trackers.forEach(trackerData => {
+    const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
+
+    renderChartComponent(trackerData);
+  });
+
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").show();
+}
+
+//render individual tracker summary
+function renderIndividualTrackerSummary(id) {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").empty();
+
+  let trackerData = __WEBPACK_IMPORTED_MODULE_4__index__["STATE"].trackers.find(tracker => tracker.id === id);
+  const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
+
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
+  renderChartComponent(trackerData);
+
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").show();
+}
+
+//render archive page -- change state to include archive?
+function renderArchivePage() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-container").empty();
+
+  __WEBPACK_IMPORTED_MODULE_4__index__["STATE"].archivedTrackers.forEach(trackerData => {
+    const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-container").append(trackerComponent.getArchiveTrackerHtml());
+    renderChartComponent(trackerData);
+  });
+  // console.log(STATE.archivedTrackers);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-archive").show();
+}
+
+//render create new tracker
+function renderCreateTrackerPage() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-container").empty(); 
+
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-container").append(__WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */].getCreateTrackerHtml());
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-tracker").show();
+}
+
+//render log out
+function renderLogOutDashboard() {
+  //return to landing-page
+}
+
+//render user profile page - remove for now
+// export function renderProfilePage() {
+//   $(".main-section").hide();
+
+//   const userComponent = new UserComponents(userData);
+//   $(".profile-container").append(userComponent.getProfileHtml());
+
+//   $(".profile").show();
+// }
+
+// function toggleChartType() {
+
+//   let trackerData = STATE.trackers.find(tracker => tracker.id === id);
+//   const trackerComponent = new TrackerComponents(trackerData);
+//   $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
+
+//   const chartComponent = new ChartComponents(trackerData);
+//   chartComponent.renderChart();
+// }
+
+
+/***/ }),
 /* 249 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -43620,6 +44409,9 @@ module.exports = function(module) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_chart_js__ = __webpack_require__(254);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_chart_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_chart_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_chartjs_plugin_annotation__ = __webpack_require__(310);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_chartjs_plugin_annotation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_chartjs_plugin_annotation__);
+
 
 
 
@@ -43630,61 +44422,157 @@ class ChartComponents {
     this.name = data.name;
     this.tallyMarks = data.tallyMarks;
     this.previousMarks = this.getPreviousMarks();
+    this.averageMarks = this.calculateAvgMarks();
+    this.totalMarks = this.getTotalMarks();
+    // this.lineGraph = this.changeLineGraph();
   }
-// get last 6 months of marks to put in chart 
+
+  // get up to last 6 months of marks to put in chart
   getPreviousMarks() {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const pastMonths = [];
     const pastMarks = [];
-    let i = 0; 
+    let i = 0;
 
     while (i < sortedKeys.length && i < 6) {
-      pastMonths.push(__WEBPACK_IMPORTED_MODULE_0_moment___default()(sortedKeys[i]).format('MMM YY'));
-      pastMarks.push(this.tallyMarks[sortedKeys[i]]); 
-      i++
+      pastMonths.push(__WEBPACK_IMPORTED_MODULE_0_moment___default()(sortedKeys[i]).format("MMM YY"));
+      pastMarks.push(this.tallyMarks[sortedKeys[i]]);
+      i++;
     }
-    return {month: pastMonths, count: pastMarks};
+    return { month: pastMonths, count: pastMarks };
   }
 
-  //can use .destroy() to remove instances of chart created 
-  //put data gathered from getMarksToChart() and plug into chart 
+  // to set max value for y axis -- need to cap at 6 months
+  getTotalMarks() {
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const tallyMarks = this.tallyMarks;
+
+    let totalCount = sortedKeys.reduce(function (sum, value) {
+      return sum + tallyMarks[value];
+    }, 0)
+    return { total: totalCount };
+  }
+
+  // calcuate average -- need to cap at 6 months? 
+  calculateAvgMarks() {
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const tallyMarks = this.tallyMarks;
+
+    let avgMarks =
+      sortedKeys.reduce(function(sum, value) {
+        return sum + tallyMarks[value];
+      }, 0) / sortedKeys.length;
+    // console.log({average: avgMarks, numOfMonths: sortedKeys.length });
+    return { count: avgMarks.toFixed(), numOfMonths: sortedKeys.length };
+  }
+
+  //can use .destroy() to remove instances of chart created
   renderChart() {
-    var ctx = document.getElementsByClassName(`myChart-${this.trackerId}`)[0].getContext('2d');
+    var ctx = document
+      .getElementsByClassName(`myChart-${this.trackerId}`)[0]
+      .getContext("2d");
     var chart = new __WEBPACK_IMPORTED_MODULE_2_chart_js__["Chart"](ctx, {
-        // The type of chart we want to create
-        type: 'bar', //or 'line'
-        // The data for our dataset
-        data: {
-            labels: this.previousMarks.month, //months 
-            datasets: [{
-                label: `Marks for ${this.name}`,
-                backgroundColor: 'rgba(79, 195, 247, 0.3)',
-                borderColor: 'rgb(0, 147, 196)',
-                borderWidth: 1,
-                data: this.previousMarks.count, //marks
-            }]
+      // The type of chart we want to create
+      type: "bar", //or 'line'
+      // The data for our dataset
+      data: {
+        // month & year 
+        labels: this.previousMarks.month,
+        datasets: [
+          {
+            label: `Marks for ${this.name}`,
+            backgroundColor: "rgba(79, 195, 247, 0.3)",
+            borderColor: "rgb(0, 147, 196)",
+            borderWidth: 1,
+            //number of marks per month
+            data: this.previousMarks.count
+          }
+        ]
+      },
+      // Configuration options go here
+      options: {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+                max: this.getTotalMarks.total
+              }
+            }
+          ]
         },
-        // Configuration options go here
-        options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero:true
-                      //look up the setting for highest y axis value 
-                      //take highest value of the marks and + 2 
-                  }
-              }]
-          },
-          title: {
-            display: true,
-            text: 'Last 6 Months'
-          },
-          responsive: true,
+        title: {
+          display: true,
+          text: "Up to last 6 months"
+        },
+        responsive: true,
+        // add average line
+        annotation: {
+          annotations: [
+            {
+              drawTime: "afterDraw",
+              id: "average",
+              type: "line",
+              mode: "horizontal",
+              scaleID: "y-axis-0",
+              value: this.averageMarks.count,
+              borderColor: "#008ba3",
+              borderWidth: 2,
+              label: {
+                backgroundColor: "#c8a415",
+                fontSize: 13,
+                fontStyle: "normal",
+                cornerRadius: 3,
+                position: top,
+                enabled: true,
+                content: `average: ${this.averageMarks.count}`
+              }
+            }
+          ]
         }
+      }
     });
   }
+
+  // changeLineGraph() {
+  //   myChart-`${this.trackerId}`.destroy();
+  //   var ctx = document.getElementsByClassName(`myChart-${this.trackerId}`)[0].getContext('2d');
+  //   var chart = new Chart(ctx, {
+  //     // The type of chart we want to create
+  //     type: 'line',
+  //     // The data for our dataset
+  //     data: {
+  //         labels: this.previousMarks.month, //months
+  //         datasets: [{
+  //             label: `Marks for ${this.name}`,
+  //             backgroundColor: 'rgba(79, 195, 247, 0.3)',
+  //             borderColor: 'rgb(0, 147, 196)',
+  //             borderWidth: 1,
+  //             data: this.previousMarks.count, //marks
+  //         }]
+  //     },
+  //     // Configuration options go here
+  //     options: {
+  //       scales: {
+  //           yAxes: [{
+  //               ticks: {
+  //                   beginAtZero:true
+  //                   //look up the setting for highest y axis value
+  //                   //take highest value of the marks and + 2
+  //               }
+  //           }]
+  //       },
+  //       title: {
+  //         display: true,
+  //         text: 'Last 6 Months'
+  //       },
+  //       responsive: true,
+  //     }
+  //   });
+  // }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = ChartComponents;
+
 
 
 /***/ }),
@@ -43737,7 +44625,7 @@ const mockTrackerData = [
 /* unused harmony export mockTrackerData */
 
 
-/* harmony default export */ __webpack_exports__["a"] = (mockTrackerData);
+/* unused harmony default export */ var _unused_webpack_default_export = (mockTrackerData);
 
 /***/ }),
 /* 251 */
@@ -43750,23 +44638,17 @@ const mockTrackerData = [
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
 
 
-//for current tracker need to be able to identify current month and render marks for current month
-//if not current month, create new month object & add a mark
-
-//look at tallyMark object & get month/year
-//get system current month
-//after get month/year, check if it matches current month
-//if current month, render tally marks
-//if not current month, render blank unless new mark added
 
 class TrackerComponents {
   constructor(data) {
     this.trackerId = data.id;
     this.name = data.name;
     this.description = data.description;
+    this.notes = data.notes;
     this.tallyMarks = data.tallyMarks;
     this.currentMarks = this.checkTrackerMonth();
     this.oneMonthBack = this.getPreviousCount();
+    this.averageMarks = this.calculateAvgMarks();
   }
 
   checkTrackerMonth() {
@@ -43794,6 +44676,8 @@ class TrackerComponents {
     const isItMonthBefore = trackerMoment.isBefore(currentMonth, "month");
     if (isItMonthBefore === true) {
       return { monthCount: this.tallyMarks[previousMonth] };
+    } else {
+      return { monthCount: 0 };
     }
   }
 
@@ -43807,21 +44691,35 @@ class TrackerComponents {
     return markBlocks.join("");
   }
 
+  calculateAvgMarks() {
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const tallyMarks = this.tallyMarks;
+
+    let avgMarks =
+      sortedKeys.reduce(function(sum, value) {
+        return sum + tallyMarks[value];
+      }, 0) / sortedKeys.length;
+    // console.log({average: avgMarks, numOfMonths: sortedKeys.length });
+    return { count: avgMarks.toFixed(), numOfMonths: sortedKeys.length };
+  }
+
   //marks are rendering outside of container?
-  getTrackerHtml() {
+  getDashboardTrackerHtml() {
     const template = `
-      <div class="tracker-container dash-trkr-box">
+      <div class="dashboard-tracker-container">
         <h3 class="tracker-name">${this.name}</h3>
-          <h4 class="tracker-month">${this.currentMarks
-            .currentTrackerMonth}</h4>
-            <div class="marks-container">
-              <ul class="tally-marks>${this.getTallyMarks()}</ul> 
-            </div> 
-          <div class="dashboard-btn-row">
-            <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
-            <button type="button" data-trkr-id=${this
-              .trackerId} class="view-sumry-btn trkr-btn">View Summary</button>
-          </div>
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+        <div class="marks-container">
+          <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+        </div> 
+        <div class="dashboard-btn-row">
+          <button type="button" data-section="dashboard" data-trkr-id=${this
+            .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
+          <button type="button" data-section="dashboard" data-trkr-id=${this
+            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>            
+          <button type="button" data-trkr-id=${this
+            .trackerId} class="view-sumry-btn trkr-btn">View</button>
+        </div>
       </div>
       `;
     return template;
@@ -43833,25 +44731,36 @@ class TrackerComponents {
       <div class="col-1">
         <h3 class="tracker-name">${this.name}</h3>
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
+        <p class="description">${this.description}</p>
           <div class="marks-container">
             <ul class="tally-marks>${this.getTallyMarks()}</ul> 
           </div>
           <div class="summary-statements">
-          <p class="summary-sentence">You marked ${this.name} ${this
-      .currentMarks.monthCount} times this month!</p>
-            <p class="summary-sentence">You marked ${this.name} ${this
-      .oneMonthBack.monthCount} times last month!</p>
+            <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
+            <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
+            <p class="summary-sentence"> On average, you mark ${this.name} ${this.averageMarks.count} 
+              times in the past ${this.averageMarks.numOfMonths} month(s).</p> 
           </div>
       </div>
       <div class="col-2">
-          <div class="chart-container">
-            <canvas class="myChart-${this.trackerId}"></canvas>
-          </div>
+        <div class="chart-container">
+          <canvas class="myChart-${this.trackerId}"></canvas>
+        </div>
+        <div class="notes-container">
+          <label for="notes">Notes</label>
+          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">${this.notes}</textarea>
+        </div>
         <div class="summary-btn-row">
-          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
-          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
-          <button type="button" class="delete-btn trkr-btn">Delete</button> 
-          <button type="button" class="archive-btn trkr-btn">Archive</button>
+          <button type="button" data-trkr-id=${this
+            .trackerId} class="edit-trkr-btn trkr-btn">Edit</button>
+          <button type="button" data-section="summary" data-trkr-id=${this
+            .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
+          <button type="button" data-section="summary" data-trkr-id=${this
+            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>                      
+          <button type="button" data-section="summary" data-trkr-id=${this
+            .trackerId} class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" data-section="summary" data-trkr-id=${this
+            .trackerId} class="archive-btn trkr-btn">Archive</button>
         </div>
       </div>
     </div>
@@ -43863,29 +44772,44 @@ class TrackerComponents {
     const template = `
       <div class="tracker-container inner-flexbox">
       <div class="col-1">
-        <h3 class="tracker-name">${this.name}</h3>
+        <label for="tracker-name" class="edit-trkr-label">Edit Tracker Name</label>      
+        <input data-trkr-id=${this.trackerId} data-field-name="name" 
+          class="tracker-name edit-trkr-field" value="${this.name}"/>
+        <label for="tracker-description" class="edit-trkr-label">Edit Description</label>        
+        <input data-trkr-id=${this.trackerId} data-field-name="description" 
+          class="description edit-trkr-field" value="${this.description}"/>
+
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
-        <p class="description">${this.description}</p>
-          <div class="marks-container">
-            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
-          </div>
-          <div class="summary-statements">
-            <p class="summary-sentence">You marked ${this.name} ${this
-      .currentMarks.monthCount} times this month!</p>
-            <p class="summary-sentence">You marked ${this.name} ${this
-      .oneMonthBack.monthCount} times last month!</p>
-          </div>
+          
+        <div class="marks-container">
+          <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+        </div>
+
+        <div class="summary-statements">
+          <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
+          <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
+          <p class="summary-sentence"> On average, you mark ${this.name} ${this.averageMarks.count} 
+            times in the past ${this.averageMarks.numOfMonths} month(s).</p>        
+        </div>
       </div>
       <div class="col-2">
-          <div class="tracker-notes"> </div>
-          <div class="chart-container">
-            <canvas class="myChart-${this.trackerId}"></canvas>
-          </div>
+        <div class="chart-container">
+          <canvas class="myChart-${this.trackerId}"></canvas>
+        </div>
+        <div class="notes-container">
+          <label for="notes" class="edit-trkr-label">Notes</label>
+          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">${this.notes}</textarea>
+        </div>
+
         <div class="summary-btn-row">
-          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>
-          <button type="button" class="add-mark-btn trkr-btn">Add Mark</button>
-          <button type="button" class="delete-btn trkr-btn">Delete</button> 
-          <button type="button" class="archive-btn trkr-btn">Archive</button>
+          <button type="button" data-section="single" data-trkr-id=${this
+            .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
+          <button type="button" data-section="single" data-trkr-id=${this
+            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>                      
+          <button type="button" data-section="single" data-trkr-id=${this
+            .trackerId} class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" data-section="single" data-trkr-id=${this
+            .trackerId} class="archive-btn trkr-btn">Archive</button>
           <button type="button" class="close-btn trkr-btn">Close</button>
         </div>
       </div>
@@ -43913,13 +44837,33 @@ class TrackerComponents {
             <canvas class="myChart-${this.trackerId}"></canvas>
           </div>
         <div class="summary-btn-row">
-          <button type="button" class="edit-trkr-btn trkr-btn">Edit</button>        
           <button type="button" class="delete-btn trkr-btn">Delete</button> 
-          <button type="button" class="reactivate-btn trkr-btn">Reactivate</button>
-          <button type="button" class="close-btn trkr-btn">Close</button>
+          <button type="button" data-trkr-id=${this
+            .trackerId} class="reactivate-btn trkr-btn">Reactivate</button>
         </div>
       </div>
     </div>
+    `;
+    return template;
+  }
+
+  static getCreateTrackerHtml() {
+    const template = `
+    <h2>Create a Tracker</h2>
+    <form method="post" class="create-form">
+      <label for="tracker-name" class="new-trkr-label">New Tracker Name</label>
+      <input class="new-trkr-input" type="text" placeholder="enter new tracker name">
+
+      <label for="tracker-description" class="new-trkr-label">Description</label>
+      <input class="new-trkr-input" type="text" placeholder="Add a description (optional)">
+
+      <label for="notes" class="new-trkr-label">Notes</label>
+      <textarea class="new-trkr-input tracker-notes" placeholder="Add any notes for yourself (optional)"></textarea>
+      <div class="form-btn-row">
+        <button type="submit" class="create-trkr-btn new-trkr-btn">Create</button>
+        <button type="button" class="cancel-btn new-trkr-btn">Cancel</button>
+      </div>
+    </form>
     `;
     return template;
   }
@@ -43929,7 +44873,35 @@ class TrackerComponents {
 
 
 /***/ }),
-/* 252 */,
+/* 252 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+class UserComponents {
+  constructor(data) {
+    this.userId = data.id;
+    this.userName = data.userName;
+    this.fullName = data.fullName;
+    this.avatar = data.avatar;
+    this.trackerIds = data.trackerIds;
+  }
+
+  getProfileHtml() {
+    const template = `
+    <h2>Profile</h2>
+    <article class="profile-container">
+      <h4>Username</h4>
+      <h4>Password</h4>
+    </article>
+    `;
+    return template;
+  }
+}
+/* unused harmony export default */
+
+
+/***/ }),
 /* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -57210,6 +58182,1207 @@ webpackContext.keys = function webpackContextKeys() {
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
 webpackContext.id = 301;
+
+/***/ }),
+/* 302 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 303 */
+/***/ (function(module, exports) {
+
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+
+/***/ }),
+/* 304 */
+/***/ (function(module, exports) {
+
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+
+/***/ }),
+/* 305 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 306 */
+/***/ (function(module, exports) {
+
+function noop() {}
+
+function elements(chartInstance) {
+	// Turn the elements object into an array of elements
+	var elements = chartInstance.annotation.elements;
+	return Object.keys(elements).map(function(id) {
+		return elements[id];
+	});
+}
+
+function objectId() {
+	return Math.random().toString(36).substr(2, 6);
+}
+
+function isValid(rawValue) {
+	if (rawValue === null || typeof rawValue === 'undefined') {
+		return false;
+	} else if (typeof rawValue === 'number') {
+		return isFinite(rawValue);
+	} else {
+		return !!rawValue;
+	}
+}
+
+function decorate(obj, prop, func) {
+	var prefix = '$';
+	if (!obj[prefix + prop]) {
+		if (obj[prop]) {
+			obj[prefix + prop] = obj[prop].bind(obj);
+			obj[prop] = function() {
+				var args = [ obj[prefix + prop] ].concat(Array.prototype.slice.call(arguments));
+				return func.apply(obj, args);
+			};
+		} else {
+			obj[prop] = function() {
+				var args = [ undefined ].concat(Array.prototype.slice.call(arguments));
+				return func.apply(obj, args);
+			};
+		}
+	}
+}
+
+function callEach(fns, method) {
+	fns.forEach(function(fn) {
+		(method ? fn[method] : fn)();
+	});
+}
+
+function getEventHandlerName(eventName) {
+	return 'on' + eventName[0].toUpperCase() + eventName.substring(1);
+}
+
+function createMouseEvent(type, previousEvent) {
+	try {
+		return new MouseEvent(type, previousEvent);
+	} catch (exception) {
+		try {
+			var m = document.createEvent('MouseEvent');
+			m.initMouseEvent(
+				type,
+				previousEvent.canBubble,
+				previousEvent.cancelable,
+				previousEvent.view,
+				previousEvent.detail,
+				previousEvent.screenX,
+				previousEvent.screenY,
+				previousEvent.clientX,
+				previousEvent.clientY,
+				previousEvent.ctrlKey,
+				previousEvent.altKey,
+				previousEvent.shiftKey,
+				previousEvent.metaKey,
+				previousEvent.button,
+				previousEvent.relatedTarget
+			);
+			return m;
+		} catch (exception2) {
+			var e = document.createEvent('Event');
+			e.initEvent(
+				type,
+				previousEvent.canBubble,
+				previousEvent.cancelable
+			);
+			return e;
+		}
+	}
+}
+
+module.exports = function(Chart) {
+	var chartHelpers = Chart.helpers;
+
+	function initConfig(config) {
+		config = chartHelpers.configMerge(Chart.Annotation.defaults, config);
+		if (chartHelpers.isArray(config.annotations)) {
+			config.annotations.forEach(function(annotation) {
+				annotation.label = chartHelpers.configMerge(Chart.Annotation.labelDefaults, annotation.label);
+			});
+		}
+		return config;
+	}
+
+	function getScaleLimits(scaleId, annotations, scaleMin, scaleMax) {
+		var ranges = annotations.filter(function(annotation) {
+			return !!annotation._model.ranges[scaleId];
+		}).map(function(annotation) {
+			return annotation._model.ranges[scaleId];
+		});
+
+		var min = ranges.map(function(range) {
+			return Number(range.min);
+		}).reduce(function(a, b) {
+			return isFinite(b) && !isNaN(b) && b < a ? b : a;
+		}, scaleMin);
+
+		var max = ranges.map(function(range) {
+			return Number(range.max);
+		}).reduce(function(a, b) {
+			return isFinite(b) && !isNaN(b) && b > a ? b : a;
+		}, scaleMax);
+
+		return {
+			min: min,
+			max: max
+		};
+	}
+
+	function adjustScaleRange(scale) {
+		// Adjust the scale range to include annotation values
+		var range = getScaleLimits(scale.id, elements(scale.chart), scale.min, scale.max);
+		if (typeof scale.options.ticks.min === 'undefined' && typeof scale.options.ticks.suggestedMin === 'undefined') {
+			scale.min = range.min;
+		}
+		if (typeof scale.options.ticks.max === 'undefined' && typeof scale.options.ticks.suggestedMax === 'undefined') {
+			scale.max = range.max;
+		}
+		if (scale.handleTickRangeOptions) {
+			scale.handleTickRangeOptions();
+		}
+	}
+
+	function getNearestItems(annotations, position) {
+		var minDistance = Number.POSITIVE_INFINITY;
+
+		return annotations
+			.filter(function(element) {
+				return element.inRange(position.x, position.y);
+			})
+			.reduce(function(nearestItems, element) {
+				var center = element.getCenterPoint();
+				var distance = chartHelpers.distanceBetweenPoints(position, center);
+
+				if (distance < minDistance) {
+					nearestItems = [element];
+					minDistance = distance;
+				} else if (distance === minDistance) {
+					// Can have multiple items at the same distance in which case we sort by size
+					nearestItems.push(element);
+				}
+
+				return nearestItems;
+			}, [])
+			.sort(function(a, b) {
+				// If there are multiple elements equally close,
+				// sort them by size, then by index
+				var sizeA = a.getArea(), sizeB = b.getArea();
+				return (sizeA > sizeB || sizeA < sizeB) ? sizeA - sizeB : a._index - b._index;
+			})
+			.slice(0, 1)[0]; // return only the top item
+	}
+
+	return {
+		initConfig: initConfig,
+		elements: elements,
+		callEach: callEach,
+		noop: noop,
+		objectId: objectId,
+		isValid: isValid,
+		decorate: decorate,
+		adjustScaleRange: adjustScaleRange,
+		getNearestItems: getNearestItems,
+		getEventHandlerName: getEventHandlerName,
+		createMouseEvent: createMouseEvent
+	};
+};
+
+
+
+/***/ }),
+/* 307 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function(Chart) {
+	var chartHelpers = Chart.helpers;
+
+	var helpers = __webpack_require__(306)(Chart);
+	var events = __webpack_require__(309)(Chart);
+
+	var annotationTypes = Chart.Annotation.types;
+
+	function setAfterDataLimitsHook(axisOptions) {
+		helpers.decorate(axisOptions, 'afterDataLimits', function(previous, scale) {
+			if (previous) previous(scale);
+			helpers.adjustScaleRange(scale);
+		});
+	}
+
+	function draw(drawTime) {
+		return function(chartInstance, easingDecimal) {
+			var defaultDrawTime = chartInstance.annotation.options.drawTime;
+
+			helpers.elements(chartInstance)
+				.filter(function(element) {
+					return drawTime === (element.options.drawTime || defaultDrawTime);
+				})
+				.forEach(function(element) {
+					element.transition(easingDecimal).draw();
+				});
+		};
+	}
+
+	return {
+		beforeInit: function(chartInstance) {
+			var chartOptions = chartInstance.options;
+
+			// Initialize chart instance plugin namespace
+			var ns = chartInstance.annotation = {
+				elements: {},
+				options: helpers.initConfig(chartOptions.annotation || {}),
+				onDestroy: [],
+				firstRun: true,
+				supported: false
+			};
+
+			// Add the annotation scale adjuster to each scale's afterDataLimits hook
+			chartInstance.ensureScalesHaveIDs();
+			if (chartOptions.scales) {
+				ns.supported = true;
+				chartHelpers.each(chartOptions.scales.xAxes, setAfterDataLimitsHook);
+				chartHelpers.each(chartOptions.scales.yAxes, setAfterDataLimitsHook);
+			}
+		},
+		beforeUpdate: function(chartInstance) {
+			var ns = chartInstance.annotation;
+
+			if (!ns.supported) {
+				return;
+			}
+
+			if (!ns.firstRun) {
+				ns.options = helpers.initConfig(chartInstance.options.annotation || {});
+			} else {
+				ns.firstRun = false;
+			}
+
+			var elementIds = [];
+
+			// Add new elements, or update existing ones
+			ns.options.annotations.forEach(function(annotation) {
+				var id = annotation.id || helpers.objectId();
+				
+				// No element with that ID exists, and it's a valid annotation type
+				if (!ns.elements[id] && annotationTypes[annotation.type]) {
+					var cls = annotationTypes[annotation.type];
+					var element = new cls({
+						id: id,
+						options: annotation,
+						chartInstance: chartInstance,
+					});
+					element.initialize();
+					ns.elements[id] = element;
+					annotation.id = id;
+					elementIds.push(id);
+				} else if (ns.elements[id]) {
+					// Nothing to do for update, since the element config references
+					// the same object that exists in the chart annotation config
+					elementIds.push(id);
+				}
+			});
+
+			// Delete removed elements
+			Object.keys(ns.elements).forEach(function(id) {
+				if (elementIds.indexOf(id) === -1) {
+					ns.elements[id].destroy();
+					delete ns.elements[id];
+				}
+			});
+		},
+		afterScaleUpdate: function(chartInstance) {
+			helpers.elements(chartInstance).forEach(function(element) {
+				element.configure();
+			});
+		},
+		beforeDatasetsDraw: draw('beforeDatasetsDraw'),
+		afterDatasetsDraw: draw('afterDatasetsDraw'),
+		afterDraw: draw('afterDraw'),
+		afterInit: function(chartInstance) {
+			// Detect and intercept events that happen on an annotation element
+			var watchFor = chartInstance.annotation.options.events;
+			if (chartHelpers.isArray(watchFor) && watchFor.length > 0) {
+				var canvas = chartInstance.chart.canvas;
+				var eventHandler = events.dispatcher.bind(chartInstance);
+				events.collapseHoverEvents(watchFor).forEach(function(eventName) {
+					chartHelpers.addEvent(canvas, eventName, eventHandler);
+					chartInstance.annotation.onDestroy.push(function() {
+						chartHelpers.removeEvent(canvas, eventName, eventHandler);
+					});
+				});
+			}
+		},
+		destroy: function(chartInstance) {
+			var deregisterers = chartInstance.annotation.onDestroy;
+			while (deregisterers.length > 0) {
+				deregisterers.pop()();
+			}
+		}
+	};
+};
+
+
+/***/ }),
+/* 308 */
+/***/ (function(module, exports) {
+
+module.exports = function(Chart) {
+	var chartHelpers = Chart.helpers;
+	
+	var AnnotationElement = Chart.Element.extend({
+		initialize: function() {
+			this.hidden = false;
+			this.hovering = false;
+			this._model = chartHelpers.clone(this._model) || {};
+			this.setDataLimits();
+		},
+		destroy: function() {},
+		setDataLimits: function() {},
+		configure: function() {},
+		inRange: function() {},
+		getCenterPoint: function() {},
+		getWidth: function() {},
+		getHeight: function() {},
+		getArea: function() {},
+		draw: function() {}
+	});
+
+	return AnnotationElement;
+};
+
+
+/***/ }),
+/* 309 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function(Chart) {
+	var chartHelpers = Chart.helpers;
+	var helpers = __webpack_require__(306)(Chart);
+
+	function collapseHoverEvents(events) {
+		var hover = false;
+		var filteredEvents = events.filter(function(eventName) {
+			switch (eventName) {
+				case 'mouseenter':
+				case 'mouseover':
+				case 'mouseout':
+				case 'mouseleave':
+					hover = true;
+					return false;
+
+				default:
+					return true;
+			}
+		});
+		if (hover && filteredEvents.indexOf('mousemove') === -1) {
+			filteredEvents.push('mousemove');
+		}
+		return filteredEvents;
+	}
+
+	function dispatcher(e) {
+		var ns = this.annotation;
+		var elements = helpers.elements(this);
+		var position = chartHelpers.getRelativePosition(e, this.chart);
+		var element = helpers.getNearestItems(elements, position);
+		var events = collapseHoverEvents(ns.options.events);
+		var dblClickSpeed = ns.options.dblClickSpeed;
+		var eventHandlers = [];
+		var eventHandlerName = helpers.getEventHandlerName(e.type);
+		var options = (element || {}).options;
+
+		// Detect hover events
+		if (e.type === 'mousemove') {
+			if (element && !element.hovering) {
+				// hover started
+				['mouseenter', 'mouseover'].forEach(function(eventName) {
+					var eventHandlerName = helpers.getEventHandlerName(eventName);
+					var hoverEvent = helpers.createMouseEvent(eventName, e); // recreate the event to match the handler
+					element.hovering = true;
+					if (typeof options[eventHandlerName] === 'function') {
+						eventHandlers.push([ options[eventHandlerName], hoverEvent, element ]);
+					}
+				});
+			} else if (!element) {
+				// hover ended
+				elements.forEach(function(element) {
+					if (element.hovering) {
+						element.hovering = false;
+						var options = element.options;
+						['mouseout', 'mouseleave'].forEach(function(eventName) {
+							var eventHandlerName = helpers.getEventHandlerName(eventName);
+							var hoverEvent = helpers.createMouseEvent(eventName, e); // recreate the event to match the handler
+							if (typeof options[eventHandlerName] === 'function') {
+								eventHandlers.push([ options[eventHandlerName], hoverEvent, element ]);
+							}
+						});
+					}
+				});
+			}
+		}
+
+		// Suppress duplicate click events during a double click
+		// 1. click -> 2. click -> 3. dblclick
+		//
+		// 1: wait dblClickSpeed ms, then fire click
+		// 2: cancel (1) if it is waiting then wait dblClickSpeed ms then fire click, else fire click immediately
+		// 3: cancel (1) or (2) if waiting, then fire dblclick 
+		if (element && events.indexOf('dblclick') > -1 && typeof options.onDblclick === 'function') {
+			if (e.type === 'click' && typeof options.onClick === 'function') {
+				clearTimeout(element.clickTimeout);
+				element.clickTimeout = setTimeout(function() {
+					delete element.clickTimeout;
+					options.onClick.call(element, e);
+				}, dblClickSpeed);
+				e.stopImmediatePropagation();
+				e.preventDefault();
+				return;
+			} else if (e.type === 'dblclick' && element.clickTimeout) {
+				clearTimeout(element.clickTimeout);
+				delete element.clickTimeout;
+			}
+		}
+
+		// Dispatch the event to the usual handler, but only if we haven't substituted it
+		if (element && typeof options[eventHandlerName] === 'function' && eventHandlers.length === 0) {
+			eventHandlers.push([ options[eventHandlerName], e, element ]);
+		}
+
+		if (eventHandlers.length > 0) {
+			e.stopImmediatePropagation();
+			e.preventDefault();
+			eventHandlers.forEach(function(eventHandler) {
+				// [handler, event, element]
+				eventHandler[0].call(eventHandler[2], eventHandler[1]);
+			});
+		}
+	}
+
+	return {
+		dispatcher: dispatcher,
+		collapseHoverEvents: collapseHoverEvents
+	};
+};
+
+
+/***/ }),
+/* 310 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Get the chart variable
+var Chart = __webpack_require__(254);
+Chart = typeof(Chart) === 'function' ? Chart : window.Chart;
+
+// Configure plugin namespace
+Chart.Annotation = Chart.Annotation || {};
+
+Chart.Annotation.drawTimeOptions = {
+	afterDraw: 'afterDraw',
+	afterDatasetsDraw: 'afterDatasetsDraw',
+	beforeDatasetsDraw: 'beforeDatasetsDraw'
+};
+
+Chart.Annotation.defaults = {
+	drawTime: 'afterDatasetsDraw',
+	dblClickSpeed: 350, // ms
+	events: [],
+	annotations: []
+};
+
+Chart.Annotation.labelDefaults = {
+	backgroundColor: 'rgba(0,0,0,0.8)',
+	fontFamily: Chart.defaults.global.defaultFontFamily,
+	fontSize: Chart.defaults.global.defaultFontSize,
+	fontStyle: 'bold',
+	fontColor: '#fff',
+	xPadding: 6,
+	yPadding: 6,
+	cornerRadius: 6,
+	position: 'center',
+	xAdjust: 0,
+	yAdjust: 0,
+	enabled: false,
+	content: null
+};
+
+Chart.Annotation.Element = __webpack_require__(308)(Chart);
+
+Chart.Annotation.types = {
+	line: __webpack_require__(312)(Chart),
+	box: __webpack_require__(311)(Chart)
+};
+
+var annotationPlugin = __webpack_require__(307)(Chart);
+
+module.exports = annotationPlugin;
+Chart.pluginService.register(annotationPlugin);
+
+
+/***/ }),
+/* 311 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Box Annotation implementation
+module.exports = function(Chart) {
+	var helpers = __webpack_require__(306)(Chart);
+	
+	var BoxAnnotation = Chart.Annotation.Element.extend({
+		setDataLimits: function() {
+			var model = this._model;
+			var options = this.options;
+			var chartInstance = this.chartInstance;
+
+			var xScale = chartInstance.scales[options.xScaleID];
+			var yScale = chartInstance.scales[options.yScaleID];
+			var chartArea = chartInstance.chartArea;
+
+			// Set the data range for this annotation
+			model.ranges = {};
+			
+			if (!chartArea) {
+				return;
+			}
+			
+			var min = 0;
+			var max = 0;
+			
+			if (xScale) {
+				min = helpers.isValid(options.xMin) ? options.xMin : xScale.getPixelForValue(chartArea.left);
+				max = helpers.isValid(options.xMax) ? options.xMax : xScale.getPixelForValue(chartArea.right);
+
+				model.ranges[options.xScaleID] = {
+					min: Math.min(min, max),
+					max: Math.max(min, max)
+				};
+			}
+
+			if (yScale) {
+				min = helpers.isValid(options.yMin) ? options.yMin : yScale.getPixelForValue(chartArea.bottom);
+				max = helpers.isValid(options.yMax) ? options.yMax : yScale.getPixelForValue(chartArea.top);
+
+				model.ranges[options.yScaleID] = {
+					min: Math.min(min, max),
+					max: Math.max(min, max)
+				};
+			}
+		},
+		configure: function() {
+			var model = this._model;
+			var options = this.options;
+			var chartInstance = this.chartInstance;
+
+			var xScale = chartInstance.scales[options.xScaleID];
+			var yScale = chartInstance.scales[options.yScaleID];
+			var chartArea = chartInstance.chartArea;
+
+			// clip annotations to the chart area
+			model.clip = {
+				x1: chartArea.left,
+				x2: chartArea.right,
+				y1: chartArea.top,
+				y2: chartArea.bottom
+			};
+
+			var left = chartArea.left, 
+				top = chartArea.top, 
+				right = chartArea.right, 
+				bottom = chartArea.bottom;
+
+			var min, max;
+
+			if (xScale) {
+				min = helpers.isValid(options.xMin) ? xScale.getPixelForValue(options.xMin) : chartArea.left;
+				max = helpers.isValid(options.xMax) ? xScale.getPixelForValue(options.xMax) : chartArea.right;
+				left = Math.min(min, max);
+				right = Math.max(min, max);
+			}
+
+			if (yScale) {
+				min = helpers.isValid(options.yMin) ? yScale.getPixelForValue(options.yMin) : chartArea.bottom;
+				max = helpers.isValid(options.yMax) ? yScale.getPixelForValue(options.yMax) : chartArea.top;
+				top = Math.min(min, max);
+				bottom = Math.max(min, max);
+			}
+
+			// Ensure model has rect coordinates
+			model.left = left;
+			model.top = top;
+			model.right = right;
+			model.bottom = bottom;
+
+			// Stylistic options
+			model.borderColor = options.borderColor;
+			model.borderWidth = options.borderWidth;
+			model.backgroundColor = options.backgroundColor;
+		},
+		inRange: function(mouseX, mouseY) {
+			var model = this._model;
+			return model &&
+				mouseX >= model.left && 
+				mouseX <= model.right && 
+				mouseY >= model.top && 
+				mouseY <= model.bottom;
+		},
+		getCenterPoint: function() {
+			var model = this._model;
+			return {
+				x: (model.right + model.left) / 2,
+				y: (model.bottom + model.top) / 2
+			};
+		},
+		getWidth: function() {
+			var model = this._model;
+			return Math.abs(model.right - model.left);
+		},
+		getHeight: function() {
+			var model = this._model;
+			return Math.abs(model.bottom - model.top);
+		},
+		getArea: function() {
+			return this.getWidth() * this.getHeight();
+		},
+		draw: function() {
+			var view = this._view;
+			var ctx = this.chartInstance.chart.ctx;
+
+			ctx.save();
+
+			// Canvas setup
+			ctx.beginPath();
+			ctx.rect(view.clip.x1, view.clip.y1, view.clip.x2 - view.clip.x1, view.clip.y2 - view.clip.y1);
+			ctx.clip();
+
+			ctx.lineWidth = view.borderWidth;
+			ctx.strokeStyle = view.borderColor;
+			ctx.fillStyle = view.backgroundColor;
+
+			// Draw
+			var width = view.right - view.left,
+				height = view.bottom - view.top;
+			ctx.fillRect(view.left, view.top, width, height);
+			ctx.strokeRect(view.left, view.top, width, height);
+
+			ctx.restore();
+		}
+	});
+
+	return BoxAnnotation;
+};
+
+
+/***/ }),
+/* 312 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Line Annotation implementation
+module.exports = function(Chart) {
+	var chartHelpers = Chart.helpers;
+	var helpers = __webpack_require__(306)(Chart);
+
+	var horizontalKeyword = 'horizontal';
+	var verticalKeyword = 'vertical';
+
+	var LineAnnotation = Chart.Annotation.Element.extend({
+		setDataLimits: function() {
+			var model = this._model;
+			var options = this.options;
+
+			// Set the data range for this annotation
+			model.ranges = {};
+			model.ranges[options.scaleID] = {
+				min: options.value,
+				max: options.endValue || options.value
+			};
+		},
+		configure: function() {
+			var model = this._model;
+			var options = this.options;
+			var chartInstance = this.chartInstance;
+			var ctx = chartInstance.chart.ctx;
+
+			var scale = chartInstance.scales[options.scaleID];
+			var pixel, endPixel;
+			if (scale) {
+				pixel = helpers.isValid(options.value) ? scale.getPixelForValue(options.value) : NaN;
+				endPixel = helpers.isValid(options.endValue) ? scale.getPixelForValue(options.endValue) : pixel;
+			}
+
+			if (isNaN(pixel)) {
+				return;
+			}
+
+			var chartArea = chartInstance.chartArea;
+
+			// clip annotations to the chart area
+			model.clip = {
+				x1: chartArea.left,
+				x2: chartArea.right,
+				y1: chartArea.top,
+				y2: chartArea.bottom
+			};
+
+			if (this.options.mode == horizontalKeyword) {
+				model.x1 = chartArea.left;
+				model.x2 = chartArea.right;
+				model.y1 = pixel;
+				model.y2 = endPixel;
+			} else {
+				model.y1 = chartArea.top;
+				model.y2 = chartArea.bottom;
+				model.x1 = pixel;
+				model.x2 = endPixel;
+			}
+
+			model.line = new LineFunction(model);
+			model.mode = options.mode;
+
+			// Figure out the label:
+			model.labelBackgroundColor = options.label.backgroundColor;
+			model.labelFontFamily = options.label.fontFamily;
+			model.labelFontSize = options.label.fontSize;
+			model.labelFontStyle = options.label.fontStyle;
+			model.labelFontColor = options.label.fontColor;
+			model.labelXPadding = options.label.xPadding;
+			model.labelYPadding = options.label.yPadding;
+			model.labelCornerRadius = options.label.cornerRadius;
+			model.labelPosition = options.label.position;
+			model.labelXAdjust = options.label.xAdjust;
+			model.labelYAdjust = options.label.yAdjust;
+			model.labelEnabled = options.label.enabled;
+			model.labelContent = options.label.content;
+
+			ctx.font = chartHelpers.fontString(model.labelFontSize, model.labelFontStyle, model.labelFontFamily);
+			var textWidth = ctx.measureText(model.labelContent).width;
+			var textHeight = ctx.measureText('M').width;
+			var labelPosition = calculateLabelPosition(model, textWidth, textHeight, model.labelXPadding, model.labelYPadding);
+			model.labelX = labelPosition.x - model.labelXPadding;
+			model.labelY = labelPosition.y - model.labelYPadding;
+			model.labelWidth = textWidth + (2 * model.labelXPadding);
+			model.labelHeight = textHeight + (2 * model.labelYPadding);
+
+			model.borderColor = options.borderColor;
+			model.borderWidth = options.borderWidth;
+			model.borderDash = options.borderDash || [];
+			model.borderDashOffset = options.borderDashOffset || 0;
+		},
+		inRange: function(mouseX, mouseY) {
+			var model = this._model;
+			
+			return (
+				// On the line
+				model.line &&
+				model.line.intersects(mouseX, mouseY, this.getHeight())
+			) || (
+				// On the label
+				model.labelEnabled &&
+				model.labelContent &&
+				mouseX >= model.labelX && 
+				mouseX <= model.labelX + model.labelWidth && 
+				mouseY >= model.labelY && 
+				mouseY <= model.labelY + model.labelHeight
+			);
+		},
+		getCenterPoint: function() {
+			return {
+				x: (this._model.x2 + this._model.x1) / 2,
+				y: (this._model.y2 + this._model.y1) / 2
+			};
+		},
+		getWidth: function() {
+			return Math.abs(this._model.right - this._model.left);
+		},
+		getHeight: function() {
+			return this._model.borderWidth || 1;
+		},
+		getArea: function() {
+			return Math.sqrt(Math.pow(this.getWidth(), 2) + Math.pow(this.getHeight(), 2));
+		},
+		draw: function() {
+			var view = this._view;
+			var ctx = this.chartInstance.chart.ctx;
+
+			if (!view.clip) {
+				return;
+			}
+
+			ctx.save();
+
+			// Canvas setup
+			ctx.beginPath();
+			ctx.rect(view.clip.x1, view.clip.y1, view.clip.x2 - view.clip.x1, view.clip.y2 - view.clip.y1);
+			ctx.clip();
+
+			ctx.lineWidth = view.borderWidth;
+			ctx.strokeStyle = view.borderColor;
+
+			if (ctx.setLineDash) {
+				ctx.setLineDash(view.borderDash);
+			}
+			ctx.lineDashOffset = view.borderDashOffset;
+
+			// Draw
+			ctx.beginPath();
+			ctx.moveTo(view.x1, view.y1);
+			ctx.lineTo(view.x2, view.y2);
+			ctx.stroke();
+
+			if (view.labelEnabled && view.labelContent) {
+				ctx.beginPath();
+				ctx.rect(view.clip.x1, view.clip.y1, view.clip.x2 - view.clip.x1, view.clip.y2 - view.clip.y1);
+				ctx.clip();
+
+				ctx.fillStyle = view.labelBackgroundColor;
+				// Draw the tooltip
+				chartHelpers.drawRoundedRectangle(
+					ctx,
+					view.labelX, // x
+					view.labelY, // y
+					view.labelWidth, // width
+					view.labelHeight, // height
+					view.labelCornerRadius // radius
+				);
+				ctx.fill();
+
+				// Draw the text
+				ctx.font = chartHelpers.fontString(
+					view.labelFontSize,
+					view.labelFontStyle,
+					view.labelFontFamily
+				);
+				ctx.fillStyle = view.labelFontColor;
+				ctx.textAlign = 'center';
+				ctx.textBaseline = 'middle';
+				ctx.fillText(
+					view.labelContent,
+					view.labelX + (view.labelWidth / 2),
+					view.labelY + (view.labelHeight / 2)
+				);
+			}
+
+			ctx.restore();
+		}
+	});
+
+	function LineFunction(view) {
+		// Describe the line in slope-intercept form (y = mx + b).
+		// Note that the axes are rotated 90° CCW, which causes the
+		// x- and y-axes to be swapped.
+		var m = (view.x2 - view.x1) / (view.y2 - view.y1);
+		var b = view.x1 || 0;
+
+		this.m = m;
+		this.b = b;
+
+		this.getX = function(y) {
+			// Coordinates are relative to the origin of the canvas
+			return m * (y - view.y1) + b;
+		};
+
+		this.getY = function(x) {
+			return ((x - b) / m) + view.y1;
+		};
+
+		this.intersects = function(x, y, epsilon) {
+			epsilon = epsilon || 0.001;
+			var dy = this.getY(x),
+				dx = this.getX(y);
+			return (
+				(!isFinite(dy) || Math.abs(y - dy) < epsilon) &&
+				(!isFinite(dx) || Math.abs(x - dx) < epsilon)
+			);
+		};
+	}
+
+	function calculateLabelPosition(view, width, height, padWidth, padHeight) {
+		var line = view.line;
+		var ret = {}, xa = 0, ya = 0;
+
+		switch (true) {
+			// top align
+			case view.mode == verticalKeyword && view.labelPosition == "top":
+				ya = padHeight + view.labelYAdjust;
+				xa = (width / 2) + view.labelXAdjust;
+				ret.y = view.y1 + ya;
+				ret.x = (isFinite(line.m) ? line.getX(ret.y) : view.x1) - xa;
+			break;
+
+			// bottom align
+			case view.mode == verticalKeyword && view.labelPosition == "bottom":
+				ya = height + padHeight + view.labelYAdjust;
+				xa = (width / 2) + view.labelXAdjust;
+				ret.y = view.y2 - ya;
+				ret.x = (isFinite(line.m) ? line.getX(ret.y) : view.x1) - xa;
+			break;
+
+			// left align
+			case view.mode == horizontalKeyword && view.labelPosition == "left":
+				xa = padWidth + view.labelXAdjust;
+				ya = -(height / 2) + view.labelYAdjust;
+				ret.x = view.x1 + xa;
+				ret.y = line.getY(ret.x) + ya;
+			break;
+
+			// right align
+			case view.mode == horizontalKeyword && view.labelPosition == "right":
+				xa = width + padWidth + view.labelXAdjust;
+				ya = -(height / 2) + view.labelYAdjust;
+				ret.x = view.x2 - xa;
+				ret.y = line.getY(ret.x) + ya;
+			break;
+
+			// center align
+			default:
+				ret.x = ((view.x1 + view.x2 - width) / 2) + view.labelXAdjust;
+				ret.y = ((view.y1 + view.y2 - height) / 2) + view.labelYAdjust;
+		}
+
+		return ret;
+	}
+
+	return LineAnnotation;
+};
+
 
 /***/ })
 /******/ ]);

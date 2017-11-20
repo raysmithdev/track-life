@@ -17,6 +17,7 @@ button {
   font-weight: bold;
 }
 
+/* hide sections on render */
 .login,
 .dashboard,
 .create-tracker,
@@ -27,6 +28,7 @@ button {
   display: none;
 }
 
+/* padding for main containers */
 .dashboard,
 .tracker-summary,
 .tracker-archive,
@@ -34,6 +36,7 @@ button {
   padding: 1em;
 }
 
+/* navigation  */
 .header-container {
   display: flex;
   justify-content: space-between;
@@ -42,10 +45,15 @@ button {
   flex-wrap: wrap;
 }
 
-.app-name-container,
+.app-name-container {
+  display: flex;
+  align-items: center;
+}
+
 .nav-btn-container {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 /* add highlight when clicked */
@@ -62,42 +70,53 @@ button {
   /* flex-wrap: wrap; */
 }
 
-@media screen and (max-width: 500px) {
+/* for smaller screens */
+@media screen and (max-width: 440px) {
   .header-container {
     justify-content: center;
     /* flex-flow: column wrap; */
     /* padding: 0; */
   }
-}
+  .nav-btn-container {
+    justify-content: space-evenly;
+  }
 
-/* .app-name-container,
-.nav-btn-container {
-  display: flex;
-  align-items: center;
+  .nav-btn {
+    margin-bottom: 7px;
+  }
 }
-.nav-btn-container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-} */
-
-/* .app-name,
-.nav-btn-container {
-  margin: 0;
-  padding: 0;
-  width: 50%;
-} */
 
 h2 {
+  font-weight: bold;
   padding: 0.25em;
   background-color: #eceff1;
   text-align: center;
   vertical-align: center;
 }
 
+/* dashboard page */
+.dashboard-container {
+  display: flex;
+  width: 95%;
+  margin: 0 auto;
+  /* what applies to the child:  */
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dashboard-tracker-container {
+  flex-basis: 75%;
+  max-width: 400px;
+  margin: 5px;
+  padding: 10px;
+  border: 1.5px solid #ffd54f;
+  border-radius: 3px;
+}
+
+/* summary & archive page */
 .tracker-container {
   flex-grow: 1;
-  max-width: 800px;
+  max-width: 90%;
   margin: 5px;
   padding: 10px;
   border: 1.5px solid #ffd54f;
@@ -113,7 +132,6 @@ h2 {
   .col-1,
   .col-2 {
     width: 50%;
-    /* or min-width? */
   }
 }
 
@@ -122,28 +140,79 @@ h2 {
   background-color: #eceff1;
   text-align: center;
   vertical-align: center;
+  margin-top: 10px;
 }
 
 .tracker-month {
   /* color: #008ba3; */
+  text-align: center;
+  font-style: italic;
   font-size: 18px;
 }
 
-.tally-marks {
-  display: flex;
-  max-width: 200px;
+.summary-sentence {
+  font-weight: 200;
+  font-size: 16px;
 }
 
 .marks-container {
-  /* max-width: 75%; */
+  /* max-width: 50%; */
+  /* margin: auto 0; */
+  display: flex;
+  justify-content: space-between;
   min-height: 35px;
+  /* padding: 5px; */
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .mark {
-  display: inline-block; /* this makes it into square */
-  padding: 10px;
-  margin-right: 5px;
+  /* this makes it into square */
+  display: inline-block; 
+  /* marks are actually the padding */
+  padding: 11px;
+  margin-right: 3px;
   background-color: #aed581;
+}
+
+.edit-trkr-label {
+  display: block;
+  text-align: center;
+}
+
+.edit-trkr-field {
+  height: auto;
+  width: 95%; 
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #7da453;;
+  border-radius: 3px;
+  background-color: white; 
+  font-size: 15px;
+  text-align: left;
+} 
+
+.notes-container {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  padding: 5px;
+}
+
+.trkr-sumry-notes {
+  resize: none;
+  /* margin: 0 auto; */
+  width: 95%;
+  height: 100px;
+  border: 1px solid #7da453;
+  border-radius: 3px;
+  padding: 10px;
+  margin: 10px;
+  font-size: 15px;
 }
 
 .trkr-btn {
@@ -154,12 +223,11 @@ h2 {
   border: 1px solid #008ba3;
   border-radius: 3px;
   cursor: pointer;
-  margin-right: 5px;
+  margin: 3px;
   white-space: nowrap;
 }
 
 /* make flex container for dashboard & trackers */
-.dashboard-container,
 .summary-container,
 .archive-container {
   display: flex;
@@ -172,21 +240,16 @@ h2 {
 
 .dashboard-btn-row {
   display: flex;
+  /* align-content: flex-end; */
   justify-content: center;
-  margin-right: 5px;
+  margin: 25px 0 7px;
 }
 
 .summary-btn-row {
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-fieldset {
-  display: flex;
-  padding: 0;
-  border: 0;
-  margin: 0;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 5px;
 }
 
 .create-form {
@@ -197,21 +260,11 @@ fieldset {
   margin: 0 auto;
 }
 
-legend {
-  width: 100%;
-  font-size: 1.25em;
-  text-align: center;
-  margin: 0 auto 1em;
-  /* background-color: #eceff1; */
-}
-
-label {
+.new-trkr-label {
   font-size: 18px;
-  text-align: center;
 }
 
-input {
-  /* display: block; */
+.new-trkr-input {
   width: 100%;
   height: auto;
   font-size: 20px;
@@ -219,12 +272,11 @@ input {
   padding: 5px;
   border: 2px solid #008ba3;
   border-radius: 3px;
-  /* background: #fcfcfc; */
   margin: 10px auto 10px;
   transition: opacity 0.4s;
 }
 
-input:focus {
+.new-trkr-input:focus {
   border: 3px solid #62efff;
 }
 
@@ -232,7 +284,6 @@ input:focus {
   font-size: 15px;
   text-align: center;
   padding: 5px;
-  /* font-style: italic; */
 }
 
 .tracker-notes {
@@ -248,13 +299,14 @@ input:focus {
 
 button {
   height: auto;
+  margin-right: 5px;
   font-size: 18px;
   text-align: center;
   background: #ffffff;
   border: 0;
   border-radius: 3px;
   cursor: pointer;
-  margin-right: 5px;
+
 }
 
 .footer {
