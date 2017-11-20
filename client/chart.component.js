@@ -29,7 +29,7 @@ export default class ChartComponents {
     return { month: pastMonths, count: pastMarks };
   }
 
-  // to set max value for y axis
+  // to set max value for y axis -- need to cap at 6 months
   getTotalMarks() {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const tallyMarks = this.tallyMarks;
@@ -40,7 +40,7 @@ export default class ChartComponents {
     return { total: totalCount };
   }
 
-  //how to cap this at 6 months at most?
+  // calcuate average -- need to cap at 6 months? 
   calculateAvgMarks() {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const tallyMarks = this.tallyMarks;
