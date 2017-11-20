@@ -25,6 +25,12 @@ export function renderDashboard() {
   $(".dashboard").show();
 }
 
+// render chart function
+function renderChartComponent(data) {
+  const chartComponent = new ChartComponents(data);
+  chartComponent.renderChart();
+}
+
 //render summary page
 export function renderSummaryPage() {
   $(".main-section").hide();
@@ -34,22 +40,11 @@ export function renderSummaryPage() {
     const trackerComponent = new TrackerComponents(trackerData);
     $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
 
-    const chartComponent = new ChartComponents(trackerData);
-    chartComponent.renderChart();
+    renderChartComponent(trackerData);
   });
 
   $(".tracker-summary").show();
 }
-
-// function toggleChartType() {
-
-//   let trackerData = STATE.trackers.find(tracker => tracker.id === id);
-//   const trackerComponent = new TrackerComponents(trackerData);
-//   $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
-
-//   const chartComponent = new ChartComponents(trackerData);
-//   chartComponent.renderChart();
-// }
 
 //render individual tracker summary
 export function renderIndividualTrackerSummary(id) {
@@ -58,10 +53,9 @@ export function renderIndividualTrackerSummary(id) {
 
   let trackerData = STATE.trackers.find(tracker => tracker.id === id);
   const trackerComponent = new TrackerComponents(trackerData);
-  $(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
 
-  const chartComponent = new ChartComponents(trackerData);
-  chartComponent.renderChart();
+  $(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
+  renderChartComponent(trackerData);
 
   $(".tracker-summary").show();
 }
@@ -74,9 +68,7 @@ export function renderArchivePage() {
   STATE.archivedTrackers.forEach(trackerData => {
     const trackerComponent = new TrackerComponents(trackerData);
     $(".archive-container").append(trackerComponent.getArchiveTrackerHtml());
-
-    const chartComponent = new ChartComponents(trackerData);
-    chartComponent.renderChart();
+    renderChartComponent(trackerData);
   });
   // console.log(STATE.archivedTrackers);
   $(".tracker-archive").show();
@@ -91,22 +83,29 @@ export function renderCreateTrackerPage() {
   $(".create-tracker").show();
 }
 
-//render user profile page - ??
-export function renderProfilePage() {
-  $(".main-section").hide();
-
-  const userComponent = new UserComponents(userData);
-  $(".profile-container").append(userComponent.getProfileHtml());
-
-  $(".profile").show();
-}
-
-//render description in input
-// function renderDescription() {
-//   ${this.description}
-// }
-
 //render log out
 export function renderLogOutDashboard() {
   //return to landing-page
 }
+
+//render user profile page - remove for now
+// export function renderProfilePage() {
+//   $(".main-section").hide();
+
+//   const userComponent = new UserComponents(userData);
+//   $(".profile-container").append(userComponent.getProfileHtml());
+
+//   $(".profile").show();
+// }
+
+
+
+// function toggleChartType() {
+
+//   let trackerData = STATE.trackers.find(tracker => tracker.id === id);
+//   const trackerComponent = new TrackerComponents(trackerData);
+//   $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
+
+//   const chartComponent = new ChartComponents(trackerData);
+//   chartComponent.renderChart();
+// }
