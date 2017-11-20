@@ -135,6 +135,7 @@ h2 {
   }
 }
 
+/* tracker content */
 .tracker-name {
   padding: 0.25em;
   background-color: #eceff1;
@@ -144,15 +145,22 @@ h2 {
 }
 
 .tracker-month {
-  /* color: #008ba3; */
   text-align: center;
   font-style: italic;
   font-size: 18px;
 }
 
+.current-count {
+  text-align: center;
+  margin-top: 17px;
+  /* font-weight: 200; */
+  color: #008ba3;
+}
+
 .summary-sentence {
   font-weight: 200;
   font-size: 16px;
+  margin-top: 15px;
 }
 
 .marks-container {
