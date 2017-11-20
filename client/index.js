@@ -146,7 +146,7 @@ function setUpHandlers() {
 
     $.post(`/api/users/123/trackers/${trackerId}/archive`).then(data => {
       const index = STATE.trackers.findIndex(tracker => tracker.id === data.id);
-      //STATE.trackers[index] = data;
+
       STATE.trackers.splice(index, 1); //look at index position & remove 1 item following
       STATE.archivedTrackers.push(data); //push data that comes back from API 
 
@@ -167,7 +167,6 @@ function setUpHandlers() {
   // reactivate button
   $(".tracker-archive").on("click", ".reactivate-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id");
-    const section = $(e.currentTarget).data("section");
 
     $.post(`/api/users/123/trackers/${trackerId}/reactivate`).then(data => {
       console.log('state =', STATE, data);
