@@ -20684,8 +20684,8 @@ function setUpHandlers() {
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-link").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */]);
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-link").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["c" /* renderCreateTrackerPage */]);
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-link").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["d" /* renderArchivePage */]);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".profile-link").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["e" /* renderProfilePage */]);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".logout-btn").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["f" /* renderLogOutDashboard */]);
+  // $(".profile-link").click(renderProfilePage);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".logout-btn").click(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["e" /* renderLogOutDashboard */]);
 
   //dynamic buttons created within trackers
   //add mark button
@@ -20706,7 +20706,7 @@ function setUpHandlers() {
           __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
           break;
         case "single": //single summary breaks, won't render
-          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["g" /* renderIndividualTrackerSummary */])(data.id);
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["f" /* renderIndividualTrackerSummary */])(data.id);
           break;
         default:
           __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["a" /* renderDashboard */])();
@@ -20734,7 +20734,7 @@ function setUpHandlers() {
           __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
           break;
         case "single":
-          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["g" /* renderIndividualTrackerSummary */])(data.id);
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["f" /* renderIndividualTrackerSummary */])(data.id);
           break;
         default:
           __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["a" /* renderDashboard */])();
@@ -20747,22 +20747,27 @@ function setUpHandlers() {
   // view summary button - open individual tracker
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard").on("click", ".view-sumry-btn", e => {
     const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["g" /* renderIndividualTrackerSummary */])(trackerId);
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["f" /* renderIndividualTrackerSummary */])(trackerId);
   });
 
   // edit button - open individual tracker view
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").on("click", ".edit-trkr-btn", e => {
     const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["g" /* renderIndividualTrackerSummary */])(trackerId);
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["f" /* renderIndividualTrackerSummary */])(trackerId);
   });
 
   // save input fields on blur in individual summary view
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").on("blur", ".trkr-form-field", e => {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").on("blur", ".edit-trkr-field", e => {
     const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id"); 
     const fieldName = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("field-name");
     const fieldValue = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).val(); 
     const updatedData = {};
-      updatedData[fieldName] = fieldValue; 
+    updatedData[fieldName] = fieldValue; 
+
+    const index = STATE.trackers.findIndex(tracker => tracker.id === trackerId);
+    const updatedTracker = STATE.trackers[index];
+    updatedTracker[fieldName] = fieldValue;
+
     // change :userId when ready? 
     __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.ajax({
       method: 'PUT',
@@ -20777,14 +20782,17 @@ function setUpHandlers() {
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
   });
 
-  // add archive button
+  // archive button
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").on("click", ".archive-btn", e => {
     const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id");
     const section = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("section");
 
     __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post(`/api/users/123/trackers/${trackerId}/archive`).then(data => {
       const index = STATE.trackers.findIndex(tracker => tracker.id === data.id);
-      STATE.trackers[index] = data;
+
+      STATE.trackers.splice(index, 1); //look at index position & remove 1 item following
+      STATE.archivedTrackers.push(data); //push data that comes back from API 
+
       switch (section) {
         case "summary":
           __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
@@ -20799,29 +20807,18 @@ function setUpHandlers() {
     });
   });
 
-  //add reactivate button
+  // reactivate button
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-archive").on("click", ".reactivate-btn", e => {
     const trackerId = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("trkr-id");
-    const section = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(e.currentTarget).data("section");
-      //check how STATE is being managed
-      //find the tracker in archivetrackers and add it back to trackers
-      //OR create refresh method so it does API call to active trackers & reset the state
+
     __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post(`/api/users/123/trackers/${trackerId}/reactivate`).then(data => {
-      const index = STATE.archiveTrackers.findIndex(
-        tracker => tracker.id === data.id
-      );
-      STATE.archiveTrackers[index] = data; //maybe need to look at active vs archive state
-      switch (section) {
-        case "summary":
-          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
-          break;
-        case "single":
-          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
-          break;
-        default:
-          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["b" /* renderSummaryPage */])();
-          break;
-      }
+      console.log('state =', STATE, data);
+      const index = STATE.archivedTrackers.findIndex(tracker => tracker.id === data.id);
+
+      STATE.archivedTrackers.splice(index, 1);
+      STATE.trackers.push(data);
+
+      __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__index_render_views__["d" /* renderArchivePage */])();
     });
   });
 
@@ -44277,11 +44274,10 @@ module.exports = function(module) {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = renderDashboard;
 /* harmony export (immutable) */ __webpack_exports__["b"] = renderSummaryPage;
-/* harmony export (immutable) */ __webpack_exports__["g"] = renderIndividualTrackerSummary;
+/* harmony export (immutable) */ __webpack_exports__["f"] = renderIndividualTrackerSummary;
 /* harmony export (immutable) */ __webpack_exports__["d"] = renderArchivePage;
 /* harmony export (immutable) */ __webpack_exports__["c"] = renderCreateTrackerPage;
-/* harmony export (immutable) */ __webpack_exports__["e"] = renderProfilePage;
-/* harmony export (immutable) */ __webpack_exports__["f"] = renderLogOutDashboard;
+/* harmony export (immutable) */ __webpack_exports__["e"] = renderLogOutDashboard;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__chart_component__ = __webpack_require__(249);
@@ -44318,6 +44314,12 @@ function renderDashboard() {
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".dashboard").show();
 }
 
+// render chart function
+function renderChartComponent(data) {
+  const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](data);
+  chartComponent.renderChart();
+}
+
 //render summary page
 function renderSummaryPage() {
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
@@ -44327,22 +44329,11 @@ function renderSummaryPage() {
     const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
     __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
 
-    const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](trackerData);
-    chartComponent.renderChart();
+    renderChartComponent(trackerData);
   });
 
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").show();
 }
-
-// function toggleChartType() {
-
-//   let trackerData = STATE.trackers.find(tracker => tracker.id === id);
-//   const trackerComponent = new TrackerComponents(trackerData);
-//   $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
-
-//   const chartComponent = new ChartComponents(trackerData);
-//   chartComponent.renderChart();
-// }
 
 //render individual tracker summary
 function renderIndividualTrackerSummary(id) {
@@ -44351,10 +44342,9 @@ function renderIndividualTrackerSummary(id) {
 
   let trackerData = __WEBPACK_IMPORTED_MODULE_4__index__["STATE"].trackers.find(tracker => tracker.id === id);
   const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
 
-  const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](trackerData);
-  chartComponent.renderChart();
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-container").append(trackerComponent.getIndividualTrackerHtml());
+  renderChartComponent(trackerData);
 
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-summary").show();
 }
@@ -44367,9 +44357,7 @@ function renderArchivePage() {
   __WEBPACK_IMPORTED_MODULE_4__index__["STATE"].archivedTrackers.forEach(trackerData => {
     const trackerComponent = new __WEBPACK_IMPORTED_MODULE_2__tracker_component__["a" /* default */](trackerData);
     __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-container").append(trackerComponent.getArchiveTrackerHtml());
-
-    const chartComponent = new __WEBPACK_IMPORTED_MODULE_1__chart_component__["a" /* default */](trackerData);
-    chartComponent.renderChart();
+    renderChartComponent(trackerData);
   });
   // console.log(STATE.archivedTrackers);
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".tracker-archive").show();
@@ -44384,25 +44372,31 @@ function renderCreateTrackerPage() {
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-tracker").show();
 }
 
-//render user profile page - ??
-function renderProfilePage() {
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".main-section").hide();
-
-  const userComponent = new __WEBPACK_IMPORTED_MODULE_3__user_component__["a" /* default */](userData);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".profile-container").append(userComponent.getProfileHtml());
-
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".profile").show();
-}
-
-//render description in input
-// function renderDescription() {
-//   ${this.description}
-// }
-
 //render log out
 function renderLogOutDashboard() {
   //return to landing-page
 }
+
+//render user profile page - remove for now
+// export function renderProfilePage() {
+//   $(".main-section").hide();
+
+//   const userComponent = new UserComponents(userData);
+//   $(".profile-container").append(userComponent.getProfileHtml());
+
+//   $(".profile").show();
+// }
+
+// function toggleChartType() {
+
+//   let trackerData = STATE.trackers.find(tracker => tracker.id === id);
+//   const trackerComponent = new TrackerComponents(trackerData);
+//   $(".summary-container").append(trackerComponent.getTrackerSummaryHtml());
+
+//   const chartComponent = new ChartComponents(trackerData);
+//   chartComponent.renderChart();
+// }
+
 
 /***/ }),
 /* 249 */
@@ -44415,6 +44409,9 @@ function renderLogOutDashboard() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_chart_js__ = __webpack_require__(254);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_chart_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_chart_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_chartjs_plugin_annotation__ = __webpack_require__(310);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_chartjs_plugin_annotation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_chartjs_plugin_annotation__);
+
 
 
 
@@ -44425,58 +44422,115 @@ class ChartComponents {
     this.name = data.name;
     this.tallyMarks = data.tallyMarks;
     this.previousMarks = this.getPreviousMarks();
+    this.averageMarks = this.calculateAvgMarks();
+    this.totalMarks = this.getTotalMarks();
     // this.lineGraph = this.changeLineGraph();
   }
-// get last 6 months of marks to put in chart 
+
+  // get up to last 6 months of marks to put in chart
   getPreviousMarks() {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const pastMonths = [];
     const pastMarks = [];
-    let i = 0; 
+    let i = 0;
 
     while (i < sortedKeys.length && i < 6) {
-      pastMonths.push(__WEBPACK_IMPORTED_MODULE_0_moment___default()(sortedKeys[i]).format('MMM YY'));
-      pastMarks.push(this.tallyMarks[sortedKeys[i]]); 
-      i++
+      pastMonths.push(__WEBPACK_IMPORTED_MODULE_0_moment___default()(sortedKeys[i]).format("MMM YY"));
+      pastMarks.push(this.tallyMarks[sortedKeys[i]]);
+      i++;
     }
-    return {month: pastMonths, count: pastMarks};
+    return { month: pastMonths, count: pastMarks };
   }
 
-  //can use .destroy() to remove instances of chart created 
-  //put data gathered from getMarksToChart() and plug into chart 
+  // to set max value for y axis -- need to cap at 6 months
+  getTotalMarks() {
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const tallyMarks = this.tallyMarks;
+
+    let totalCount = sortedKeys.reduce(function (sum, value) {
+      return sum + tallyMarks[value];
+    }, 0)
+    return { total: totalCount };
+  }
+
+  // calcuate average -- need to cap at 6 months? 
+  calculateAvgMarks() {
+    const sortedKeys = Object.keys(this.tallyMarks).sort();
+    const tallyMarks = this.tallyMarks;
+
+    let avgMarks =
+      sortedKeys.reduce(function(sum, value) {
+        return sum + tallyMarks[value];
+      }, 0) / sortedKeys.length;
+    // console.log({average: avgMarks, numOfMonths: sortedKeys.length });
+    return { count: avgMarks.toFixed(), numOfMonths: sortedKeys.length };
+  }
+
+  //can use .destroy() to remove instances of chart created
   renderChart() {
-    var ctx = document.getElementsByClassName(`myChart-${this.trackerId}`)[0].getContext('2d');
+    var ctx = document
+      .getElementsByClassName(`myChart-${this.trackerId}`)[0]
+      .getContext("2d");
     var chart = new __WEBPACK_IMPORTED_MODULE_2_chart_js__["Chart"](ctx, {
-        // The type of chart we want to create
-        type: 'bar', //or 'line'
-        // The data for our dataset
-        data: {
-            labels: this.previousMarks.month, //months 
-            datasets: [{
-                label: `Marks for ${this.name}`,
-                backgroundColor: 'rgba(79, 195, 247, 0.3)',
-                borderColor: 'rgb(0, 147, 196)',
-                borderWidth: 1,
-                data: this.previousMarks.count, //marks
-            }]
+      // The type of chart we want to create
+      type: "bar", //or 'line'
+      // The data for our dataset
+      data: {
+        // month & year 
+        labels: this.previousMarks.month,
+        datasets: [
+          {
+            label: `Marks for ${this.name}`,
+            backgroundColor: "rgba(79, 195, 247, 0.3)",
+            borderColor: "rgb(0, 147, 196)",
+            borderWidth: 1,
+            //number of marks per month
+            data: this.previousMarks.count
+          }
+        ]
+      },
+      // Configuration options go here
+      options: {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+                max: this.getTotalMarks.total
+              }
+            }
+          ]
         },
-        // Configuration options go here
-        options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero:true
-                      //look up the setting for highest y axis value 
-                      //take highest value of the marks and + 2 
-                  }
-              }]
-          },
-          title: {
-            display: true,
-            text: 'Last 6 Months'
-          },
-          responsive: true,
+        title: {
+          display: true,
+          text: "Up to last 6 months"
+        },
+        responsive: true,
+        // add average line
+        annotation: {
+          annotations: [
+            {
+              drawTime: "afterDraw",
+              id: "average",
+              type: "line",
+              mode: "horizontal",
+              scaleID: "y-axis-0",
+              value: this.averageMarks.count,
+              borderColor: "#008ba3",
+              borderWidth: 2,
+              label: {
+                backgroundColor: "#c8a415",
+                fontSize: 13,
+                fontStyle: "normal",
+                cornerRadius: 3,
+                position: top,
+                enabled: true,
+                content: `average: ${this.averageMarks.count}`
+              }
+            }
+          ]
         }
+      }
     });
   }
 
@@ -44488,7 +44542,7 @@ class ChartComponents {
   //     type: 'line',
   //     // The data for our dataset
   //     data: {
-  //         labels: this.previousMarks.month, //months 
+  //         labels: this.previousMarks.month, //months
   //         datasets: [{
   //             label: `Marks for ${this.name}`,
   //             backgroundColor: 'rgba(79, 195, 247, 0.3)',
@@ -44503,8 +44557,8 @@ class ChartComponents {
   //           yAxes: [{
   //               ticks: {
   //                   beginAtZero:true
-  //                   //look up the setting for highest y axis value 
-  //                   //take highest value of the marks and + 2 
+  //                   //look up the setting for highest y axis value
+  //                   //take highest value of the marks and + 2
   //               }
   //           }]
   //       },
@@ -44518,6 +44572,7 @@ class ChartComponents {
   // }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = ChartComponents;
+
 
 
 /***/ }),
@@ -44654,10 +44709,9 @@ class TrackerComponents {
       <div class="dashboard-tracker-container">
         <h3 class="tracker-name">${this.name}</h3>
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
-          <div class="marks-container">
-            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
-          </div> 
-
+        <div class="marks-container">
+          <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+        </div> 
         <div class="dashboard-btn-row">
           <button type="button" data-section="dashboard" data-trkr-id=${this
             .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
@@ -44694,8 +44748,7 @@ class TrackerComponents {
         </div>
         <div class="notes-container">
           <label for="notes">Notes</label>
-          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes trkr-form-field">
-            ${this.notes}</textarea>
+          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">${this.notes}</textarea>
         </div>
         <div class="summary-btn-row">
           <button type="button" data-trkr-id=${this
@@ -44719,10 +44772,10 @@ class TrackerComponents {
     const template = `
       <div class="tracker-container inner-flexbox">
       <div class="col-1">
-        <label for="edit-trkr-label tracker-name">Edit Tracker Name</label>      
+        <label for="tracker-name" class="edit-trkr-label">Edit Tracker Name</label>      
         <input data-trkr-id=${this.trackerId} data-field-name="name" 
           class="tracker-name edit-trkr-field" value="${this.name}"/>
-        <label for="edit-trkr-label tracker-description">Edit Description</label>        
+        <label for="tracker-description" class="edit-trkr-label">Edit Description</label>        
         <input data-trkr-id=${this.trackerId} data-field-name="description" 
           class="description edit-trkr-field" value="${this.description}"/>
 
@@ -44744,10 +44797,9 @@ class TrackerComponents {
           <canvas class="myChart-${this.trackerId}"></canvas>
         </div>
         <div class="notes-container">
-          <label for="edit-trkr-label notes">Notes</label>
-          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">
-            ${this.notes}</textarea>
-          </div>
+          <label for="notes" class="edit-trkr-label">Notes</label>
+          <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">${this.notes}</textarea>
+        </div>
 
         <div class="summary-btn-row">
           <button type="button" data-section="single" data-trkr-id=${this
@@ -44799,13 +44851,13 @@ class TrackerComponents {
     const template = `
     <h2>Create a Tracker</h2>
     <form method="post" class="create-form">
-      <label for="new-trkr-label tracker-name">New Tracker Name</label>
+      <label for="tracker-name" class="new-trkr-label">New Tracker Name</label>
       <input class="new-trkr-input" type="text" placeholder="enter new tracker name">
 
-      <label for="new-trkr-label tracker-description">Description</label>
+      <label for="tracker-description" class="new-trkr-label">Description</label>
       <input class="new-trkr-input" type="text" placeholder="Add a description (optional)">
 
-      <label for="new-trkr-label notes">Notes</label>
+      <label for="notes" class="new-trkr-label">Notes</label>
       <textarea class="new-trkr-input tracker-notes" placeholder="Add any notes for yourself (optional)"></textarea>
       <div class="form-btn-row">
         <button type="submit" class="create-trkr-btn new-trkr-btn">Create</button>
@@ -44818,12 +44870,6 @@ class TrackerComponents {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = TrackerComponents;
 
-
-//decide whether or not to add description box in individual tracker summary html
-//<div class="description-container">
-//<label for="existing-tracker-description">Description</label>
-//<input class="existing-trkr-desc" type="text"></input>
-//</div>
 
 
 /***/ }),
@@ -44852,7 +44898,7 @@ class UserComponents {
     return template;
   }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = UserComponents;
+/* unused harmony export default */
 
 
 /***/ }),
@@ -58392,6 +58438,950 @@ try {
 // easier to handle this case. if(!global) { ...}
 
 module.exports = g;
+
+
+/***/ }),
+/* 306 */
+/***/ (function(module, exports) {
+
+function noop() {}
+
+function elements(chartInstance) {
+	// Turn the elements object into an array of elements
+	var elements = chartInstance.annotation.elements;
+	return Object.keys(elements).map(function(id) {
+		return elements[id];
+	});
+}
+
+function objectId() {
+	return Math.random().toString(36).substr(2, 6);
+}
+
+function isValid(rawValue) {
+	if (rawValue === null || typeof rawValue === 'undefined') {
+		return false;
+	} else if (typeof rawValue === 'number') {
+		return isFinite(rawValue);
+	} else {
+		return !!rawValue;
+	}
+}
+
+function decorate(obj, prop, func) {
+	var prefix = '$';
+	if (!obj[prefix + prop]) {
+		if (obj[prop]) {
+			obj[prefix + prop] = obj[prop].bind(obj);
+			obj[prop] = function() {
+				var args = [ obj[prefix + prop] ].concat(Array.prototype.slice.call(arguments));
+				return func.apply(obj, args);
+			};
+		} else {
+			obj[prop] = function() {
+				var args = [ undefined ].concat(Array.prototype.slice.call(arguments));
+				return func.apply(obj, args);
+			};
+		}
+	}
+}
+
+function callEach(fns, method) {
+	fns.forEach(function(fn) {
+		(method ? fn[method] : fn)();
+	});
+}
+
+function getEventHandlerName(eventName) {
+	return 'on' + eventName[0].toUpperCase() + eventName.substring(1);
+}
+
+function createMouseEvent(type, previousEvent) {
+	try {
+		return new MouseEvent(type, previousEvent);
+	} catch (exception) {
+		try {
+			var m = document.createEvent('MouseEvent');
+			m.initMouseEvent(
+				type,
+				previousEvent.canBubble,
+				previousEvent.cancelable,
+				previousEvent.view,
+				previousEvent.detail,
+				previousEvent.screenX,
+				previousEvent.screenY,
+				previousEvent.clientX,
+				previousEvent.clientY,
+				previousEvent.ctrlKey,
+				previousEvent.altKey,
+				previousEvent.shiftKey,
+				previousEvent.metaKey,
+				previousEvent.button,
+				previousEvent.relatedTarget
+			);
+			return m;
+		} catch (exception2) {
+			var e = document.createEvent('Event');
+			e.initEvent(
+				type,
+				previousEvent.canBubble,
+				previousEvent.cancelable
+			);
+			return e;
+		}
+	}
+}
+
+module.exports = function(Chart) {
+	var chartHelpers = Chart.helpers;
+
+	function initConfig(config) {
+		config = chartHelpers.configMerge(Chart.Annotation.defaults, config);
+		if (chartHelpers.isArray(config.annotations)) {
+			config.annotations.forEach(function(annotation) {
+				annotation.label = chartHelpers.configMerge(Chart.Annotation.labelDefaults, annotation.label);
+			});
+		}
+		return config;
+	}
+
+	function getScaleLimits(scaleId, annotations, scaleMin, scaleMax) {
+		var ranges = annotations.filter(function(annotation) {
+			return !!annotation._model.ranges[scaleId];
+		}).map(function(annotation) {
+			return annotation._model.ranges[scaleId];
+		});
+
+		var min = ranges.map(function(range) {
+			return Number(range.min);
+		}).reduce(function(a, b) {
+			return isFinite(b) && !isNaN(b) && b < a ? b : a;
+		}, scaleMin);
+
+		var max = ranges.map(function(range) {
+			return Number(range.max);
+		}).reduce(function(a, b) {
+			return isFinite(b) && !isNaN(b) && b > a ? b : a;
+		}, scaleMax);
+
+		return {
+			min: min,
+			max: max
+		};
+	}
+
+	function adjustScaleRange(scale) {
+		// Adjust the scale range to include annotation values
+		var range = getScaleLimits(scale.id, elements(scale.chart), scale.min, scale.max);
+		if (typeof scale.options.ticks.min === 'undefined' && typeof scale.options.ticks.suggestedMin === 'undefined') {
+			scale.min = range.min;
+		}
+		if (typeof scale.options.ticks.max === 'undefined' && typeof scale.options.ticks.suggestedMax === 'undefined') {
+			scale.max = range.max;
+		}
+		if (scale.handleTickRangeOptions) {
+			scale.handleTickRangeOptions();
+		}
+	}
+
+	function getNearestItems(annotations, position) {
+		var minDistance = Number.POSITIVE_INFINITY;
+
+		return annotations
+			.filter(function(element) {
+				return element.inRange(position.x, position.y);
+			})
+			.reduce(function(nearestItems, element) {
+				var center = element.getCenterPoint();
+				var distance = chartHelpers.distanceBetweenPoints(position, center);
+
+				if (distance < minDistance) {
+					nearestItems = [element];
+					minDistance = distance;
+				} else if (distance === minDistance) {
+					// Can have multiple items at the same distance in which case we sort by size
+					nearestItems.push(element);
+				}
+
+				return nearestItems;
+			}, [])
+			.sort(function(a, b) {
+				// If there are multiple elements equally close,
+				// sort them by size, then by index
+				var sizeA = a.getArea(), sizeB = b.getArea();
+				return (sizeA > sizeB || sizeA < sizeB) ? sizeA - sizeB : a._index - b._index;
+			})
+			.slice(0, 1)[0]; // return only the top item
+	}
+
+	return {
+		initConfig: initConfig,
+		elements: elements,
+		callEach: callEach,
+		noop: noop,
+		objectId: objectId,
+		isValid: isValid,
+		decorate: decorate,
+		adjustScaleRange: adjustScaleRange,
+		getNearestItems: getNearestItems,
+		getEventHandlerName: getEventHandlerName,
+		createMouseEvent: createMouseEvent
+	};
+};
+
+
+
+/***/ }),
+/* 307 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function(Chart) {
+	var chartHelpers = Chart.helpers;
+
+	var helpers = __webpack_require__(306)(Chart);
+	var events = __webpack_require__(309)(Chart);
+
+	var annotationTypes = Chart.Annotation.types;
+
+	function setAfterDataLimitsHook(axisOptions) {
+		helpers.decorate(axisOptions, 'afterDataLimits', function(previous, scale) {
+			if (previous) previous(scale);
+			helpers.adjustScaleRange(scale);
+		});
+	}
+
+	function draw(drawTime) {
+		return function(chartInstance, easingDecimal) {
+			var defaultDrawTime = chartInstance.annotation.options.drawTime;
+
+			helpers.elements(chartInstance)
+				.filter(function(element) {
+					return drawTime === (element.options.drawTime || defaultDrawTime);
+				})
+				.forEach(function(element) {
+					element.transition(easingDecimal).draw();
+				});
+		};
+	}
+
+	return {
+		beforeInit: function(chartInstance) {
+			var chartOptions = chartInstance.options;
+
+			// Initialize chart instance plugin namespace
+			var ns = chartInstance.annotation = {
+				elements: {},
+				options: helpers.initConfig(chartOptions.annotation || {}),
+				onDestroy: [],
+				firstRun: true,
+				supported: false
+			};
+
+			// Add the annotation scale adjuster to each scale's afterDataLimits hook
+			chartInstance.ensureScalesHaveIDs();
+			if (chartOptions.scales) {
+				ns.supported = true;
+				chartHelpers.each(chartOptions.scales.xAxes, setAfterDataLimitsHook);
+				chartHelpers.each(chartOptions.scales.yAxes, setAfterDataLimitsHook);
+			}
+		},
+		beforeUpdate: function(chartInstance) {
+			var ns = chartInstance.annotation;
+
+			if (!ns.supported) {
+				return;
+			}
+
+			if (!ns.firstRun) {
+				ns.options = helpers.initConfig(chartInstance.options.annotation || {});
+			} else {
+				ns.firstRun = false;
+			}
+
+			var elementIds = [];
+
+			// Add new elements, or update existing ones
+			ns.options.annotations.forEach(function(annotation) {
+				var id = annotation.id || helpers.objectId();
+				
+				// No element with that ID exists, and it's a valid annotation type
+				if (!ns.elements[id] && annotationTypes[annotation.type]) {
+					var cls = annotationTypes[annotation.type];
+					var element = new cls({
+						id: id,
+						options: annotation,
+						chartInstance: chartInstance,
+					});
+					element.initialize();
+					ns.elements[id] = element;
+					annotation.id = id;
+					elementIds.push(id);
+				} else if (ns.elements[id]) {
+					// Nothing to do for update, since the element config references
+					// the same object that exists in the chart annotation config
+					elementIds.push(id);
+				}
+			});
+
+			// Delete removed elements
+			Object.keys(ns.elements).forEach(function(id) {
+				if (elementIds.indexOf(id) === -1) {
+					ns.elements[id].destroy();
+					delete ns.elements[id];
+				}
+			});
+		},
+		afterScaleUpdate: function(chartInstance) {
+			helpers.elements(chartInstance).forEach(function(element) {
+				element.configure();
+			});
+		},
+		beforeDatasetsDraw: draw('beforeDatasetsDraw'),
+		afterDatasetsDraw: draw('afterDatasetsDraw'),
+		afterDraw: draw('afterDraw'),
+		afterInit: function(chartInstance) {
+			// Detect and intercept events that happen on an annotation element
+			var watchFor = chartInstance.annotation.options.events;
+			if (chartHelpers.isArray(watchFor) && watchFor.length > 0) {
+				var canvas = chartInstance.chart.canvas;
+				var eventHandler = events.dispatcher.bind(chartInstance);
+				events.collapseHoverEvents(watchFor).forEach(function(eventName) {
+					chartHelpers.addEvent(canvas, eventName, eventHandler);
+					chartInstance.annotation.onDestroy.push(function() {
+						chartHelpers.removeEvent(canvas, eventName, eventHandler);
+					});
+				});
+			}
+		},
+		destroy: function(chartInstance) {
+			var deregisterers = chartInstance.annotation.onDestroy;
+			while (deregisterers.length > 0) {
+				deregisterers.pop()();
+			}
+		}
+	};
+};
+
+
+/***/ }),
+/* 308 */
+/***/ (function(module, exports) {
+
+module.exports = function(Chart) {
+	var chartHelpers = Chart.helpers;
+	
+	var AnnotationElement = Chart.Element.extend({
+		initialize: function() {
+			this.hidden = false;
+			this.hovering = false;
+			this._model = chartHelpers.clone(this._model) || {};
+			this.setDataLimits();
+		},
+		destroy: function() {},
+		setDataLimits: function() {},
+		configure: function() {},
+		inRange: function() {},
+		getCenterPoint: function() {},
+		getWidth: function() {},
+		getHeight: function() {},
+		getArea: function() {},
+		draw: function() {}
+	});
+
+	return AnnotationElement;
+};
+
+
+/***/ }),
+/* 309 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function(Chart) {
+	var chartHelpers = Chart.helpers;
+	var helpers = __webpack_require__(306)(Chart);
+
+	function collapseHoverEvents(events) {
+		var hover = false;
+		var filteredEvents = events.filter(function(eventName) {
+			switch (eventName) {
+				case 'mouseenter':
+				case 'mouseover':
+				case 'mouseout':
+				case 'mouseleave':
+					hover = true;
+					return false;
+
+				default:
+					return true;
+			}
+		});
+		if (hover && filteredEvents.indexOf('mousemove') === -1) {
+			filteredEvents.push('mousemove');
+		}
+		return filteredEvents;
+	}
+
+	function dispatcher(e) {
+		var ns = this.annotation;
+		var elements = helpers.elements(this);
+		var position = chartHelpers.getRelativePosition(e, this.chart);
+		var element = helpers.getNearestItems(elements, position);
+		var events = collapseHoverEvents(ns.options.events);
+		var dblClickSpeed = ns.options.dblClickSpeed;
+		var eventHandlers = [];
+		var eventHandlerName = helpers.getEventHandlerName(e.type);
+		var options = (element || {}).options;
+
+		// Detect hover events
+		if (e.type === 'mousemove') {
+			if (element && !element.hovering) {
+				// hover started
+				['mouseenter', 'mouseover'].forEach(function(eventName) {
+					var eventHandlerName = helpers.getEventHandlerName(eventName);
+					var hoverEvent = helpers.createMouseEvent(eventName, e); // recreate the event to match the handler
+					element.hovering = true;
+					if (typeof options[eventHandlerName] === 'function') {
+						eventHandlers.push([ options[eventHandlerName], hoverEvent, element ]);
+					}
+				});
+			} else if (!element) {
+				// hover ended
+				elements.forEach(function(element) {
+					if (element.hovering) {
+						element.hovering = false;
+						var options = element.options;
+						['mouseout', 'mouseleave'].forEach(function(eventName) {
+							var eventHandlerName = helpers.getEventHandlerName(eventName);
+							var hoverEvent = helpers.createMouseEvent(eventName, e); // recreate the event to match the handler
+							if (typeof options[eventHandlerName] === 'function') {
+								eventHandlers.push([ options[eventHandlerName], hoverEvent, element ]);
+							}
+						});
+					}
+				});
+			}
+		}
+
+		// Suppress duplicate click events during a double click
+		// 1. click -> 2. click -> 3. dblclick
+		//
+		// 1: wait dblClickSpeed ms, then fire click
+		// 2: cancel (1) if it is waiting then wait dblClickSpeed ms then fire click, else fire click immediately
+		// 3: cancel (1) or (2) if waiting, then fire dblclick 
+		if (element && events.indexOf('dblclick') > -1 && typeof options.onDblclick === 'function') {
+			if (e.type === 'click' && typeof options.onClick === 'function') {
+				clearTimeout(element.clickTimeout);
+				element.clickTimeout = setTimeout(function() {
+					delete element.clickTimeout;
+					options.onClick.call(element, e);
+				}, dblClickSpeed);
+				e.stopImmediatePropagation();
+				e.preventDefault();
+				return;
+			} else if (e.type === 'dblclick' && element.clickTimeout) {
+				clearTimeout(element.clickTimeout);
+				delete element.clickTimeout;
+			}
+		}
+
+		// Dispatch the event to the usual handler, but only if we haven't substituted it
+		if (element && typeof options[eventHandlerName] === 'function' && eventHandlers.length === 0) {
+			eventHandlers.push([ options[eventHandlerName], e, element ]);
+		}
+
+		if (eventHandlers.length > 0) {
+			e.stopImmediatePropagation();
+			e.preventDefault();
+			eventHandlers.forEach(function(eventHandler) {
+				// [handler, event, element]
+				eventHandler[0].call(eventHandler[2], eventHandler[1]);
+			});
+		}
+	}
+
+	return {
+		dispatcher: dispatcher,
+		collapseHoverEvents: collapseHoverEvents
+	};
+};
+
+
+/***/ }),
+/* 310 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Get the chart variable
+var Chart = __webpack_require__(254);
+Chart = typeof(Chart) === 'function' ? Chart : window.Chart;
+
+// Configure plugin namespace
+Chart.Annotation = Chart.Annotation || {};
+
+Chart.Annotation.drawTimeOptions = {
+	afterDraw: 'afterDraw',
+	afterDatasetsDraw: 'afterDatasetsDraw',
+	beforeDatasetsDraw: 'beforeDatasetsDraw'
+};
+
+Chart.Annotation.defaults = {
+	drawTime: 'afterDatasetsDraw',
+	dblClickSpeed: 350, // ms
+	events: [],
+	annotations: []
+};
+
+Chart.Annotation.labelDefaults = {
+	backgroundColor: 'rgba(0,0,0,0.8)',
+	fontFamily: Chart.defaults.global.defaultFontFamily,
+	fontSize: Chart.defaults.global.defaultFontSize,
+	fontStyle: 'bold',
+	fontColor: '#fff',
+	xPadding: 6,
+	yPadding: 6,
+	cornerRadius: 6,
+	position: 'center',
+	xAdjust: 0,
+	yAdjust: 0,
+	enabled: false,
+	content: null
+};
+
+Chart.Annotation.Element = __webpack_require__(308)(Chart);
+
+Chart.Annotation.types = {
+	line: __webpack_require__(312)(Chart),
+	box: __webpack_require__(311)(Chart)
+};
+
+var annotationPlugin = __webpack_require__(307)(Chart);
+
+module.exports = annotationPlugin;
+Chart.pluginService.register(annotationPlugin);
+
+
+/***/ }),
+/* 311 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Box Annotation implementation
+module.exports = function(Chart) {
+	var helpers = __webpack_require__(306)(Chart);
+	
+	var BoxAnnotation = Chart.Annotation.Element.extend({
+		setDataLimits: function() {
+			var model = this._model;
+			var options = this.options;
+			var chartInstance = this.chartInstance;
+
+			var xScale = chartInstance.scales[options.xScaleID];
+			var yScale = chartInstance.scales[options.yScaleID];
+			var chartArea = chartInstance.chartArea;
+
+			// Set the data range for this annotation
+			model.ranges = {};
+			
+			if (!chartArea) {
+				return;
+			}
+			
+			var min = 0;
+			var max = 0;
+			
+			if (xScale) {
+				min = helpers.isValid(options.xMin) ? options.xMin : xScale.getPixelForValue(chartArea.left);
+				max = helpers.isValid(options.xMax) ? options.xMax : xScale.getPixelForValue(chartArea.right);
+
+				model.ranges[options.xScaleID] = {
+					min: Math.min(min, max),
+					max: Math.max(min, max)
+				};
+			}
+
+			if (yScale) {
+				min = helpers.isValid(options.yMin) ? options.yMin : yScale.getPixelForValue(chartArea.bottom);
+				max = helpers.isValid(options.yMax) ? options.yMax : yScale.getPixelForValue(chartArea.top);
+
+				model.ranges[options.yScaleID] = {
+					min: Math.min(min, max),
+					max: Math.max(min, max)
+				};
+			}
+		},
+		configure: function() {
+			var model = this._model;
+			var options = this.options;
+			var chartInstance = this.chartInstance;
+
+			var xScale = chartInstance.scales[options.xScaleID];
+			var yScale = chartInstance.scales[options.yScaleID];
+			var chartArea = chartInstance.chartArea;
+
+			// clip annotations to the chart area
+			model.clip = {
+				x1: chartArea.left,
+				x2: chartArea.right,
+				y1: chartArea.top,
+				y2: chartArea.bottom
+			};
+
+			var left = chartArea.left, 
+				top = chartArea.top, 
+				right = chartArea.right, 
+				bottom = chartArea.bottom;
+
+			var min, max;
+
+			if (xScale) {
+				min = helpers.isValid(options.xMin) ? xScale.getPixelForValue(options.xMin) : chartArea.left;
+				max = helpers.isValid(options.xMax) ? xScale.getPixelForValue(options.xMax) : chartArea.right;
+				left = Math.min(min, max);
+				right = Math.max(min, max);
+			}
+
+			if (yScale) {
+				min = helpers.isValid(options.yMin) ? yScale.getPixelForValue(options.yMin) : chartArea.bottom;
+				max = helpers.isValid(options.yMax) ? yScale.getPixelForValue(options.yMax) : chartArea.top;
+				top = Math.min(min, max);
+				bottom = Math.max(min, max);
+			}
+
+			// Ensure model has rect coordinates
+			model.left = left;
+			model.top = top;
+			model.right = right;
+			model.bottom = bottom;
+
+			// Stylistic options
+			model.borderColor = options.borderColor;
+			model.borderWidth = options.borderWidth;
+			model.backgroundColor = options.backgroundColor;
+		},
+		inRange: function(mouseX, mouseY) {
+			var model = this._model;
+			return model &&
+				mouseX >= model.left && 
+				mouseX <= model.right && 
+				mouseY >= model.top && 
+				mouseY <= model.bottom;
+		},
+		getCenterPoint: function() {
+			var model = this._model;
+			return {
+				x: (model.right + model.left) / 2,
+				y: (model.bottom + model.top) / 2
+			};
+		},
+		getWidth: function() {
+			var model = this._model;
+			return Math.abs(model.right - model.left);
+		},
+		getHeight: function() {
+			var model = this._model;
+			return Math.abs(model.bottom - model.top);
+		},
+		getArea: function() {
+			return this.getWidth() * this.getHeight();
+		},
+		draw: function() {
+			var view = this._view;
+			var ctx = this.chartInstance.chart.ctx;
+
+			ctx.save();
+
+			// Canvas setup
+			ctx.beginPath();
+			ctx.rect(view.clip.x1, view.clip.y1, view.clip.x2 - view.clip.x1, view.clip.y2 - view.clip.y1);
+			ctx.clip();
+
+			ctx.lineWidth = view.borderWidth;
+			ctx.strokeStyle = view.borderColor;
+			ctx.fillStyle = view.backgroundColor;
+
+			// Draw
+			var width = view.right - view.left,
+				height = view.bottom - view.top;
+			ctx.fillRect(view.left, view.top, width, height);
+			ctx.strokeRect(view.left, view.top, width, height);
+
+			ctx.restore();
+		}
+	});
+
+	return BoxAnnotation;
+};
+
+
+/***/ }),
+/* 312 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Line Annotation implementation
+module.exports = function(Chart) {
+	var chartHelpers = Chart.helpers;
+	var helpers = __webpack_require__(306)(Chart);
+
+	var horizontalKeyword = 'horizontal';
+	var verticalKeyword = 'vertical';
+
+	var LineAnnotation = Chart.Annotation.Element.extend({
+		setDataLimits: function() {
+			var model = this._model;
+			var options = this.options;
+
+			// Set the data range for this annotation
+			model.ranges = {};
+			model.ranges[options.scaleID] = {
+				min: options.value,
+				max: options.endValue || options.value
+			};
+		},
+		configure: function() {
+			var model = this._model;
+			var options = this.options;
+			var chartInstance = this.chartInstance;
+			var ctx = chartInstance.chart.ctx;
+
+			var scale = chartInstance.scales[options.scaleID];
+			var pixel, endPixel;
+			if (scale) {
+				pixel = helpers.isValid(options.value) ? scale.getPixelForValue(options.value) : NaN;
+				endPixel = helpers.isValid(options.endValue) ? scale.getPixelForValue(options.endValue) : pixel;
+			}
+
+			if (isNaN(pixel)) {
+				return;
+			}
+
+			var chartArea = chartInstance.chartArea;
+
+			// clip annotations to the chart area
+			model.clip = {
+				x1: chartArea.left,
+				x2: chartArea.right,
+				y1: chartArea.top,
+				y2: chartArea.bottom
+			};
+
+			if (this.options.mode == horizontalKeyword) {
+				model.x1 = chartArea.left;
+				model.x2 = chartArea.right;
+				model.y1 = pixel;
+				model.y2 = endPixel;
+			} else {
+				model.y1 = chartArea.top;
+				model.y2 = chartArea.bottom;
+				model.x1 = pixel;
+				model.x2 = endPixel;
+			}
+
+			model.line = new LineFunction(model);
+			model.mode = options.mode;
+
+			// Figure out the label:
+			model.labelBackgroundColor = options.label.backgroundColor;
+			model.labelFontFamily = options.label.fontFamily;
+			model.labelFontSize = options.label.fontSize;
+			model.labelFontStyle = options.label.fontStyle;
+			model.labelFontColor = options.label.fontColor;
+			model.labelXPadding = options.label.xPadding;
+			model.labelYPadding = options.label.yPadding;
+			model.labelCornerRadius = options.label.cornerRadius;
+			model.labelPosition = options.label.position;
+			model.labelXAdjust = options.label.xAdjust;
+			model.labelYAdjust = options.label.yAdjust;
+			model.labelEnabled = options.label.enabled;
+			model.labelContent = options.label.content;
+
+			ctx.font = chartHelpers.fontString(model.labelFontSize, model.labelFontStyle, model.labelFontFamily);
+			var textWidth = ctx.measureText(model.labelContent).width;
+			var textHeight = ctx.measureText('M').width;
+			var labelPosition = calculateLabelPosition(model, textWidth, textHeight, model.labelXPadding, model.labelYPadding);
+			model.labelX = labelPosition.x - model.labelXPadding;
+			model.labelY = labelPosition.y - model.labelYPadding;
+			model.labelWidth = textWidth + (2 * model.labelXPadding);
+			model.labelHeight = textHeight + (2 * model.labelYPadding);
+
+			model.borderColor = options.borderColor;
+			model.borderWidth = options.borderWidth;
+			model.borderDash = options.borderDash || [];
+			model.borderDashOffset = options.borderDashOffset || 0;
+		},
+		inRange: function(mouseX, mouseY) {
+			var model = this._model;
+			
+			return (
+				// On the line
+				model.line &&
+				model.line.intersects(mouseX, mouseY, this.getHeight())
+			) || (
+				// On the label
+				model.labelEnabled &&
+				model.labelContent &&
+				mouseX >= model.labelX && 
+				mouseX <= model.labelX + model.labelWidth && 
+				mouseY >= model.labelY && 
+				mouseY <= model.labelY + model.labelHeight
+			);
+		},
+		getCenterPoint: function() {
+			return {
+				x: (this._model.x2 + this._model.x1) / 2,
+				y: (this._model.y2 + this._model.y1) / 2
+			};
+		},
+		getWidth: function() {
+			return Math.abs(this._model.right - this._model.left);
+		},
+		getHeight: function() {
+			return this._model.borderWidth || 1;
+		},
+		getArea: function() {
+			return Math.sqrt(Math.pow(this.getWidth(), 2) + Math.pow(this.getHeight(), 2));
+		},
+		draw: function() {
+			var view = this._view;
+			var ctx = this.chartInstance.chart.ctx;
+
+			if (!view.clip) {
+				return;
+			}
+
+			ctx.save();
+
+			// Canvas setup
+			ctx.beginPath();
+			ctx.rect(view.clip.x1, view.clip.y1, view.clip.x2 - view.clip.x1, view.clip.y2 - view.clip.y1);
+			ctx.clip();
+
+			ctx.lineWidth = view.borderWidth;
+			ctx.strokeStyle = view.borderColor;
+
+			if (ctx.setLineDash) {
+				ctx.setLineDash(view.borderDash);
+			}
+			ctx.lineDashOffset = view.borderDashOffset;
+
+			// Draw
+			ctx.beginPath();
+			ctx.moveTo(view.x1, view.y1);
+			ctx.lineTo(view.x2, view.y2);
+			ctx.stroke();
+
+			if (view.labelEnabled && view.labelContent) {
+				ctx.beginPath();
+				ctx.rect(view.clip.x1, view.clip.y1, view.clip.x2 - view.clip.x1, view.clip.y2 - view.clip.y1);
+				ctx.clip();
+
+				ctx.fillStyle = view.labelBackgroundColor;
+				// Draw the tooltip
+				chartHelpers.drawRoundedRectangle(
+					ctx,
+					view.labelX, // x
+					view.labelY, // y
+					view.labelWidth, // width
+					view.labelHeight, // height
+					view.labelCornerRadius // radius
+				);
+				ctx.fill();
+
+				// Draw the text
+				ctx.font = chartHelpers.fontString(
+					view.labelFontSize,
+					view.labelFontStyle,
+					view.labelFontFamily
+				);
+				ctx.fillStyle = view.labelFontColor;
+				ctx.textAlign = 'center';
+				ctx.textBaseline = 'middle';
+				ctx.fillText(
+					view.labelContent,
+					view.labelX + (view.labelWidth / 2),
+					view.labelY + (view.labelHeight / 2)
+				);
+			}
+
+			ctx.restore();
+		}
+	});
+
+	function LineFunction(view) {
+		// Describe the line in slope-intercept form (y = mx + b).
+		// Note that the axes are rotated 90° CCW, which causes the
+		// x- and y-axes to be swapped.
+		var m = (view.x2 - view.x1) / (view.y2 - view.y1);
+		var b = view.x1 || 0;
+
+		this.m = m;
+		this.b = b;
+
+		this.getX = function(y) {
+			// Coordinates are relative to the origin of the canvas
+			return m * (y - view.y1) + b;
+		};
+
+		this.getY = function(x) {
+			return ((x - b) / m) + view.y1;
+		};
+
+		this.intersects = function(x, y, epsilon) {
+			epsilon = epsilon || 0.001;
+			var dy = this.getY(x),
+				dx = this.getX(y);
+			return (
+				(!isFinite(dy) || Math.abs(y - dy) < epsilon) &&
+				(!isFinite(dx) || Math.abs(x - dx) < epsilon)
+			);
+		};
+	}
+
+	function calculateLabelPosition(view, width, height, padWidth, padHeight) {
+		var line = view.line;
+		var ret = {}, xa = 0, ya = 0;
+
+		switch (true) {
+			// top align
+			case view.mode == verticalKeyword && view.labelPosition == "top":
+				ya = padHeight + view.labelYAdjust;
+				xa = (width / 2) + view.labelXAdjust;
+				ret.y = view.y1 + ya;
+				ret.x = (isFinite(line.m) ? line.getX(ret.y) : view.x1) - xa;
+			break;
+
+			// bottom align
+			case view.mode == verticalKeyword && view.labelPosition == "bottom":
+				ya = height + padHeight + view.labelYAdjust;
+				xa = (width / 2) + view.labelXAdjust;
+				ret.y = view.y2 - ya;
+				ret.x = (isFinite(line.m) ? line.getX(ret.y) : view.x1) - xa;
+			break;
+
+			// left align
+			case view.mode == horizontalKeyword && view.labelPosition == "left":
+				xa = padWidth + view.labelXAdjust;
+				ya = -(height / 2) + view.labelYAdjust;
+				ret.x = view.x1 + xa;
+				ret.y = line.getY(ret.x) + ya;
+			break;
+
+			// right align
+			case view.mode == horizontalKeyword && view.labelPosition == "right":
+				xa = width + padWidth + view.labelXAdjust;
+				ya = -(height / 2) + view.labelYAdjust;
+				ret.x = view.x2 - xa;
+				ret.y = line.getY(ret.x) + ya;
+			break;
+
+			// center align
+			default:
+				ret.x = ((view.x1 + view.x2 - width) / 2) + view.labelXAdjust;
+				ret.y = ((view.y1 + view.y2 - height) / 2) + view.labelYAdjust;
+		}
+
+		return ret;
+	}
+
+	return LineAnnotation;
+};
 
 
 /***/ })
