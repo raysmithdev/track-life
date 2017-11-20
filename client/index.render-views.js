@@ -98,8 +98,6 @@ export function renderLogOutDashboard() {
 //   $(".profile").show();
 // }
 
-
-
 // function toggleChartType() {
 
 //   let trackerData = STATE.trackers.find(tracker => tracker.id === id);

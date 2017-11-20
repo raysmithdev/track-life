@@ -8,7 +8,6 @@ import {
   renderSummaryPage,
   renderIndividualTrackerSummary,
   renderArchivePage,
-  renderProfilePage,
   renderLogOutDashboard
 } from "./index.render-views";
 
@@ -42,7 +41,7 @@ function setUpHandlers() {
   $(".summary-link").click(renderSummaryPage);
   $(".create-link").click(renderCreateTrackerPage);
   $(".archive-link").click(renderArchivePage);
-  $(".profile-link").click(renderProfilePage);
+  // $(".profile-link").click(renderProfilePage);
   $(".logout-btn").click(renderLogOutDashboard);
 
   //dynamic buttons created within trackers
