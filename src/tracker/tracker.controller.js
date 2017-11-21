@@ -93,7 +93,7 @@ const addMark = (req, res) => {
       if (!tracker) res.status(400).json({ message: "Tracker Not Found" });
       const currentMonth = moment();
       const sortedKeys = Object.keys(tracker.tallyMarks).sort(function (a, b) {
-        return Date.parse(a) > Date.parse(b); //check <?
+        return Date.parse(a) > Date.parse(b); //confirm if < or >
         }); //this checks if it's being parsed as dates  
 
       //when sorting, need to make sure the keys are being treated as date value vs string value
