@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   /* 62.5% makes 1em = 10px */
@@ -36,10 +40,11 @@ button {
   padding: 1em;
 }
 
+/* mobile first styling */
+
 /* navigation  */
 .header-container {
   display: flex;
-  justify-content: space-between;
   padding: 1em;
   background-color: #00bcd4;
   flex-wrap: wrap;
@@ -53,6 +58,7 @@ button {
 .nav-btn-container {
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
   flex-wrap: wrap;
 }
 
@@ -65,25 +71,9 @@ button {
   border: 0;
   border-radius: 3px;
   cursor: pointer;
-  margin-right: 5px;
+  margin-bottom: 7px;
+  margin-right: 7px;
   white-space: nowrap;
-  /* flex-wrap: wrap; */
-}
-
-/* for smaller screens */
-@media screen and (max-width: 440px) {
-  .header-container {
-    justify-content: center;
-    /* flex-flow: column wrap; */
-    /* padding: 0; */
-  }
-  .nav-btn-container {
-    justify-content: space-evenly;
-  }
-
-  .nav-btn {
-    margin-bottom: 7px;
-  }
 }
 
 h2 {
@@ -94,52 +84,17 @@ h2 {
   vertical-align: center;
 }
 
-/* dashboard page */
-.dashboard-container {
+.dashboard-container, .summary-container,
+.archive-container {
   display: flex;
-  width: 95%;
-  margin: 0 auto;
-  /* what applies to the child:  */
-  justify-content: center;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 
-.dashboard-tracker-container {
-  /* flex-basis: 50%; */
-  max-width: 400px;
-  margin: 5px;
+.dashboard-tracker-container, .tracker-container {
   padding: 10px;
+  margin-bottom: 20px;
   border: 1.5px solid #ffd54f;
   border-radius: 3px;
-}
-
-/* summary & archive page */
-.tracker-container {
-  flex-grow: 1;
-  max-width: 90%;
-  margin: 5px;
-  padding: 10px;
-  border: 1.5px solid #ffd54f;
-  border-radius: 3px;
-}
-
-
-@media screen and (min-width: 600px) {
-  /* this is for 2 columns in summary's tracker container
- test this out to see the screen size */
-  .inner-flexbox {
-    display: flex;
-  }
-  
-  .col-1,
-  .col-2 {
-    width: 50%;
-  }
-
-  .dashboard-tracker-container, 
-  .tracker-container {
-    flex-basis: 75%;
-  }
 }
 
 /* tracker content */
@@ -160,7 +115,6 @@ h2 {
 .current-count {
   text-align: center;
   margin-top: 17px;
-  /* font-weight: 200; */
   color: #008ba3;
 }
 
@@ -172,15 +126,6 @@ h2 {
 
 .count-bold {
   font-weight: bold;
-}
-
-.marks-container {
-  /* max-width: 50%; */
-  /* margin: auto 0; */
-  display: flex;
-  justify-content: space-between;
-  min-height: 35px;
-  /* padding: 5px; */
 }
 
 ul {
@@ -198,7 +143,7 @@ ul {
   background-color: #aed581;
 }
 
-.edit-trkr-label {
+.edit-trkr-label, .notes-label {
   display: block;
   text-align: center;
 }
@@ -215,17 +160,8 @@ ul {
   text-align: left;
 } 
 
-.notes-container {
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  padding: 5px;
-}
-
 .trkr-sumry-notes {
   resize: none;
-  /* margin: 0 auto; */
-  width: 95%;
   height: 100px;
   border: 1px solid #7da453;
   border-radius: 3px;
@@ -246,22 +182,8 @@ ul {
   white-space: nowrap;
 }
 
-/* make flex container for dashboard & trackers */
-.summary-container,
-.archive-container {
-  display: flex;
-  /* flex-direction: column;  */
-  width: 95%; 
-  margin: 0 auto;
-  /* what applies to the child:  */
-  align-content: center;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-}
-
 .dashboard-btn-row {
   display: flex;
-  /* align-content: flex-end; */
   justify-content: center;
   margin: 25px 0 7px;
 }
@@ -307,9 +229,9 @@ ul {
   padding: 5px;
 }
 
-.tracker-notes {
+/* .tracker-notes {
   width: 100%;
-}
+} */
 
 .form-btn-row {
   display: flex;
