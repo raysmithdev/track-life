@@ -88,10 +88,10 @@ export default class ChartComponents {
             }
           ]
         },
-        title: {
-          display: true,
-          text: "Up to last 6 months"
-        },
+        // title: {
+        //   display: true,
+        //   text: "Up to last 6 months"
+        // },
         responsive: true,
         // add average line
         annotation: {

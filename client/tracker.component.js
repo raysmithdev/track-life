@@ -73,7 +73,7 @@ export default class TrackerComponents {
         <div class="marks-container">
           <ul class="tally-marks>${this.getTallyMarks()}</ul> 
         </div> 
-        <p class="current-count">Tracked: ${this.currentMarks.monthCount}</p>
+        <p class="current-count">Tracked: <span class="count-bold">${this.currentMarks.monthCount} </span></p>
         <div class="dashboard-btn-row">
           <button type="button" data-section="dashboard" data-trkr-id=${this
             .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
@@ -98,9 +98,9 @@ export default class TrackerComponents {
             <ul class="tally-marks>${this.getTallyMarks()}</ul> 
           </div>
           <div class="summary-statements">
-            <p class="summary-sentence">This Month: ${this.currentMarks.monthCount} times</p>
-            <p class="summary-sentence">Last Month: You marked ${this.oneMonthBack.monthCount} times</p>
-            <p class="summary-sentence"> ${this.averageMarks.numOfMonths} months average: ${this.averageMarks.count} times</p> 
+            <p class="summary-sentence">This Month: <span class="count-bold">${this.currentMarks.monthCount} </span> times</p>
+            <p class="summary-sentence">Last Month: <span class="count-bold">${this.oneMonthBack.monthCount} </span> times</p>
+            <p class="summary-sentence">${this.averageMarks.numOfMonths} months average: <span class="count-bold">${this.averageMarks.count}</span> times</p> 
           </div>
       </div>
       <div class="col-2">
