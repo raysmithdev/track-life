@@ -123,17 +123,21 @@ h2 {
   border-radius: 3px;
 }
 
-/* this is for 2 columns in summary's tracker container
- test this out to see the screen size */
+
 @media screen and (min-width: 600px) {
+  /* this is for 2 columns in summary's tracker container
+ test this out to see the screen size */
   .inner-flexbox {
     display: flex;
   }
+  
   .col-1,
   .col-2 {
     width: 50%;
   }
-  .dashboard-tracker-container {
+
+  .dashboard-tracker-container, 
+  .tracker-container {
     flex-basis: 75%;
   }
 }
@@ -164,6 +168,10 @@ h2 {
   font-weight: 200;
   font-size: 16px;
   margin-top: 15px;
+}
+
+.count-bold {
+  font-weight: bold;
 }
 
 .marks-container {
@@ -242,9 +250,11 @@ ul {
 .summary-container,
 .archive-container {
   display: flex;
-  width: 95%;
+  /* flex-direction: column;  */
+  width: 95%; 
   margin: 0 auto;
   /* what applies to the child:  */
+  align-content: center;
   justify-content: space-evenly;
   flex-wrap: wrap;
 }
