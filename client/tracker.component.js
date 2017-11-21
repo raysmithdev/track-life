@@ -57,6 +57,8 @@ export default class TrackerComponents {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const tallyMarks = this.tallyMarks;
 
+    //can use filter() to find the most recent 6 
+    //in date fns library, has a date range or before/after function or difference in months
     let avgMarks =
       sortedKeys.reduce(function(sum, value) {
         return sum + tallyMarks[value];

@@ -7,7 +7,10 @@ const trackerSchema = mongoose.Schema ({
   name: {type: String, required: true},
   description: String,
   status: Number, 
-  createdDate: {type: Date, default: new Date()},
+  // when server starts & mongoose initiates scheme, 
+  // it uses this date for every record
+  // {type: Date, default: new Date()},
+  createdDate: {type: Date, required: true}, 
   notes: String,
   tallyMarks: mongoose.Schema.Types.Mixed
 });
