@@ -110,7 +110,7 @@ export default class TrackerComponents {
           <canvas class="myChart-${this.trackerId}"></canvas>
         </div>
         <div class="notes-container">
-          <label for="notes">Notes</label>
+          <label for="notes" class="notes-label">Notes</label>
           <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">${this.notes}</textarea>
         </div>
         <div class="summary-btn-row">
