@@ -8,7 +8,10 @@ const TrackerStatuses = require("./tracker-status.enum");
 
 //get all existing trackers from user
 const findAllTrackers = (req, res) => {
-  Tracker.find()
+  //need to find by id
+  const userId = req.params.userId; //req.query.userId
+
+  Tracker.find( {userId : userId} )
     .then(trackers => {
       res.json({
         trackers: trackers.map(trackers => trackers.toClient())
