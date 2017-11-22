@@ -2,12 +2,11 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const should = chai.should();
 
-const faker = require('faker');
-
 const mongoose = require('mongoose');
+
 const { app, runServer, closeServer } = require('../server');
 const { TEST_DATABASE_URL } = require('../config');
-const { Trackers } = require('../src/tracker/tracker.model');
+const { Tracker } = require('../src/tracker/tracker.model');
 const trackerFactory = require('../test/factories/tracker.factory');
 
 chai.use(chaiHttp);
@@ -25,10 +24,10 @@ function tearDownDb() {
 // insert random trackers in database
 function seedTrackerData() {
   console.info(`seeding trackers`);
-  const seedData = [];
-  seedData.push(trackerFactory.createMany(6));
-  // console.log(seedData.push(trackerFactory.createMany(6)));
-  return Trackers.insertMany(seedData); //or insert one? 
+  const seedData = trackerFactory.createMany(6);
+  // console.log(seedData);
+  //this puts it into the database
+  return Tracker.insertMany(seedData);
 }
 
 
@@ -75,7 +74,7 @@ describe('tracker api', function() {
           res = _res;
           res.should.have.status(200);
           res.body.should.have.length.of.at.least(1);
-          return Trackers.count();
+          return Tracker.count();
         })
         .then(count => {
           res.body.should.have.count.of(count);
@@ -99,7 +98,7 @@ describe('tracker api', function() {
           })
           // retrieve individual trackers & check for correct values 
           resTracker = res.body[0];
-          return Trackers.findById(resTracker.id);
+          return Tracker.findById(resTracker.id);
         })
         .then(function(tracker) {
           resTracker.name.should.equal(tracker.name);
@@ -114,7 +113,6 @@ describe('tracker api', function() {
     //are these needed? 
     // it('should return all active trackers', function() { });
     // it('should return all archived trackers', function() { });
-  });
 
   describe('POST endpoint', function() { 
     it('be able to add one mark to a tracker', function() {
