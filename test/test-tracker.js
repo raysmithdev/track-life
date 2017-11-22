@@ -11,7 +11,7 @@ const { TEST_DATABASE_URL } = require('../config');
 const trackerFactory = require('../test/factories/tracker.factory');
 
 function tearDownDb() {
-  return new Promise ((resolve, reject) {
+  return new Promise ((resolve, reject) => {
     console.warn('deleting test database');
     mongoose.connection.dropDatabase()
       .then(result => resolve(result))
