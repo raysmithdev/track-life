@@ -35,7 +35,7 @@ router.post('/users/:userId/trackers/:trackerId/archive', archiveTracker)
 router.post('/users/:userId/trackers/:trackerId/reactivate', reactivateTracker)
 
 // delete tracker
-router.post('/users/:userId/trackers/:trackerId/delete', deleteTracker)
+// router.post('/users/:userId/trackers/:trackerId/delete', deleteTracker)
 
 module.exports = router;
 
