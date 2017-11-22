@@ -22,6 +22,7 @@ function createOne(userId) {
     description: faker.company.catchPhraseDescriptor(),
     status: faker.random.number({ min: 1, max: 2 }),
     notes: faker.company.catchPhrase(),
+    createdDate: new Date(),
     tallyMarks
   };
 }
