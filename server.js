@@ -19,7 +19,9 @@ mongoose.Promise = global.Promise;
 
 //https://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
-// app.get("/", (request, response) => {
+//define request response in root URL(/)
+// --use app.use or app.get to server index? 
+// app.get('/', (request, response) => {
 //   response.sendFile(__dirname + '/views/index.html');
 // });
 
@@ -36,7 +38,7 @@ let server;
 //connect to mongo database & start the express server
 function runServer(databaseUrl = DATABASE_URL, port = PORT) {
   return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, err => {
+    mongoose.connect(databaseUrl, {useMongoClient: true}, err => {
       if (err) {
         return reject(err);
       }
@@ -53,17 +55,17 @@ function runServer(databaseUrl = DATABASE_URL, port = PORT) {
 }
 
 function closeServer() {
-  return mongoose.disconnect().then(() => {
-    return new Promise((resolve, reject) => {
-      console.log('Closing server');
-      server.close(err => { 
-        if (err) {
-          return reject(err);
-        }
-        resolve();
+    return mongoose.disconnect().then(() => {
+      return new Promise((resolve, reject) => {
+        console.log('Closing server');
+        server.close(err => {
+          if (err) {
+            return reject(err);
+          }
+          resolve();
+        });
       });
     });
-  });
 }
 
 if (require.main === module) {
