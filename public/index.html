@@ -41,7 +41,7 @@
         <section class="sign-up">
           <h2>Ready to Start Tracking?</h2>
           <!-- <div class="form-container"> -->
-          <form action="" method="post" class="signup-form">
+          <form class="signup-form main-section">
             <fieldset>
               <legend>Create an Account</legend>
                 <label for="username">Username:</label> 
@@ -58,6 +58,23 @@
           <p class="already-signedup">Already have an account? <a href="/login">Login</a></p>
           <!-- </div> -->
         </section>
+
+        <!-- login screen -->
+        <section class="login main-section">
+          <h2>Login</h2>
+          <form action="" method="get">
+
+            <label for="username">Username:</label>
+            <input id="username" type="text" placeholder="enter username">
+
+            <label for="password">Password:</label>
+            <input id="password" type="password" placeholder="enter password" required>
+
+            <button type="submit" class="login">Login</button>
+            <button type="reset" class="reset">Reset</button>
+          </form>
+        </section>
+
       </div>
     </main>
 
