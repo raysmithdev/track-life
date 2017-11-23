@@ -213,7 +213,7 @@ export default class TrackerComponents {
   static getCreateTrackerHtml() {
     const template = `
     <h2>Create a Tracker</h2>
-    <form method="post" class="create-form">
+    <form class="create-form">
       <label for="tracker-name" class="new-trkr-label">New Tracker Name</label>
       <input class="new-trkr-input" type="text" placeholder="enter new tracker name">
 
