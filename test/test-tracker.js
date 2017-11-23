@@ -24,7 +24,7 @@ function tearDownDb() {
 // insert random trackers in database
 function seedTrackerData() {
   console.info(`seeding trackers`);
-  const seedData = trackerFactory.createMany(2);
+  const seedData = trackerFactory.createMany(5);
   // console.log('seedData ->', seedData);
   //this puts it into the database
   return Tracker.insertMany(seedData);
@@ -63,7 +63,7 @@ describe('tracker api', function() {
     //need createdDate? userId?
     const expectedKeys = ['id', 'userId', 'name', 'description', 'status', 'notes', 'tallyMarks'];
     //should this be to specific user or all trackers in database? 
-    it('should return all existing trackers', function() {
+    it('return all existing trackers', function() {
       let res;
       return chai
         .request(app)
@@ -102,22 +102,82 @@ describe('tracker api', function() {
           return Tracker.findById(resTracker.id);
         })
         .then(function(tracker) {
-          console.log('tracker ->', tracker.tallyMarks);
+          // console.log('tracker ->', tracker.tallyMarks);
           resTracker.name.should.equal(tracker.name);
           resTracker.status.should.equal(tracker.status);
           resTracker.description.should.equal(tracker.description);
           resTracker.notes.should.equal(tracker.notes);
-          console.log('resTracker ->', resTracker.tallyMarks);
+          // console.log('resTracker ->', resTracker.tallyMarks);
           // two objects have to use deep equal so it checks all the fields 
-          // two objects can't hold the same space in memory
           resTracker.tallyMarks.should.deep.equal(tracker.tallyMarks);
         });
       });
-    });
 
     //are these needed? 
-    // it('should return all active trackers', function() { });
-    // it('should return all archived trackers', function() { });
+    it('return trackers with active status', function() { 
+      let resTracker; 
+      return chai
+        .request(app)
+        .get('/api/users/123/trackers/active')
+        .then(function(res) {
+          // console.log('res for expected keys->', res)
+          res.should.have.status(200);
+          res.should.be.json;
+          res.body.trackers.should.be.a('array');
+          res.body.trackers.should.have.lengthOf.at.least(1);
+          // check each response for expected keys
+          res.body.trackers.forEach(function (tracker) {
+            tracker.should.be.a('object');
+            tracker.should.include.keys(expectedKeys);
+          })
+          // retrieve individual trackers & check for correct values 
+          resTracker = res.body.trackers[0];
+          return Tracker.findById(resTracker.id);
+        })
+        .then(function(tracker) {
+          // console.log('tracker ->', tracker.tallyMarks);
+          resTracker.name.should.equal(tracker.name);
+          resTracker.status.should.equal(tracker.status);
+          resTracker.description.should.equal(tracker.description);
+          resTracker.notes.should.equal(tracker.notes);
+          // console.log('resTracker ->', resTracker.tallyMarks);
+          // two objects have to use deep equal so it checks all the fields 
+          resTracker.tallyMarks.should.deep.equal(tracker.tallyMarks);
+        });
+      });
+
+    it('return trackers with archive status', function() {
+      let resTracker; 
+      return chai
+        .request(app)
+        .get('/api/users/123/trackers/archived')
+        .then(function(res) {
+          // console.log('res for expected keys->', res)
+          res.should.have.status(200);
+          res.should.be.json;
+          res.body.trackers.should.be.a('array');
+          res.body.trackers.should.have.lengthOf.at.least(1);
+          // check each response for expected keys
+          res.body.trackers.forEach(function (tracker) {
+            tracker.should.be.a('object');
+            tracker.should.include.keys(expectedKeys);
+          })
+          // retrieve individual trackers & check for correct values 
+          resTracker = res.body.trackers[0];
+          return Tracker.findById(resTracker.id);
+        })
+        .then(function(tracker) {
+          // console.log('tracker ->', tracker.tallyMarks);
+          resTracker.name.should.equal(tracker.name);
+          resTracker.status.should.equal(tracker.status);
+          resTracker.description.should.equal(tracker.description);
+          resTracker.notes.should.equal(tracker.notes);
+          // console.log('resTracker ->', resTracker.tallyMarks);
+          // two objects have to use deep equal so it checks all the fields 
+          resTracker.tallyMarks.should.deep.equal(tracker.tallyMarks);
+        });
+      });
+  });
 
   describe('POST endpoint', function() { 
     const expectedKeys = ['id', 'userId', 'name', 'description', 'status', 'notes', 'tallyMarks'];
@@ -133,17 +193,20 @@ describe('tracker api', function() {
         .post('/api/users/123/trackers')
         .send(newTracker)
         .then(function(res) {
+          // console.log('create new tracker res->', res);
           res.should.have.status(201);
           res.should.be.json;
           res.body.should.be.a('object');
-          res.should.include(expectedKeys);
+          res.body.should.include.keys(expectedKeys);
           res.body.name.should.equal(newTracker.name);
-          // mongo auto generates id on inserted
           res.body.id.should.not.be.null;
           res.body.description.should.equal(newTracker.description);
-          res.body.status.should.equal(newTracker.status);
+          res.body.status.should.equal(1);
+          res.body.notes.should.equal(newTracker.notes);
+          // res.body.tallyMarks.should.deep.equal(newTracker.tallyMarks);
         })
     });
+    
     it('be able to add one mark to a tracker', function() {
       // return chai
       //   .request(app)
@@ -171,8 +234,7 @@ describe('tracker api', function() {
   describe('DELETE endpoint', function() {
     //not sure if this will happen or not yet
   });
-});
-
+}); 
 //trackerFactory.createOne();
 
 // make HTTP requests to API using test client
