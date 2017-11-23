@@ -71,7 +71,7 @@ describe("tracker api", function() {
       "notes",
       "tallyMarks"
     ];
-    //should this be to specific user or all trackers in database?
+
     it("return all existing trackers", function() {
       let res;
       return (
@@ -181,6 +181,10 @@ describe("tracker api", function() {
   });
 
   describe("POST endpoint", function() {
+    //Strategy:
+    // 1. make post request (add mark)
+    // 2. check that post has right keys
+    // 3. check that post has right id
     const expectedKeys = [
       "id",
       "userId",
@@ -190,10 +194,7 @@ describe("tracker api", function() {
       "notes",
       "tallyMarks"
     ];
-    //Strategy:
-    // 1. make post request (add mark)
-    // 2. check that post has right keys
-    // 3. check that post has right id
+
     it("create a new tracker", function() {
       const newTracker = trackerFactory.newTracker;
       return (
@@ -218,12 +219,12 @@ describe("tracker api", function() {
       );
     });
 
-    it("be able to add one mark to a tracker", function() {
+    it("add one mark to a tracker", function() {
       // return chai
       //   .request(app)
       //   .post('')
     });
-    it("be able to remove one mark to a tracker", function() {});
+    it("remove one mark to a tracker", function() {});
     it("change tracker status to archived", function() {});
 
     //is this needed?
@@ -233,7 +234,40 @@ describe("tracker api", function() {
   });
 
   describe("PUT endpoint", function() {
-    it("modify tracker fields - name, description, and notes", function() {});
+    // Strategy: 
+    // 1. Get an existing tracker from database
+    // 2. Make PUT request to modify the tracker
+    // 3. Check that tracker in database has been modified
+
+    it("modify tracker fields - name, description, and notes", function() {
+      const updateData = {
+        name: 'modify tracker name',
+        description: 'modify tracker description',
+        notes: 'modify tracker notes'
+      };
+
+      return Tracker
+        //find an active tracker
+        .findOne({status: 1})
+        .then(tracker => {
+          updateData.id = tracker._id;
+          // console.log('find one tracker ->', tracker);
+          return chai
+            .request(app)
+            .put(`/api/users/123/trackers/${tracker.id}`)
+            .send(updateData);
+        })
+        .then(res => {
+          // console.log('after put request, what is res ->', res);
+          res.should.have.status(204);
+          return Tracker.findById(updateData.id);
+        })
+        .then(tracker => {
+          tracker.name.should.equal(updateData.name);
+          tracker.description.should.equal(updateData.description);
+          tracker.notes.should.equal(updateData.notes);
+        });
+      });
   });
 
   describe("DELETE endpoint", function() {
