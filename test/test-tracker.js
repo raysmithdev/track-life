@@ -24,12 +24,11 @@ function tearDownDb() {
 // insert random trackers in database
 function seedTrackerData() {
   console.info(`seeding trackers`);
-  const seedData = trackerFactory.createMany(6);
-  // console.log(seedData);
+  const seedData = trackerFactory.createMany(2);
+  // console.log('seedData ->', seedData);
   //this puts it into the database
   return Tracker.insertMany(seedData);
 }
-
 
 describe('tracker api', function() {
   //let mockUser - need to incorporate user; 
@@ -69,15 +68,16 @@ describe('tracker api', function() {
       return chai
         .request(app)
         //replace :userId after it is set up
-        .get('/users/123/trackers') 
+        .get('/api/users/123/trackers') 
         .then(_res => {
           res = _res;
           res.should.have.status(200);
-          res.body.should.have.length.of.at.least(1);
+          // console.log('get all trackers->', res.body.trackers);
+          res.body.trackers.should.have.lengthOf.at.least(1);
           return Tracker.count();
         })
         .then(count => {
-          res.body.should.have.count.of(count);
+          res.body.trackers.should.have.lengthOf(count);
         });
     });
 
@@ -85,27 +85,32 @@ describe('tracker api', function() {
       let resTracker; 
       return chai
         .request(app)
-        .get('/users/123/trackers')
+        .get('/api/users/123/trackers')
         .then(function(res) {
+          // console.log('res for expected keys->', res)
           res.should.have.status(200);
           res.should.be.json;
-          res.body.should.be.a('array');
-          res.body.should.have.length.of.at.least(1);
+          res.body.trackers.should.be.a('array');
+          res.body.trackers.should.have.lengthOf.at.least(1);
           // check each response for expected keys
-          res.body.forEach(function (tracker) {
+          res.body.trackers.forEach(function (tracker) {
             tracker.should.be.a('object');
             tracker.should.include.keys(expectedKeys);
           })
           // retrieve individual trackers & check for correct values 
-          resTracker = res.body[0];
+          resTracker = res.body.trackers[0];
           return Tracker.findById(resTracker.id);
         })
         .then(function(tracker) {
+          console.log('tracker ->', tracker.tallyMarks);
           resTracker.name.should.equal(tracker.name);
           resTracker.status.should.equal(tracker.status);
           resTracker.description.should.equal(tracker.description);
           resTracker.notes.should.equal(tracker.notes);
-          resTracker.tallyMarks.should.equal(tracker.tallyMarks);
+          console.log('resTracker ->', resTracker.tallyMarks);
+          // two objects have to use deep equal so it checks all the fields 
+          // two objects can't hold the same space in memory
+          resTracker.tallyMarks.should.deep.equal(tracker.tallyMarks);
         });
       });
     });
@@ -115,8 +120,34 @@ describe('tracker api', function() {
     // it('should return all archived trackers', function() { });
 
   describe('POST endpoint', function() { 
+    const expectedKeys = ['id', 'userId', 'name', 'description', 'status', 'notes', 'tallyMarks'];
+    //Strategy:
+    // 1. make post request (add mark)
+    // 2. check that post has right keys 
+    // 3. check that post has right id 
+    it('create a new tracker', function() { 
+      const newTracker = trackerFactory.newTracker;
+      return chai
+        .request(app)
+        //change user 
+        .post('/api/users/123/trackers')
+        .send(newTracker)
+        .then(function(res) {
+          res.should.have.status(201);
+          res.should.be.json;
+          res.body.should.be.a('object');
+          res.should.include(expectedKeys);
+          res.body.name.should.equal(newTracker.name);
+          // mongo auto generates id on inserted
+          res.body.id.should.not.be.null;
+          res.body.description.should.equal(newTracker.description);
+          res.body.status.should.equal(newTracker.status);
+        })
+    });
     it('be able to add one mark to a tracker', function() {
-      
+      // return chai
+      //   .request(app)
+      //   .post('')
     });
     it('be able to remove one mark to a tracker', function() {
       
