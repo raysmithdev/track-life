@@ -11,6 +11,8 @@ import {
   renderLogOutDashboard
 } from "./index.render-views";
 
+import { setSignUpHandlers } from './signup';
+
 import { debug } from "util"; //?
 
 export const STATE = {
@@ -188,9 +190,10 @@ function setUpHandlers() {
 }
 
 $("document").ready(() => {
-  setUpHandlers();
+  setSignUpHandlers();
+  //setUpHandlers();
   //this should run after user logs in
-  getDashboardTrackers().then(renderDashboard);
-  getArchivedTrackers();
+  //getDashboardTrackers().then(renderDashboard);
+  //getArchivedTrackers();
   // getArchivedTrackers().then(renderArchivePage);
 });
