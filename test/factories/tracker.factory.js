@@ -33,7 +33,8 @@ function createOneExisting() {
     userId: 123, 
     name: faker.commerce.productName(),
     description: faker.company.catchPhraseDescriptor(),
-    status: faker.random.number({ min: 1, max: 2 }),
+    status: faker.random.objectElement({one: 1, two: 2}),
+    // status: faker.random.number({ min: 1, max: 2 }),
     notes: faker.company.catchPhrase(),
     createdDate: new Date(),
     tallyMarks: tallyMarksObj
