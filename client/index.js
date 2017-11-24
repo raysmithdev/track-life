@@ -2,6 +2,8 @@ import $ from "jquery";
 import Cookies from 'js-cookie';
 
 import {
+  renderLoginForm,
+  renderSignUpForm,
   renderDashboard,
   renderCreateTrackerPage,
   renderSummaryPage,
@@ -20,6 +22,19 @@ export const STATE = {
   jwt: '',
   currentUserId: '',
 };
+
+// LANDING PAGE
+function setIndexHandlers() {
+  $('.login-btn').click(renderLoginForm);
+  $('.signup-btn').click(renderSignUpForm);
+
+  // demo account
+  // $(".main-section").on("click", ".demo-btn", e => {
+  //   // auto login with demo account
+  // };
+};
+
+// DASHBOARD 
 
 // Call the API for current trackers and store in STATE
 function getDashboardTrackers() {
@@ -192,7 +207,7 @@ function setUpHandlers() {
 
 $("document").ready(() => {
   if(window.location.pathname === '/') {
-    
+    setIndexHandlers();
     setSignUpHandlers();
     setLoginHandlers();
   }

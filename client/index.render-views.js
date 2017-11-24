@@ -9,7 +9,17 @@ import { STATE } from "./index";
 import mockTrackerData from "./mock-data";
 import { debug } from "util"; //?
 
-// render login screen
+// render login form
+export function renderLoginForm() {
+  $(".main-section").hide();
+  $(".login").show();
+}
+
+// render login form
+export function renderSignUpForm() {
+  $(".main-section").hide();
+  $(".sign-up").show();
+}
 
 // render dashboard
 export function renderDashboard() {
