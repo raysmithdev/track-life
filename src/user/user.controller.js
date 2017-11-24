@@ -19,7 +19,7 @@ const getAllUsers = (req, res) => {
     });
 };
 
-//create a new user
+// create a new user
 const createNewUser = (req, res) => {
   User
     .create({
@@ -35,15 +35,25 @@ const createNewUser = (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ message: "internal server error"});        
+      res.status(500).json({ message: "internal server error" });        
     });
 };
 
-//change user avatar
-
-//delete user
+// delete user
+const deleteUser = (req, res) => {
+  User
+    .findByIdAndRemove(req.params.id)
+    .then( () => {
+      res.status(204).json({ message: 'successful deletion of user' });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "internal server error" }); 
+    });
+};
 
 module.exports = {
   getAllUsers,
-  createNewUser
+  createNewUser,
+  deleteUser
 }
