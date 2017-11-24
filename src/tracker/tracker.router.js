@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const controller = require('./tracker.controller')
@@ -34,8 +32,11 @@ router.post('/users/:userId/trackers/:trackerId/archive', controller.archiveTrac
 // reactivate archived tracker (change status code)
 router.post('/users/:userId/trackers/:trackerId/reactivate', controller.reactivateTracker)
 
-// delete tracker
-// router.post('/users/:userId/trackers/:trackerId/delete', deleteTracker)
+// soft delete tracker
+router.post('/users/:userId/trackers/:trackerId/delete', controller.deleteTrackerSoft)
+
+// hard delete tracker
+router.delete('/users/:userId/trackers/:trackerId/', controller.deleteTrackerPerm)
 
 module.exports = router;
 

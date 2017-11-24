@@ -6,7 +6,7 @@ const ObjectId = require("mongodb");
 const moment = require("moment");
 const TrackerStatuses = require("./tracker-status.enum");
 
-//get all existing trackers from user
+// get all existing trackers from user
 const findAllTrackers = (req, res) => {
   //need to find by id
   const userId = req.params.userId; //req.query.userId
@@ -23,7 +23,7 @@ const findAllTrackers = (req, res) => {
     });
 };
 
-//get all existing active trackers from user
+// get all existing active trackers from user
 const findActiveTrackers = (req, res) => {
   Tracker.find({ status: 1 })
     .then(trackers => {
@@ -37,7 +37,7 @@ const findActiveTrackers = (req, res) => {
     });
 };
 
-//get all archived trackers from user
+// get all archived trackers from user
 const findArchivedTrackers = (req, res) => {
   Tracker.find({ status: 2 })
     .then(trackers => {
@@ -51,7 +51,7 @@ const findArchivedTrackers = (req, res) => {
     });
 };
 
-//create a new tracker -- get user by id and add
+// create a new tracker -- get user by id and add
 const createNewTracker = (req, res) => {
   const requiredFields = ["name", "userId"];
   for (let i = 0; i < requiredFields.length; i++) {
@@ -84,7 +84,7 @@ const createNewTracker = (req, res) => {
     });
 };
 
-//add mark to a tracker (update by id)
+// add mark to a tracker (update by id)
 const addMark = (req, res) => {
   // console.log(req.params);
   const trackerId = req.params.trackerId;
@@ -128,7 +128,7 @@ const addMark = (req, res) => {
     });
 };
 
-//remove a mark to a tracker (update by id)
+// remove a mark to a tracker (update by id)
 const removeMark = (req, res) => {
   const trackerId = req.params.trackerId;
   Tracker
@@ -164,7 +164,7 @@ const removeMark = (req, res) => {
     });
 };
 
-//archive tracker (change status by id)
+// archive tracker (change status by id)
 const archiveTracker = (req, res) => {
   const trackerId = req.params.trackerId;
   const updateStatus = { $set: { status: 2 } };
@@ -182,7 +182,7 @@ const archiveTracker = (req, res) => {
     });
 };
 
-//reactivate archived tracker (change status by id)
+// reactivate archived tracker (change status by id)
 const reactivateTracker = (req, res) => {
   const trackerId = req.params.trackerId;
   const updateStatus = { $set: { status: 1 } };
@@ -200,7 +200,7 @@ const reactivateTracker = (req, res) => {
     });
 };
 
-//update fields within tracker (name, description, notes)
+// update fields within tracker (name, description, notes)
 const modifyTrackerDetails = (req, res) => {
   const trackerId = req.params.trackerId;
   const updated = {};
@@ -218,8 +218,26 @@ const modifyTrackerDetails = (req, res) => {
     );
 };
 
-//delete tracker
-const deleteTracker = (req, res) => {
+// delete tracker (change status to 3)
+const deleteTrackerSoft = (req, res) => {
+  const trackerId = req.params.trackerId;
+  const updateStatus = { $set: { status: 3 } };
+
+  Tracker.findByIdAndUpdate(trackerId, updateStatus, { new: true })
+    .then(tracker =>
+      res
+        .status(200)
+        .json(tracker.toClient())
+        .end()
+    )
+    .catch(err => { 
+      console.error(err);
+      res.status(500).json({ message: `tracker couldn't be deleted - status 3` })
+    });
+};
+
+// hard delete tracker (remove from database)
+const deleteTrackerPerm = (req, res) => {
   const trackerId = req.params.trackerId;
 
   Tracker
@@ -238,7 +256,8 @@ module.exports = {
   addMark,
   archiveTracker,
   createNewTracker,
-  deleteTracker,
+  deleteTrackerSoft,
+  deleteTrackerPerm,
   findActiveTrackers,
   findArchivedTrackers,
   findAllTrackers,
@@ -246,18 +265,4 @@ module.exports = {
   reactivateTracker,
   removeMark
 };
-
-// this version changes status and doesn't actually delete the tracker
-// const deleteTracker = (req, res) => {
-//   const trackerId = req.params.trackerId;
-
-//   Tracker.findByIdAndUpdate(trackerId)
-//     .then(tracker => {
-//       tracker.set({ status: 3 });
-//       res.status(204).end();
-//     })
-//     .catch(err =>
-//       res.status(500).json({ message: `tracker couldn't be archived` })
-//     );
-// };
 
