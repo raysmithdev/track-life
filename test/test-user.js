@@ -31,7 +31,7 @@ function seedUserData() {
   return User.insertMany(seedData);
 }
 
-describe("tracker api", function() {
+describe("user api", function() {
   //let mockUser - need to incorporate user;
 
   // start the server before test
@@ -66,25 +66,23 @@ describe("tracker api", function() {
       "userName",
       "password",
       "avatar",
-      "trackerIds",
+      "trackerIds"
     ];
 
     it("return all existing users", function() {
       let res;
-      return (
-        chai
-          .request(app)
-          .get("/api/users")
-          .then(_res => {
-            res = _res;
-            res.should.have.status(200);
-            res.body.trackers.should.have.lengthOf.at.least(1);
-            return User.count();
-          })
-          .then(count => {
-            res.body.users.should.have.lengthOf(count);
-          })
-      );
+      return chai
+        .request(app)
+        .get("/api/users")
+        .then(_res => {
+          res = _res;
+          res.should.have.status(200);
+          res.body.trackers.should.have.lengthOf.at.least(1);
+          return User.count();
+        })
+        .then(count => {
+          res.body.users.should.have.lengthOf(count);
+        });
     });
 
     it("users should return with expected keys", function() {
@@ -117,6 +115,7 @@ describe("tracker api", function() {
           resTracker.tallyMarks.should.deep.equal(tracker.tallyMarks);
         });
     });
+  });
 
   describe("POST endpoint", function() {
     //Strategy:
@@ -129,7 +128,7 @@ describe("tracker api", function() {
       "userName",
       "password",
       "avatar",
-      "trackerIds",
+      "trackerIds"
     ];
 
     it("create a new tracker", function() {
@@ -151,8 +150,5 @@ describe("tracker api", function() {
           })
       );
     });
-
-  describe("DELETE endpoint", function() {
-    //not sure if this will happen or not yet
   });
 });
