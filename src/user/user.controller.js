@@ -1,8 +1,5 @@
-'use strict';
-
-//object? is this the correct filepath? 
 const { User } = require('./user.model');
-const ObjectId = require('mongodb');
+const { Tracker } = require('./tracker.model');
 
 // get all users
 const getAllUsers = (req, res) => {
@@ -41,9 +38,18 @@ const createNewUser = (req, res) => {
 
 // delete user
 const deleteUser = (req, res) => {
+  const userId = req.params.id;
+  /*
+    * first find the user so you can get the tracker ids store in variable trackerIds
+    * remove user, in the then() find trackers by the ids you got from the user and remove theme
+    * query {_id : {$in : trackerIds}} - actually delete or change status to 3 (delete)
+  */
   User
-    .findByIdAndRemove(req.params.id)
-    .then( () => {
+    //find user
+    //store the trakcers in an id  >> d
+    .findByIdAndRemove(userId) // see f mongoose has option to return record
+    .then((user) => { //check to see if this will return the user record deleted
+      Tracker.findByIdAndRemove()
       res.status(204).json({ message: 'successful deletion of user' });
     })
     .catch(err => {
