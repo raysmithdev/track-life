@@ -1,6 +1,5 @@
-"use strict";
-
 import $ from "jquery";
+import Cookies from 'js-cookie';
 
 import {
   renderDashboard,
@@ -12,12 +11,14 @@ import {
 } from "./index.render-views";
 
 import { setSignUpHandlers } from './signup';
-
+import { setLoginHandlers } from "./login";
 import { debug } from "util"; //?
 
 export const STATE = {
   trackers: [],
-  archivedTrackers: []
+  archivedTrackers: [],
+  jwt: '',
+  currentUserId: '',
 };
 
 // Call the API for current trackers and store in STATE
@@ -190,10 +191,22 @@ function setUpHandlers() {
 }
 
 $("document").ready(() => {
-  setSignUpHandlers();
-  //setUpHandlers();
-  //this should run after user logs in
-  //getDashboardTrackers().then(renderDashboard);
-  //getArchivedTrackers();
-  // getArchivedTrackers().then(renderArchivePage);
+  if(window.location.pathname === '/') {
+    
+    setSignUpHandlers();
+    setLoginHandlers();
+  }
+
+  if(window.location.pathname === 'dashboard') {
+    
+    STATE.jwt = Cookies.get('jwt');
+    STATE.currentUserId = Cookies.get('loggedInUser');
+    console.log('test from dashboard');
+    // setUpHandlers();
+    // getDashboardTrackers().then(renderDashboard);
+    // getArchivedTrackers();
+    // getArchivedTrackers().then(renderArchivePage);
+  }
+
+
 });
