@@ -23,7 +23,7 @@ userSchema.methods.toClient = function () {
     firstName: this.firstName,
     lastName: this.lastName,
     fullName: this.fullName,
-    username: this.username,
+    userName: this.userName,
     avatar: this.avatar,
     trackerIds: this.trackerIds
   };
