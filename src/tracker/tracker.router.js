@@ -39,13 +39,3 @@ router.post('/users/:userId/trackers/:trackerId/delete', controller.deleteTracke
 router.delete('/users/:userId/trackers/:trackerId/', controller.deleteTrackerPerm)
 
 module.exports = router;
-
-//extra routes for now 
-
-//router.get('/', );
-//access individual tracker -- modify as needed
-//router.get('/users/:userId/trackers/:trackerId',)
-
-// router.get('/trackers', )
-// router.get('/trackers/:trackerId', ) //query with user id?
-
