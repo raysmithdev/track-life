@@ -220,6 +220,7 @@ describe("tracker api", function() {
     });
 
     it("add one mark to a tracker", function() {
+      // send request and check the document updated
       // return chai
       //   .request(app)
       //   .post('')
