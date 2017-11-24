@@ -6,13 +6,13 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 // get all users
-router.get('/user', getAllUsers);
+router.get('/users', getAllUsers);
 
 // create new user 
-router.post('/user', createNewUser);
+router.post('/users', createNewUser);
 
 // delete user 
-router.get('/user/:userId', deleteUser);
+router.get('/users/:userId', deleteUser);
 
 //update user
 // router.put('/user/:userId,')
