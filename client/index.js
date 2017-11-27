@@ -1,5 +1,5 @@
 import $ from "jquery";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 import {
   renderIndexPage,
@@ -13,59 +13,66 @@ import {
   renderLogOutDashboard
 } from "./index.render-views";
 
-import { setSignUpHandlers } from './signup';
+import { setSignUpHandlers } from "./signup";
 import { setLoginHandlers } from "./login";
 import { debug } from "util"; //?
 
 export const STATE = {
   trackers: [],
   archivedTrackers: [],
-  jwt: '',
-  currentUserId: '',
+  jwt: "",
+  currentUserId: ""
 };
 
 const redirectOnAuthFailure = err => {
-  if(err.status === 401) {
-    window.location = '/';
+  if (err.status === 401) {
+    window.location = "/";
   }
 };
 
 // LANDING PAGE
 function setIndexHandlers() {
-  $('.login-btn').click(renderLoginForm);
-  $('.signup-btn').click(renderSignUpForm);
-  $('.home-btn').click(renderIndexPage);
-
+  $(".login-btn").click(renderLoginForm);
+  $(".signup-btn").click(renderSignUpForm);
+  $(".home-btn").click(renderIndexPage);
   // login for demo account
   // $(".main-section").on("click", ".demo-btn", e => {
   //   // auto login with demo account
   // };
-};
+}
 
-// DASHBOARD 
+// DASHBOARD
 
 // Call the API for current trackers and store in STATE
 function getDashboardTrackers() {
   // console.log(`Bearer ${Cookies.get('jwt')}`);
   return $.ajax({
     url: `/api/users/${STATE.currentUserId}/trackers/active`,
-    method: 'GET',
+    method: "GET",
     headers: {
-      Authorization: `Bearer ${Cookies.get('jwt')}`
+      Authorization: `Bearer ${Cookies.get("jwt")}`
     },
-    dataType: 'json'
-  }).then(data => {
-    // console.log(data.trackers);
-    // STATE.trackers.push(...mockTrackerData);
-    STATE.trackers.push(...data.trackers);
-  }).catch(redirectOnAuthFailure);
+    dataType: "json"
+  })
+    .then(data => {
+      STATE.trackers.push(...data.trackers);
+    })
+    .catch(redirectOnAuthFailure);
 }
 
 function getArchivedTrackers() {
-  // TODO: update the 123 to be an id when we are ready
-  return $.get("/api/users/123/trackers/archived").then(data => {
+  return $.ajax({
+    url: `/api/users/${STATE.currentUserId}/trackers/archived`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${Cookies.get("jwt")}`
+    },
+    dataType: "json"
+  })
+  .then(data => {
     STATE.archivedTrackers.push(...data.trackers);
-  });
+  })
+  .catch(redirectOnAuthFailure);
 }
 
 function setUpHandlers() {
@@ -83,13 +90,19 @@ function setUpHandlers() {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
     const section = $(e.currentTarget).data("section");
 
-    $.post(`/api/users/123/trackers/${trackerId}/increment`).then(data => {
-      const index = STATE.trackers.findIndex(
-        tracker => tracker.id === data.id
-      );
-      STATE.trackers[index] = data; 
+    $.ajax({
+      url: `/api/users/${STATE.currentUserId}/trackers/${trackerId}/increment`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`
+      },
+      dataType: "json"
+    })
+    .then(data => {
+      const index = STATE.trackers.findIndex(tracker => tracker.id === data.id);
+      STATE.trackers[index] = data;
       switch (section) {
-        case "dashboard": 
+        case "dashboard":
           renderDashboard();
           break;
         case "summary":
@@ -102,8 +115,8 @@ function setUpHandlers() {
           renderDashboard();
           break;
       }
-    });
-    // STATE.trackers.push(...data.trackers);
+    })
+    .catch(redirectOnAuthFailure);
   });
 
   //remove mark button
@@ -111,10 +124,16 @@ function setUpHandlers() {
     const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
     const section = $(e.currentTarget).data("section");
 
-    $.post(`/api/users/123/trackers/${trackerId}/decrement`).then(data => {
-      const index = STATE.trackers.findIndex(
-        tracker => tracker.id === data.id
-      );
+    $.ajax({
+      url: `/api/users/${STATE.currentUserId}/trackers/${trackerId}/decrement`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`
+      },
+      dataType: "json"
+    })
+    .then(data => {
+      const index = STATE.trackers.findIndex(tracker => tracker.id === data.id);
       STATE.trackers[index] = data;
       switch (section) {
         case "dashboard":
@@ -130,8 +149,8 @@ function setUpHandlers() {
           renderDashboard();
           break;
       }
-    });
-    // STATE.trackers.push(...data.trackers);
+    })
+    .catch(redirectOnAuthFailure);
   });
 
   // view summary button - open individual tracker
@@ -148,27 +167,27 @@ function setUpHandlers() {
 
   // save input fields on blur in individual summary view
   $(".tracker-summary").on("blur", ".edit-trkr-field", e => {
-    const trackerId = $(e.currentTarget).data("trkr-id"); 
+    const trackerId = $(e.currentTarget).data("trkr-id");
     const fieldName = $(e.currentTarget).data("field-name");
-    const fieldValue = $(e.currentTarget).val(); 
+    const fieldValue = $(e.currentTarget).val();
     const updatedData = {};
-    updatedData[fieldName] = fieldValue; 
+    updatedData[fieldName] = fieldValue;
 
     const index = STATE.trackers.findIndex(tracker => tracker.id === trackerId);
     const updatedTracker = STATE.trackers[index];
     updatedTracker[fieldName] = fieldValue;
 
-    // change :userId to ${STATE.currentUserId}
     $.ajax({
-      method: 'PUT',
-      url: `/api/users/123/trackers/${trackerId}`,
+      method: "PUT",
+      url: `/api/users/${STATE.currentUserId}/trackers/${trackerId}`,
       data: JSON.stringify(updatedData),
-      contentType: 'application/json', 
+      contentType: "application/json",
       headers: {
-        Authorization: `Bearer ${Cookies.get('jwt')}`
+        Authorization: `Bearer ${Cookies.get("jwt")}`
       },
-      dataType: 'json'
+      dataType: "json"
     })
+    .catch(redirectOnAuthFailure);
   });
 
   // close button
@@ -181,11 +200,20 @@ function setUpHandlers() {
     const trackerId = $(e.currentTarget).data("trkr-id");
     const section = $(e.currentTarget).data("section");
 
-    $.post(`/api/users/123/trackers/${trackerId}/archive`).then(data => {
+    $.ajax({
+      url: `/api/users/${STATE.currentUserId}/trackers/${trackerId}/archive`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`
+      },
+      dataType: "json"
+    })
+    .then(data => {
       const index = STATE.trackers.findIndex(tracker => tracker.id === data.id);
-
-      STATE.trackers.splice(index, 1); //look at index position & remove 1 item following
-      STATE.archivedTrackers.push(data); //push data that comes back from API 
+      //look at index position & remove 1 item following
+      STATE.trackers.splice(index, 1); 
+      //push data that comes back from API
+      STATE.archivedTrackers.push(data); 
 
       switch (section) {
         case "summary":
@@ -198,22 +226,33 @@ function setUpHandlers() {
           renderSummaryPage();
           break;
       }
-    });
+    })
+    .catch(redirectOnAuthFailure);
   });
 
   // reactivate button
   $(".tracker-archive").on("click", ".reactivate-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id");
-    // change userId to ${STATE.currentUserId}
-    $.post(`/api/users/123/trackers/${trackerId}/reactivate`).then(data => {
-      console.log('state =', STATE, data);
-      const index = STATE.archivedTrackers.findIndex(tracker => tracker.id === data.id);
+    $.ajax({
+      url: `/api/users/${STATE.currentUserId}/trackers/${trackerId}/reactivate`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`
+      },
+      dataType: "json"
+    })
+    .then(data => {
+      // console.log("state =", STATE, data);
+      const index = STATE.archivedTrackers.findIndex(
+        tracker => tracker.id === data.id
+      );
 
       STATE.archivedTrackers.splice(index, 1);
       STATE.trackers.push(data);
 
       renderArchivePage();
-    });
+    })
+    .catch(redirectOnAuthFailure);
   });
 
   //add delete button
@@ -224,16 +263,16 @@ function setUpHandlers() {
 }
 
 $("document").ready(() => {
-  if(window.location.pathname === '/') {
+  if (window.location.pathname === "/") {
     setIndexHandlers();
     setSignUpHandlers();
     setLoginHandlers();
   }
 
-  if(window.location.pathname === '/dashboard') {
-    STATE.jwt = Cookies.get('jwt');
-    STATE.currentUserId = Cookies.get('loggedInUserId');
-    console.log('test from dashboard');
+  if (window.location.pathname === "/dashboard") {
+    STATE.jwt = Cookies.get("jwt");
+    STATE.currentUserId = Cookies.get("loggedInUserId");
+    console.log("test from dashboard");
     setUpHandlers();
     getDashboardTrackers().then(renderDashboard);
     getArchivedTrackers();
