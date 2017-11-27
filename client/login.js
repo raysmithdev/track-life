@@ -12,8 +12,9 @@ export const setLoginHandlers = () => {
       // maybe set userId to cookie too???
       Cookies.set('jwt', user.authToken);
       Cookies.set('loggedInUserId', user.userId);
-      window.location = '/dashboard';
       console.log(user);
+      window.location = '/dashboard';
+      
     });
   });
 };
