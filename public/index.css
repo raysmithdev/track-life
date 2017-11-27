@@ -58,6 +58,10 @@ button {
   padding: 1em;
 }
 
+.login {
+  display: none;
+}
+
 .intro-container {
   margin: 0 auto;
   width: 85%;
