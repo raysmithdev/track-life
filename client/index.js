@@ -272,10 +272,10 @@ $("document").ready(() => {
   if (window.location.pathname === "/dashboard") {
     STATE.jwt = Cookies.get("jwt");
     STATE.currentUserId = Cookies.get("loggedInUserId");
-    console.log("test from dashboard");
     setUpHandlers();
     getDashboardTrackers().then(renderDashboard);
     getArchivedTrackers();
-    getArchivedTrackers().then(renderArchivePage);
+    // render dashboard last
+    // getArchivedTrackers().then(renderArchivePage);
   }
 });
