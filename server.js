@@ -35,16 +35,16 @@ app.use('/api/auth', authRouter);
 // when request to dashboard is made, check for dashboard
 app.get('/dashboard', (req, res) => {
   // if not authenticated, send back to index
-  if (!req.isAuthenticated()) {
-    return res.status(401).redirect('/');
-    //return res.status(401).json({ message: 'Not logged in' });
-  }
+  // if (!req.isAuthenticated()) {
+  //   return res.status(401).redirect('/');
+  //   //return res.status(401).json({ message: 'Not logged in' });
+  // }
   // when authenticated, send to dashboard
   // and return user info to client to save in STATE
   // need to store in STATE to pass it through other web requests
-  res.status(200).sendFile(__dirname + '/public/dashboard.html', {
-    user: req.user.toClient()
-  });
+  res.status(200).sendFile(__dirname + '/public/dashboard.html');
+    //user: req.user.toClient()
+
 });
 // if in root, get index
 app.get('/', (req, res) => {
