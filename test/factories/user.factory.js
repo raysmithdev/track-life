@@ -1,6 +1,6 @@
 const faker = require("faker");
 const { User } = require("../../src/user/user.model");
-const trackerFactory = require("../test/factories/tracker.factory");
+const trackerFactory = require("./tracker.factory");
 
 const userTracker = trackerFactory.createOneExisting();
 
