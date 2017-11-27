@@ -27,7 +27,7 @@ const findAllTrackers = (req, res) => {
 const findActiveTrackers = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');
-  }
+  };
   // console.log('userId', req.params.userId);
   Tracker.find({ userId: req.params.userId, status: 1 })
     .then(trackers => {
@@ -43,6 +43,10 @@ const findActiveTrackers = (req, res) => {
 
 // get all archived trackers from user
 const findArchivedTrackers = (req, res) => {
+  if(!req.isAuthenticated()) {
+    return res.status(401).json('Not authorized');
+  };
+
   Tracker.find({ status: 2 })
     .then(trackers => {
       res.json({
@@ -57,6 +61,10 @@ const findArchivedTrackers = (req, res) => {
 
 // create a new tracker -- get user by id and add
 const createNewTracker = (req, res) => {
+  if(!req.isAuthenticated()) {
+    return res.status(401).json('Not authorized');
+  };
+
   const requiredFields = ["name", "userId"];
   for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
@@ -90,6 +98,9 @@ const createNewTracker = (req, res) => {
 
 // add mark to a tracker (update by id)
 const addMark = (req, res) => {
+  if(!req.isAuthenticated()) {
+    return res.status(401).json('Not authorized');
+  };
   // console.log(req.params);
   const trackerId = req.params.trackerId;
   Tracker
@@ -134,6 +145,10 @@ const addMark = (req, res) => {
 
 // remove a mark to a tracker (update by id)
 const removeMark = (req, res) => {
+  if(!req.isAuthenticated()) {
+    return res.status(401).json('Not authorized');
+  };
+
   const trackerId = req.params.trackerId;
   Tracker
     //query for tracker by id
@@ -170,6 +185,10 @@ const removeMark = (req, res) => {
 
 // archive tracker (change status by id)
 const archiveTracker = (req, res) => {
+  if(!req.isAuthenticated()) {
+    return res.status(401).json('Not authorized');
+  };
+
   const trackerId = req.params.trackerId;
   const updateStatus = { $set: { status: 2 } };
 
@@ -188,6 +207,10 @@ const archiveTracker = (req, res) => {
 
 // reactivate archived tracker (change status by id)
 const reactivateTracker = (req, res) => {
+  if(!req.isAuthenticated()) {
+    return res.status(401).json('Not authorized');
+  };
+
   const trackerId = req.params.trackerId;
   const updateStatus = { $set: { status: 1 } };
 
@@ -206,6 +229,10 @@ const reactivateTracker = (req, res) => {
 
 // update fields within tracker (name, description, notes)
 const modifyTrackerDetails = (req, res) => {
+  if(!req.isAuthenticated()) {
+    return res.status(401).json('Not authorized');
+  };
+
   const trackerId = req.params.trackerId;
   const updated = {};
   const updateableFields = ["name", "description", "notes"];
@@ -224,6 +251,10 @@ const modifyTrackerDetails = (req, res) => {
 
 // delete tracker (change status to 3)
 const deleteTrackerSoft = (req, res) => {
+  if(!req.isAuthenticated()) {
+    return res.status(401).json('Not authorized');
+  };
+
   const trackerId = req.params.trackerId;
   const updateStatus = { $set: { status: 3 } };
 
@@ -242,6 +273,10 @@ const deleteTrackerSoft = (req, res) => {
 
 // hard delete tracker (remove from database)
 const deleteTrackerPerm = (req, res) => {
+  if(!req.isAuthenticated()) {
+    return res.status(401).json('Not authorized');
+  };
+  
   const trackerId = req.params.trackerId;
 
   Tracker
