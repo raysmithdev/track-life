@@ -9,6 +9,12 @@ import { STATE } from "./index";
 import mockTrackerData from "./mock-data";
 import { debug } from "util"; //?
 
+// render login page -- is this needed? 
+export function renderIndexPage() {
+  $(".main-section").hide();
+  $(".index").show(); 
+}
+
 // render login form
 export function renderLoginForm() {
   $(".main-section").hide();

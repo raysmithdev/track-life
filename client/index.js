@@ -2,6 +2,7 @@ import $ from "jquery";
 import Cookies from 'js-cookie';
 
 import {
+  renderIndexPage,
   renderLoginForm,
   renderSignUpForm,
   renderDashboard,
@@ -27,8 +28,9 @@ export const STATE = {
 function setIndexHandlers() {
   $('.login-btn').click(renderLoginForm);
   $('.signup-btn').click(renderSignUpForm);
+  $('.home-btn').click(renderIndexPage);
 
-  // demo account
+  // login for demo account
   // $(".main-section").on("click", ".demo-btn", e => {
   //   // auto login with demo account
   // };
