@@ -25,7 +25,11 @@ const findAllTrackers = (req, res) => {
 
 // get all existing active trackers from user
 const findActiveTrackers = (req, res) => {
-  Tracker.find({ status: 1 })
+  if(!req.isAuthenticated()) {
+    return res.status(401).json('Not authorized');
+  }
+  // console.log('userId', req.params.userId);
+  Tracker.find({ userId: req.params.userId, status: 1 })
     .then(trackers => {
       res.json({
         trackers: trackers.map(trackers => trackers.toClient())
