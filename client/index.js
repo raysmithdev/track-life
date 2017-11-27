@@ -24,6 +24,12 @@ export const STATE = {
   currentUserId: '',
 };
 
+const redirectOnAuthFailure = err => {
+  if(err.status === 401) {
+    window.location = '/';
+  }
+};
+
 // LANDING PAGE
 function setIndexHandlers() {
   $('.login-btn').click(renderLoginForm);
@@ -40,12 +46,19 @@ function setIndexHandlers() {
 
 // Call the API for current trackers and store in STATE
 function getDashboardTrackers() {
-  // TODO: update the 123 to be an id when we are ready
-  return $.get("/api/users/123/trackers/active").then(data => {
+  // console.log(`Bearer ${Cookies.get('jwt')}`);
+  return $.ajax({
+    url: `/api/users/${STATE.currentUserId}/trackers/active`,
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${Cookies.get('jwt')}`
+    },
+    dataType: 'json'
+  }).then(data => {
     // console.log(data.trackers);
     // STATE.trackers.push(...mockTrackerData);
     STATE.trackers.push(...data.trackers);
-  });
+  }).catch(redirectOnAuthFailure);
 }
 
 function getArchivedTrackers() {
@@ -145,12 +158,16 @@ function setUpHandlers() {
     const updatedTracker = STATE.trackers[index];
     updatedTracker[fieldName] = fieldValue;
 
-    // change :userId when ready? 
+    // change :userId to ${STATE.currentUserId}
     $.ajax({
       method: 'PUT',
       url: `/api/users/123/trackers/${trackerId}`,
       data: JSON.stringify(updatedData),
       contentType: 'application/json', 
+      headers: {
+        Authorization: `Bearer ${Cookies.get('jwt')}`
+      },
+      dataType: 'json'
     })
   });
 
@@ -187,7 +204,7 @@ function setUpHandlers() {
   // reactivate button
   $(".tracker-archive").on("click", ".reactivate-btn", e => {
     const trackerId = $(e.currentTarget).data("trkr-id");
-
+    // change userId to ${STATE.currentUserId}
     $.post(`/api/users/123/trackers/${trackerId}/reactivate`).then(data => {
       console.log('state =', STATE, data);
       const index = STATE.archivedTrackers.findIndex(tracker => tracker.id === data.id);
@@ -200,7 +217,6 @@ function setUpHandlers() {
   });
 
   //add delete button
-
   //toggle chart type - line <> bar graph
   // $(".tracker-summary").on("click", ".toggle-chart", e => {
   //   toggleChartType();
@@ -214,16 +230,13 @@ $("document").ready(() => {
     setLoginHandlers();
   }
 
-  if(window.location.pathname === 'dashboard') {
-    
+  if(window.location.pathname === '/dashboard') {
     STATE.jwt = Cookies.get('jwt');
-    STATE.currentUserId = Cookies.get('loggedInUser');
+    STATE.currentUserId = Cookies.get('loggedInUserId');
     console.log('test from dashboard');
-    // setUpHandlers();
-    // getDashboardTrackers().then(renderDashboard);
-    // getArchivedTrackers();
-    // getArchivedTrackers().then(renderArchivePage);
+    setUpHandlers();
+    getDashboardTrackers().then(renderDashboard);
+    getArchivedTrackers();
+    getArchivedTrackers().then(renderArchivePage);
   }
-
-
 });
