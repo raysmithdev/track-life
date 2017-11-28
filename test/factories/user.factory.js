@@ -7,11 +7,10 @@ const userTracker = trackerFactory.createOneExisting();
 const newUser = {
   userName: faker.hacker.adjective(),
   password: faker.hacker.noun(),
-  firstName: faker.name.firstName(),
-  lastName: faker.name.lastName(),
-  notes: faker.company.catchPhrase(),
+  //confirm if it needs to be an array or if it pulls in
+  trackerIds: userTracker._id
   // createdDate: new Date(),
-  trackerIds: [userTracker.id], //confirm if it needs to be an array or if it pulls in
+
 };
 
 function createMany(num) {
@@ -23,5 +22,6 @@ function createMany(num) {
 }
 
 // can load this file to see if it works individually
-// console.log(createOne());
+// console.log(createMany(1));
+// console.log(userTracker);
 module.exports = { createMany, newUser };
