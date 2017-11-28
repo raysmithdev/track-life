@@ -1,4 +1,4 @@
-const faker = require("faker");
+/* const faker = require("faker");
 const { User } = require("../../src/user/user.model");
 const trackerFactory = require("./tracker.factory");
 
@@ -8,7 +8,7 @@ const newUser = {
   userName: faker.hacker.adjective(),
   password: faker.hacker.noun(),
   //confirm if it needs to be an array or if it pulls in
-  trackerIds: userTracker._id
+  // trackerIds: userTracker.id  - is this needed? 
   // createdDate: new Date(),
 
 };
@@ -25,3 +25,5 @@ function createMany(num) {
 // console.log(createMany(1));
 // console.log(userTracker);
 module.exports = { createMany, newUser };
+
+*/
