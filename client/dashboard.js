@@ -7,7 +7,7 @@ import {
   renderSummaryPage,
   renderIndividualTrackerSummary,
   renderArchivePage,
-  renderLogOutDashboard
+  logOutOfDashboard
 } from "./index.render-views";
 
 import { STATE } from "./index";
@@ -60,7 +60,7 @@ export function setDashboardHandlers() {
   $(".create-link").click(renderCreateTrackerPage);
   $(".archive-link").click(renderArchivePage);
   // $(".profile-link").click(renderProfilePage);
-  $(".logout-btn").click(renderLogOutDashboard);
+  $(".logout-btn").click(logOutOfDashboard);
 
   // DYNAMIC BUTTONS CREATED WITHIN TRACKERS
 
@@ -259,7 +259,7 @@ export function setDashboardHandlers() {
     })
     .then(newTracker => {
       STATE.trackers.push(newTracker);
-      console.log('after create new tracker ->',STATE);
+      console.log('after create new tracker ->', STATE);
       renderDashboard(); 
     })
     .catch(redirectOnAuthFailure);
