@@ -65,7 +65,7 @@ const createNewTracker = (req, res) => {
     return res.status(401).json('Not authorized');
   };
 
-  const requiredFields = ["name", "userId"];
+  const requiredFields = ["name"];
   for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
