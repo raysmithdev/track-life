@@ -235,7 +235,36 @@ export function setDashboardHandlers() {
   });
 
   // CREATE TRACKER BUTTON
-  
+  $(".main-section").on('submit', '.create-form', e => {
+  // $((".create-form").submit((e) => {
+    console.log('form submit!');
+    e.preventDefault();
+    const userId = Cookies.get("loggedInUserId");
+    const name = $('.new-trkr-name').val();
+    const description = $('.new-trkr-description').val();
+    const notes = $('.new-trkr-notes').val();
+
+    console.log('userId ->', userId);
+    console.log('form sections ->', name, description, notes);
+
+    $.ajax({
+      url: `/api/users/${userId}/trackers`,
+      method: "POST",
+      data: JSON.stringify({name, description, notes}),
+      contentType: "application/json",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`
+      },
+      dataType: "json"
+    })
+    .then(newTracker => {
+      STATE.trackers.push(newTracker);
+      console.log('after create new tracker ->',STATE);
+      renderDashboard(); 
+    })
+    .catch(redirectOnAuthFailure);
+  });
+
   //add delete button
   //toggle chart type - line <> bar graph
   // $(".tracker-summary").on("click", ".toggle-chart", e => {
