@@ -1,7 +1,7 @@
 import moment from "moment";
 import $ from "jquery";
 import { Chart } from "chart.js";
-import {annotation} from 'chartjs-plugin-annotation';
+// import annotations from "chartjs-plugin-annotation";
 
 export default class ChartComponents {
   constructor(data) {
