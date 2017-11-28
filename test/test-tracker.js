@@ -1,13 +1,17 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const should = chai.should();
+const jwt = require('jsonwebtoken');
+const faker = require("faker");
 
 const mongoose = require("mongoose");
 
 const { app, runServer, closeServer } = require("../server");
-const { TEST_DATABASE_URL } = require("../config");
+const { JWT_EXPIRY, JWT_SECRET, TEST_DATABASE_URL } = require("../config");
 const { Tracker } = require("../src/tracker/tracker.model");
-const trackerFactory = require("../test/factories/tracker.factory");
+const { User } = require("../src/user/user.model");
+
+const trackerFactory = require("./factories/tracker.factory");
 
 chai.use(chaiHttp);
 
@@ -26,20 +30,42 @@ function tearDownDb() {
 function seedTrackerData() {
   console.info(`seeding trackers`);
   const seedData = trackerFactory.createMany(5);
-  // console.log('seedData ->', seedData);
   //this puts it into the database
   return Tracker.insertMany(seedData);
 }
 
-describe("tracker api", function() {
-  //let mockUser - need to incorporate user;
+const createAuthToken = user => {
+  // console.log('auth token->', user); 
+  return jwt.sign( { user }, JWT_SECRET, {
+    subject: user[0].userName, 
+    expiresIn: JWT_EXPIRY,
+    algorithm: 'HS256'
+  });
+};
 
+function createTestUser() {
+  console.info(`creating test user`);
+  const testUser = {
+    userName: faker.hacker.adjective(),
+    password: faker.hacker.noun()
+  };
+  // console.log('new test user before db ->', testUser);
+  return User.insertMany(testUser); //how to capture this id? 
+};
+
+describe("tracker api", function() {
+  let testUser;
+  let mockJwt;
   // start the server before test
   before(function() {
     return runServer(TEST_DATABASE_URL);
   });
 
-  beforeEach(function() {
+  beforeEach(async function() {
+    testUser = await createTestUser();
+    console.log('get user id before each ->', testUser[0]._id);
+    mockJwt = createAuthToken(testUser);
+    // console.log('jwt? ->', mockJwt);
     return seedTrackerData();
   });
 
@@ -54,14 +80,14 @@ describe("tracker api", function() {
   });
 
   describe("GET endpoint", function() {
+    console.log('user info before first it statement ->', testUser);
+    console.log('jwt before first it statement ->', mockJwt);
     // Strategy:
     // 1. get back all trackers returned by GET request to url
     // 2. check res has correct status & data type
     // 3. check number of trackers returned is equal to number in database
     // 4. check if returned trackers have correct keys
     // 5. check if individaul trackers have correct values
-
-    //need createdDate? userId?
     const expectedKeys = [
       "id",
       "userId",
@@ -77,12 +103,14 @@ describe("tracker api", function() {
       return (
         chai
           .request(app)
-          //replace :userId after it is set up
-          .get("/api/users/123/trackers")
+          .get(`/api/users/${testUser[0]._id}/trackers`)
+          .set('Authorization', `Bearer ${mockJwt}`)
           .then(_res => {
+            // console.log('res ->', _res);
             res = _res;
+            console.log('status ->', res.status);
             res.should.have.status(200);
-            // console.log('get all trackers->', res.body.trackers);
+            console.log('get all trackers->', res.body);
             res.body.trackers.should.have.lengthOf.at.least(1);
             return Tracker.count();
           })
@@ -96,7 +124,8 @@ describe("tracker api", function() {
       let resTracker;
       return chai
         .request(app)
-        .get("/api/users/123/trackers")
+        .get(`/api/users/${testUser[0]._id}/trackers`)
+        .set('Authorization', `Bearer ${mockJwt}`)
         .then(function(res) {
           res.should.have.status(200);
           res.should.be.json;
@@ -123,12 +152,12 @@ describe("tracker api", function() {
         });
     });
 
-    //are these needed?
     it("return trackers with active status", function() {
       let resTracker;
       return chai
         .request(app)
-        .get("/api/users/123/trackers/active")
+        .get(`/api/users/${testUser[0]._id}/trackers/active`)
+        .set('Authorization', `Bearer ${mockJwt}`)
         .then(function(res) {
           res.should.have.status(200);
           res.should.be.json;
@@ -156,7 +185,8 @@ describe("tracker api", function() {
       let resTracker;
       return chai
         .request(app)
-        .get("/api/users/123/trackers/archived")
+        .get(`/api/users/${testUser[0]._id}/trackers/archived`)
+        .set('Authorization', `Bearer ${mockJwt}`)
         .then(function(res) {
           res.should.have.status(200);
           res.should.be.json;
@@ -181,10 +211,6 @@ describe("tracker api", function() {
   });
 
   describe("POST endpoint", function() {
-    //Strategy:
-    // 1. make post request (add mark)
-    // 2. check that post has right keys
-    // 3. check that post has right id
     const expectedKeys = [
       "id",
       "userId",
@@ -201,7 +227,8 @@ describe("tracker api", function() {
         chai
           .request(app)
           //change user
-          .post("/api/users/123/trackers")
+          .post(`/api/users/${testUser[0]._id}/trackers`)
+          .set('Authorization', `Bearer ${mockJwt}`)
           .send(newTracker)
           .then(function(res) {
             // console.log('create new tracker res->', res);
@@ -219,20 +246,56 @@ describe("tracker api", function() {
       );
     });
 
+/*
     it("add one mark to a tracker", function() {
-      // send request and check the document updated
-      // return chai
-      //   .request(app)
-      //   .post('')
+      const updateData = { status: 2 };
+      return Tracker
+        .findOne({ status: 1 })
+        .then(tracker => {
+          updateData.id = tracker._id;
+        //store the returned tracker's tallymark value 
+        //need to access the object key and value 
+        //what is the difference between return tracker and return chai?
+          return chai
+            .request(app)
+            .post(`/api/users/123/trackers/${tracker.id}/increment`)
+            .send(updateData);
+        })
+        .then(res => {
+          res.should.have.status(204);
+          return Tracker.findById(updateData.id);
+        })
+        .then(tracker => {
+          //how to 
+          // tracker.status.should.equal(updateData.status);
+        });
+      });
+
+*/
+      it("change tracker status to archived", function() {
+        const updateData = { status: 2 };
+        return Tracker
+          .findOne({ status: 1 })
+          .then(tracker => {
+            updateData.id = tracker._id;
+            return chai
+              .request(app)
+              .post(`/api/users/${testUser[0]._id}/trackers/${tracker.id}`)
+              .set('Authorization', `Bearer ${mockJwt}`)
+              .send(updateData);
+          })
+          .then(res => {
+            res.should.have.status(204);
+            return Tracker.findById(updateData.id);
+          })
+          .then(tracker => {
+            tracker.status.should.equal(updateData.status);
+          });
+        });
     });
-    it("remove one mark to a tracker", function() {});
-    it("change tracker status to archived", function() {});
 
-    //is this needed?
-    // it('change tracker status to active (reactivated)', function() {
-
-    // });
-  });
+    // it('change tracker status to active (reactivated)', function() {});
+    // it("remove one mark to a tracker", function() {});
 
   describe("PUT endpoint", function() {
     // Strategy: 
@@ -255,7 +318,8 @@ describe("tracker api", function() {
           // console.log('find one tracker ->', tracker);
           return chai
             .request(app)
-            .put(`/api/users/123/trackers/${tracker.id}`)
+            .put(`/api/users/${testUser[0]._id}/trackers/${tracker.id}`)
+            .set('Authorization', `Bearer ${mockJwt}`)
             .send(updateData);
         })
         .then(res => {
