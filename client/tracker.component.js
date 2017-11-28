@@ -1,8 +1,10 @@
 import moment from "moment";
 import $ from "jquery";
+import Cookies from "js-cookie";
 
 export default class TrackerComponents {
   constructor(data) {
+    // this.userId = Cookies.get("loggedInUserId");
     this.trackerId = data.id;
     this.name = data.name;
     this.description = data.description;
@@ -215,13 +217,13 @@ export default class TrackerComponents {
     <h2>Create a Tracker</h2>
     <form class="create-form">
       <label for="tracker-name" class="new-trkr-label">New Tracker Name</label>
-      <input class="new-trkr-input" type="text" placeholder="enter new tracker name">
+      <input class="new-trkr-input new-trkr-name" type="text" placeholder="enter new tracker name">
 
       <label for="tracker-description" class="new-trkr-label">Description</label>
-      <input class="new-trkr-input" type="text" placeholder="Add a description (optional)">
+      <input class="new-trkr-input new-trkr-description" type="text" placeholder="Add a description (optional)">
 
       <label for="notes" class="new-trkr-label">Notes</label>
-      <textarea class="new-trkr-input tracker-notes" placeholder="Add any notes for yourself (optional)"></textarea>
+      <textarea class="new-trkr-input tracker-notes new-trkr-notes field-name" placeholder="Add any notes for yourself (optional)"></textarea>
       <div class="form-btn-row">
         <button type="submit" class="create-trkr-btn new-trkr-btn">Create</button>
         <button type="button" class="cancel-btn new-trkr-btn">Cancel</button>
