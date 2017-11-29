@@ -64,7 +64,7 @@ export function setDashboardHandlers() {
 
   // ADD MARK BUTTON
   $(".main-section").on("click", ".add-mark-btn", e => {
-    const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    const trackerId = $(e.currentTarget).data("trkr-id"); 
     const section = $(e.currentTarget).data("section");
 
     $.ajax({
@@ -98,7 +98,7 @@ export function setDashboardHandlers() {
 
   // REMOVE MARK BUTTON
   $(".main-section").on("click", ".remove-mark-btn", e => {
-    const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    const trackerId = $(e.currentTarget).data("trkr-id");
     const section = $(e.currentTarget).data("section");
 
     $.ajax({
