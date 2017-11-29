@@ -43,6 +43,12 @@ function setIndexHandlers() {
     });
   });
 
+  // Already signup? link
+  $(".signedup").click(function(e) {
+    e.preventDefault();
+    renderLoginForm();
+  })
+
 $("document").ready(() => {
   if (window.location.pathname === "/") {
     setIndexHandlers();
