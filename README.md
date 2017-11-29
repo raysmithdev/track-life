@@ -18,9 +18,10 @@ Need to keep track of what you do in life? Start now!
 
 ### Frontend
 
-* HTML5, CSS, JavaScript, jQuery
+* HTML5, CSS (flexbox), JavaScript
+* jQuery
 * Chartjs 
-* Moment 
+* Momentjs 
 ### Backend
 
 * Node & Express (web server)
