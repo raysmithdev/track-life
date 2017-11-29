@@ -153,7 +153,7 @@ const removeMark = (req, res) => {
 
       const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
       if (doesCurrentMonthMatch === true) {
-        tracker.tallyMarks[trackerMonth] = tracker.tallyMarks[trackerMonth] - 1;
+        tracker.tallyMarks[trackerMonth] = Math.max(0, tracker.tallyMarks[trackerMonth] - 1);
       } else {
         //if it is not current month, set count to 0 so nothing will render
         tracker.tallyMarks[currentMonth.format("YYYY-MM-01")] = 0;
