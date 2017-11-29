@@ -6,7 +6,8 @@ const userSchema = mongoose.Schema ({
 
   userName: {type: String, required: true},
   password: {type: String, required: true},
-  trackerIds: [mongoose.Schema.Types.ObjectId]
+  // trackerIds are redundant; already stored on tracker model
+  // trackerIds: [mongoose.Schema.Types.ObjectId]
   // avatar: String,
   // firstName: String,
   // lastName: String,
