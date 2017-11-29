@@ -1,8 +1,6 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 
-import renderLoginForm from './index.render-views';
-
 export const setLoginHandlers = () => {
   $(".login-form").submit((e) => {
     e.preventDefault();
