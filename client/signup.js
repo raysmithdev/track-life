@@ -1,4 +1,7 @@
 import $ from "jquery";
+import Cookies from 'js-cookie';
+import {renderLoginForm} from './index.render-views';
+  
 
 export const setSignUpHandlers = () => {
   $(".signup-form").submit((e) => {
@@ -7,9 +10,7 @@ export const setSignUpHandlers = () => {
     const password = $("#password").val();
 
     $.post('/api/auth/signup', {userName, password}).then((user) => {
-      // set jwt cookie
-      // maybe set userId to cookie too???
-      console.log(user);
+      renderLoginForm();
     });
   });
 };

@@ -16,7 +16,7 @@ import {
 
 import { setSignUpHandlers } from "./signup";
 import { setLoginHandlers } from "./login";
-import { debug } from "util"; //?
+import { demoUser } from "./demo";
 
 export const STATE = {
   trackers: [],
@@ -30,11 +30,18 @@ function setIndexHandlers() {
   $(".login-btn").click(renderLoginForm);
   $(".signup-btn").click(renderSignUpForm);
   $(".home-btn").click(renderIndexPage);
-  // login for demo account
-  // $(".main-section").on("click", ".demo-btn", e => {
-  //   // auto login with demo account
-  // };
 }
+  // Demo button
+  $(".demo-btn").click(function() {
+    const userName = demoUser.userName;
+    const password = demoUser.password;
+
+    $.post('/api/auth/login', {userName, password}).then((user) => {
+      Cookies.set('jwt', user.authToken);
+      Cookies.set('loggedInUserId', user.userId);
+      window.location = '/dashboard';
+    });
+  });
 
 $("document").ready(() => {
   if (window.location.pathname === "/") {

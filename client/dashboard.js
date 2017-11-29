@@ -59,7 +59,6 @@ export function setDashboardHandlers() {
   $(".summary-link").click(renderSummaryPage);
   $(".create-link").click(renderCreateTrackerPage);
   $(".archive-link").click(renderArchivePage);
-  // $(".profile-link").click(renderProfilePage);
   $(".logout-btn").click(logOutOfDashboard);
 
   // DYNAMIC BUTTONS CREATED WITHIN TRACKERS
