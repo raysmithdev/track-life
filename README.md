@@ -39,8 +39,8 @@ Summary:
 ![screenshot of summary](https://github.com/codeannie/track-life/blob/master/assets/TrackLife_Summary.png)
 
 ## Special Thanks:
-*Doug
-*Russell 
-*Andy
-*Alina
-*Mark
+* Doug
+* Russell 
+* Andy
+* Alina
+* Mark
