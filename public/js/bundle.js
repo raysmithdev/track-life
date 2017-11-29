@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -19490,6 +19490,181 @@ return jQuery;
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * JavaScript Cookie v2.2.0
+ * https://github.com/js-cookie/js-cookie
+ *
+ * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
+ * Released under the MIT license
+ */
+;(function (factory) {
+	var registeredInModuleLoader = false;
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		registeredInModuleLoader = true;
+	}
+	if (true) {
+		module.exports = factory();
+		registeredInModuleLoader = true;
+	}
+	if (!registeredInModuleLoader) {
+		var OldCookies = window.Cookies;
+		var api = window.Cookies = factory();
+		api.noConflict = function () {
+			window.Cookies = OldCookies;
+			return api;
+		};
+	}
+}(function () {
+	function extend () {
+		var i = 0;
+		var result = {};
+		for (; i < arguments.length; i++) {
+			var attributes = arguments[ i ];
+			for (var key in attributes) {
+				result[key] = attributes[key];
+			}
+		}
+		return result;
+	}
+
+	function init (converter) {
+		function api (key, value, attributes) {
+			var result;
+			if (typeof document === 'undefined') {
+				return;
+			}
+
+			// Write
+
+			if (arguments.length > 1) {
+				attributes = extend({
+					path: '/'
+				}, api.defaults, attributes);
+
+				if (typeof attributes.expires === 'number') {
+					var expires = new Date();
+					expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e+5);
+					attributes.expires = expires;
+				}
+
+				// We're using "expires" because "max-age" is not supported by IE
+				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
+				try {
+					result = JSON.stringify(value);
+					if (/^[\{\[]/.test(result)) {
+						value = result;
+					}
+				} catch (e) {}
+
+				if (!converter.write) {
+					value = encodeURIComponent(String(value))
+						.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+				} else {
+					value = converter.write(value, key);
+				}
+
+				key = encodeURIComponent(String(key));
+				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
+				key = key.replace(/[\(\)]/g, escape);
+
+				var stringifiedAttributes = '';
+
+				for (var attributeName in attributes) {
+					if (!attributes[attributeName]) {
+						continue;
+					}
+					stringifiedAttributes += '; ' + attributeName;
+					if (attributes[attributeName] === true) {
+						continue;
+					}
+					stringifiedAttributes += '=' + attributes[attributeName];
+				}
+				return (document.cookie = key + '=' + value + stringifiedAttributes);
+			}
+
+			// Read
+
+			if (!key) {
+				result = {};
+			}
+
+			// To prevent the for loop in the first place assign an empty array
+			// in case there are no cookies at all. Also prevents odd result when
+			// calling "get()"
+			var cookies = document.cookie ? document.cookie.split('; ') : [];
+			var rdecode = /(%[0-9A-Z]{2})+/g;
+			var i = 0;
+
+			for (; i < cookies.length; i++) {
+				var parts = cookies[i].split('=');
+				var cookie = parts.slice(1).join('=');
+
+				if (!this.json && cookie.charAt(0) === '"') {
+					cookie = cookie.slice(1, -1);
+				}
+
+				try {
+					var name = parts[0].replace(rdecode, decodeURIComponent);
+					cookie = converter.read ?
+						converter.read(cookie, name) : converter(cookie, name) ||
+						cookie.replace(rdecode, decodeURIComponent);
+
+					if (this.json) {
+						try {
+							cookie = JSON.parse(cookie);
+						} catch (e) {}
+					}
+
+					if (key === name) {
+						result = cookie;
+						break;
+					}
+
+					if (!key) {
+						result[name] = cookie;
+					}
+				} catch (e) {}
+			}
+
+			return result;
+		}
+
+		api.set = api;
+		api.get = function (key) {
+			return api.call(api, key);
+		};
+		api.getJSON = function () {
+			return api.apply({
+				json: true
+			}, [].slice.call(arguments));
+		};
+		api.defaults = {};
+
+		api.remove = function (key, attributes) {
+			api(key, '', extend(attributes, {
+				expires: -1
+			}));
+		};
+
+		api.withConverter = init;
+
+		return api;
+	}
+
+	return init(function () {});
+}));
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -19695,181 +19870,6 @@ module.exports = {
 		}
 	}
 };
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * JavaScript Cookie v2.2.0
- * https://github.com/js-cookie/js-cookie
- *
- * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
- * Released under the MIT license
- */
-;(function (factory) {
-	var registeredInModuleLoader = false;
-	if (true) {
-		!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
-				__WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-		registeredInModuleLoader = true;
-	}
-	if (true) {
-		module.exports = factory();
-		registeredInModuleLoader = true;
-	}
-	if (!registeredInModuleLoader) {
-		var OldCookies = window.Cookies;
-		var api = window.Cookies = factory();
-		api.noConflict = function () {
-			window.Cookies = OldCookies;
-			return api;
-		};
-	}
-}(function () {
-	function extend () {
-		var i = 0;
-		var result = {};
-		for (; i < arguments.length; i++) {
-			var attributes = arguments[ i ];
-			for (var key in attributes) {
-				result[key] = attributes[key];
-			}
-		}
-		return result;
-	}
-
-	function init (converter) {
-		function api (key, value, attributes) {
-			var result;
-			if (typeof document === 'undefined') {
-				return;
-			}
-
-			// Write
-
-			if (arguments.length > 1) {
-				attributes = extend({
-					path: '/'
-				}, api.defaults, attributes);
-
-				if (typeof attributes.expires === 'number') {
-					var expires = new Date();
-					expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e+5);
-					attributes.expires = expires;
-				}
-
-				// We're using "expires" because "max-age" is not supported by IE
-				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
-
-				try {
-					result = JSON.stringify(value);
-					if (/^[\{\[]/.test(result)) {
-						value = result;
-					}
-				} catch (e) {}
-
-				if (!converter.write) {
-					value = encodeURIComponent(String(value))
-						.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
-				} else {
-					value = converter.write(value, key);
-				}
-
-				key = encodeURIComponent(String(key));
-				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
-				key = key.replace(/[\(\)]/g, escape);
-
-				var stringifiedAttributes = '';
-
-				for (var attributeName in attributes) {
-					if (!attributes[attributeName]) {
-						continue;
-					}
-					stringifiedAttributes += '; ' + attributeName;
-					if (attributes[attributeName] === true) {
-						continue;
-					}
-					stringifiedAttributes += '=' + attributes[attributeName];
-				}
-				return (document.cookie = key + '=' + value + stringifiedAttributes);
-			}
-
-			// Read
-
-			if (!key) {
-				result = {};
-			}
-
-			// To prevent the for loop in the first place assign an empty array
-			// in case there are no cookies at all. Also prevents odd result when
-			// calling "get()"
-			var cookies = document.cookie ? document.cookie.split('; ') : [];
-			var rdecode = /(%[0-9A-Z]{2})+/g;
-			var i = 0;
-
-			for (; i < cookies.length; i++) {
-				var parts = cookies[i].split('=');
-				var cookie = parts.slice(1).join('=');
-
-				if (!this.json && cookie.charAt(0) === '"') {
-					cookie = cookie.slice(1, -1);
-				}
-
-				try {
-					var name = parts[0].replace(rdecode, decodeURIComponent);
-					cookie = converter.read ?
-						converter.read(cookie, name) : converter(cookie, name) ||
-						cookie.replace(rdecode, decodeURIComponent);
-
-					if (this.json) {
-						try {
-							cookie = JSON.parse(cookie);
-						} catch (e) {}
-					}
-
-					if (key === name) {
-						result = cookie;
-						break;
-					}
-
-					if (!key) {
-						result[name] = cookie;
-					}
-				} catch (e) {}
-			}
-
-			return result;
-		}
-
-		api.set = api;
-		api.get = function (key) {
-			return api.call(api, key);
-		};
-		api.getJSON = function () {
-			return api.apply({
-				json: true
-			}, [].slice.call(arguments));
-		};
-		api.defaults = {};
-
-		api.remove = function (key, attributes) {
-			api(key, '', extend(attributes, {
-				expires: -1
-			}));
-		};
-
-		api.withConverter = init;
-
-		return api;
-	}
-
-	return init(function () {});
-}));
 
 
 /***/ }),
@@ -20223,72 +20223,6 @@ helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_js_cookie__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__index_render_views__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__dashboard__ = __webpack_require__(250);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__signup__ = __webpack_require__(252);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__login__ = __webpack_require__(251);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_util__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_util___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_util__);
-
-
-
-
-
-
-
-
-
- //?
-
-const STATE = {
-  trackers: [],
-  archivedTrackers: [],
-  jwt: "",
-  currentUserId: ""
-};
-/* harmony export (immutable) */ __webpack_exports__["STATE"] = STATE;
-
-
-// LANDING PAGE
-function setIndexHandlers() {
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".login-btn").click(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["a" /* renderLoginForm */]);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".signup-btn").click(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["b" /* renderSignUpForm */]);
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".home-btn").click(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["c" /* renderIndexPage */]);
-  // login for demo account
-  // $(".main-section").on("click", ".demo-btn", e => {
-  //   // auto login with demo account
-  // };
-}
-
-__WEBPACK_IMPORTED_MODULE_0_jquery___default()("document").ready(() => {
-  if (window.location.pathname === "/") {
-    setIndexHandlers();
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__signup__["a" /* setSignUpHandlers */])();
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_5__login__["a" /* setLoginHandlers */])();
-  }
-
-  if (window.location.pathname === "/dashboard") {
-    STATE.jwt = __WEBPACK_IMPORTED_MODULE_1_js_cookie___default.a.get("jwt");
-    STATE.currentUserId = __WEBPACK_IMPORTED_MODULE_1_js_cookie___default.a.get("loggedInUserId");
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__dashboard__["a" /* setDashboardHandlers */])();
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__dashboard__["b" /* getDashboardTrackers */])().then(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["d" /* renderDashboard */]);
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__dashboard__["c" /* getArchivedTrackers */])();
-    // render dashboard last
-    // getArchivedTrackers().then(renderArchivePage);
-  }
-});
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony export (immutable) */ __webpack_exports__["c"] = renderIndexPage;
 /* harmony export (immutable) */ __webpack_exports__["a"] = renderLoginForm;
 /* harmony export (immutable) */ __webpack_exports__["b"] = renderSignUpForm;
@@ -20303,11 +20237,11 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()("document").ready(() => {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__chart_component__ = __webpack_require__(253);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tracker_component__ = __webpack_require__(255);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__user_component__ = __webpack_require__(256);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__index__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__index__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__mock_data__ = __webpack_require__(254);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_util__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_util___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_util__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_js_cookie__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_js_cookie__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_js_cookie__);
 
 
@@ -20442,6 +20376,78 @@ function logOutOfDashboard() {
 //   const chartComponent = new ChartComponents(trackerData);
 //   chartComponent.renderChart();
 // }
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_js_cookie__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__index_render_views__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__dashboard__ = __webpack_require__(250);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__signup__ = __webpack_require__(252);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__login__ = __webpack_require__(251);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__demo__ = __webpack_require__(310);
+
+
+
+
+
+
+
+
+
+
+
+const STATE = {
+  trackers: [],
+  archivedTrackers: [],
+  jwt: "",
+  currentUserId: ""
+};
+/* harmony export (immutable) */ __webpack_exports__["STATE"] = STATE;
+
+
+// LANDING PAGE
+function setIndexHandlers() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".login-btn").click(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["a" /* renderLoginForm */]);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".signup-btn").click(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["b" /* renderSignUpForm */]);
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".home-btn").click(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["c" /* renderIndexPage */]);
+}
+  // Demo button
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".demo-btn").click(function() {
+    const userName = __WEBPACK_IMPORTED_MODULE_6__demo__["a" /* demoUser */].userName;
+    const password = __WEBPACK_IMPORTED_MODULE_6__demo__["a" /* demoUser */].password;
+
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post('/api/auth/login', {userName, password}).then((user) => {
+      __WEBPACK_IMPORTED_MODULE_1_js_cookie___default.a.set('jwt', user.authToken);
+      __WEBPACK_IMPORTED_MODULE_1_js_cookie___default.a.set('loggedInUserId', user.userId);
+      window.location = '/dashboard';
+    });
+  });
+
+__WEBPACK_IMPORTED_MODULE_0_jquery___default()("document").ready(() => {
+  if (window.location.pathname === "/") {
+    setIndexHandlers();
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__signup__["a" /* setSignUpHandlers */])();
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_5__login__["a" /* setLoginHandlers */])();
+  }
+
+  if (window.location.pathname === "/dashboard") {
+    STATE.jwt = __WEBPACK_IMPORTED_MODULE_1_js_cookie___default.a.get("jwt");
+    STATE.currentUserId = __WEBPACK_IMPORTED_MODULE_1_js_cookie___default.a.get("loggedInUserId");
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__dashboard__["a" /* setDashboardHandlers */])();
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__dashboard__["b" /* getDashboardTrackers */])().then(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["d" /* renderDashboard */]);
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__dashboard__["c" /* getArchivedTrackers */])();
+    // render dashboard last
+    // getArchivedTrackers().then(renderArchivePage);
+  }
+});
 
 
 /***/ }),
@@ -44475,10 +44481,10 @@ module.exports = function(module) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = setDashboardHandlers;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_js_cookie__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__index_render_views__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__index__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__index_render_views__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__index__ = __webpack_require__(11);
 
 
 
@@ -44533,7 +44539,6 @@ function setDashboardHandlers() {
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".summary-link").click(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["e" /* renderSummaryPage */]);
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".create-link").click(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["f" /* renderCreateTrackerPage */]);
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".archive-link").click(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["g" /* renderArchivePage */]);
-  // $(".profile-link").click(renderProfilePage);
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".logout-btn").click(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["h" /* logOutOfDashboard */]);
 
   // DYNAMIC BUTTONS CREATED WITHIN TRACKERS
@@ -44753,7 +44758,7 @@ function setDashboardHandlers() {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_js_cookie__);
 
 
@@ -44765,18 +44770,13 @@ const setLoginHandlers = () => {
     const password = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#password-login").val();
 
     __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post('/api/auth/login', {userName, password}).then((user) => {
-      // set jwt cookie
-      // maybe set userId to cookie too???
       __WEBPACK_IMPORTED_MODULE_1_js_cookie___default.a.set('jwt', user.authToken);
       __WEBPACK_IMPORTED_MODULE_1_js_cookie___default.a.set('loggedInUserId', user.userId);
-      console.log(user);
       window.location = '/dashboard';
-      
     });
   });
 };
 /* harmony export (immutable) */ __webpack_exports__["a"] = setLoginHandlers;
-
 
 
 /***/ }),
@@ -44786,7 +44786,13 @@ const setLoginHandlers = () => {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_js_cookie__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__index_render_views__ = __webpack_require__(10);
 
+
+
+  
 
 const setSignUpHandlers = () => {
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".signup-form").submit((e) => {
@@ -44795,9 +44801,7 @@ const setSignUpHandlers = () => {
     const password = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#password").val();
 
     __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post('/api/auth/signup', {userName, password}).then((user) => {
-      // set jwt cookie
-      // maybe set userId to cookie too???
-      console.log(user);
+      __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__index_render_views__["a" /* renderLoginForm */])();
     });
   });
 };
@@ -45041,7 +45045,7 @@ const mockTrackerData = [
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_moment__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_js_cookie__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_js_cookie__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_js_cookie__);
 
 
@@ -50417,7 +50421,7 @@ module.exports = function(Chart) {
 var defaults = __webpack_require__(3);
 var Element = __webpack_require__(4);
 var helpers = __webpack_require__(2);
-var Ticks = __webpack_require__(7);
+var Ticks = __webpack_require__(8);
 
 defaults._set('scale', {
 	display: true,
@@ -55268,7 +55272,7 @@ module.exports = function(Chart) {
 
 var defaults = __webpack_require__(3);
 var helpers = __webpack_require__(2);
-var Ticks = __webpack_require__(7);
+var Ticks = __webpack_require__(8);
 
 module.exports = function(Chart) {
 
@@ -55466,7 +55470,7 @@ module.exports = function(Chart) {
 
 
 var helpers = __webpack_require__(2);
-var Ticks = __webpack_require__(7);
+var Ticks = __webpack_require__(8);
 
 module.exports = function(Chart) {
 
@@ -55605,7 +55609,7 @@ module.exports = function(Chart) {
 
 
 var helpers = __webpack_require__(2);
-var Ticks = __webpack_require__(7);
+var Ticks = __webpack_require__(8);
 
 module.exports = function(Chart) {
 
@@ -55857,7 +55861,7 @@ module.exports = function(Chart) {
 
 var defaults = __webpack_require__(3);
 var helpers = __webpack_require__(2);
-var Ticks = __webpack_require__(7);
+var Ticks = __webpack_require__(8);
 
 module.exports = function(Chart) {
 
@@ -58848,6 +58852,20 @@ try {
 // easier to handle this case. if(!global) { ...}
 
 module.exports = g;
+
+
+/***/ }),
+/* 310 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const demoUser = {
+  // userName: 'bearbark', 
+  // password: 'abc123'
+  userName: 'tracklife', 
+  password: 'demotracklife11'
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = demoUser;
 
 
 /***/ })
