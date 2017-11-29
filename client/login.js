@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 
+import renderLoginForm from './index.render-views';
+
 export const setLoginHandlers = () => {
   $(".login-form").submit((e) => {
     e.preventDefault();
@@ -8,13 +10,9 @@ export const setLoginHandlers = () => {
     const password = $("#password-login").val();
 
     $.post('/api/auth/login', {userName, password}).then((user) => {
-      // set jwt cookie
-      // maybe set userId to cookie too???
       Cookies.set('jwt', user.authToken);
       Cookies.set('loggedInUserId', user.userId);
-      console.log(user);
       window.location = '/dashboard';
-      
     });
   });
 };
