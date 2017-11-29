@@ -75,9 +75,9 @@ export default class TrackerComponents {
         <p class="current-count">Tracked: <span class="count-bold">${this.currentMarks.monthCount} </span></p>
         <div class="dashboard-btn-row">
           <button type="button" data-section="dashboard" data-trkr-id=${this
-            .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
+          .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button> 
           <button type="button" data-section="dashboard" data-trkr-id=${this
-            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>            
+            .trackerId} class="add-mark-btn trkr-btn"> Mark + </button>           
           <button type="button" data-trkr-id=${this
             .trackerId} class="view-sumry-btn trkr-btn">View</button>
         </div>
@@ -114,11 +114,9 @@ export default class TrackerComponents {
           <button type="button" data-trkr-id=${this
             .trackerId} class="edit-trkr-btn trkr-btn">Edit</button>
           <button type="button" data-section="summary" data-trkr-id=${this
-            .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
+            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button> 
           <button type="button" data-section="summary" data-trkr-id=${this
-            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>                      
-          <button type="button" data-section="summary" data-trkr-id=${this
-            .trackerId} class="delete-btn trkr-btn">Delete</button> 
+            .trackerId} class="add-mark-btn trkr-btn"> Mark + </button>                       
           <button type="button" data-section="summary" data-trkr-id=${this
             .trackerId} class="archive-btn trkr-btn">Archive</button>
         </div>
@@ -138,13 +136,10 @@ export default class TrackerComponents {
         <label for="tracker-description" class="edit-trkr-label">Edit Description</label>        
         <input data-trkr-id=${this.trackerId} data-field-name="description" 
           class="description edit-trkr-field" value="${this.description}"/>
-
-        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
-          
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>          
         <div class="marks-container">
           <ul class="tally-marks>${this.getTallyMarks()}</ul> 
         </div>
-
         <div class="summary-statements">
           <p class="summary-sentence">This Month: <span class="count-bold">${this.currentMarks.monthCount} </span> times</p>
           <p class="summary-sentence">Last Month: <span class="count-bold">${this.oneMonthBack.monthCount} </span> times</p>
@@ -159,14 +154,11 @@ export default class TrackerComponents {
           <label for="notes" class="edit-trkr-label">Notes</label>
           <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">${this.notes}</textarea>
         </div>
-
         <div class="summary-btn-row">
           <button type="button" data-section="single" data-trkr-id=${this
-            .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
+            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button> 
           <button type="button" data-section="single" data-trkr-id=${this
-            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>                      
-          <button type="button" data-section="single" data-trkr-id=${this
-            .trackerId} class="delete-btn trkr-btn">Delete</button> 
+            .trackerId} class="add-mark-btn trkr-btn"> Mark + </button>                     
           <button type="button" data-section="single" data-trkr-id=${this
             .trackerId} class="archive-btn trkr-btn">Archive</button>
           <button type="button" class="close-btn trkr-btn">Close</button>
