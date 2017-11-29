@@ -43,6 +43,12 @@ function setIndexHandlers() {
     });
   });
 
+  // Already signup? link
+  $(".signedup").click(function(e) {
+    e.preventDefault();
+    renderLoginForm();
+  })
+
 $("document").ready(() => {
   if (window.location.pathname === "/") {
     setIndexHandlers();
@@ -56,7 +62,5 @@ $("document").ready(() => {
     setDashboardHandlers();
     getDashboardTrackers().then(renderDashboard);
     getArchivedTrackers();
-    // render dashboard last
-    // getArchivedTrackers().then(renderArchivePage);
   }
 });

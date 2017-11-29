@@ -1,4 +1,3 @@
-'use strict';
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
@@ -6,11 +5,6 @@ const userSchema = mongoose.Schema ({
 
   userName: {type: String, required: true},
   password: {type: String, required: true},
-  // trackerIds are redundant; already stored on tracker model
-  // trackerIds: [mongoose.Schema.Types.ObjectId]
-  // avatar: String,
-  // firstName: String,
-  // lastName: String,
 });
 
 
@@ -22,11 +16,6 @@ userSchema.methods.toClient = function () {
   return {
     id: this._id,   
     userName: this.userName,
-    trackerIds: this.trackerIds
-    // firstName: this.firstName,
-    // lastName: this.lastName,
-    // fullName: this.fullName,
-    // avatar: this.avatar,
   };
 }
 

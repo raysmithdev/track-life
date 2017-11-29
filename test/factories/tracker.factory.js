@@ -1,21 +1,16 @@
 const faker = require("faker");
-const { Tracker } = require("../../src/tracker/tracker.model");
 const moment = require("moment");
 
 
 function createBlank() {
   return {
-  // userId: testUser[0]._id,
   name: faker.commerce.productName(),
   description: faker.company.catchPhraseDescriptor(),
   notes: faker.company.catchPhrase(),
   createdDate: new Date(),
-  // status: faker.random.number({ min: 1, max: 2 }),
-  // tallyMarks: tallyMarksObj
   };
 }
 
-//pass in userId?
 function createOneExisting(userId) {
   let tallyMarksObj = {};
   for (let i = 0; i < 6; i++) {
@@ -31,7 +26,6 @@ function createOneExisting(userId) {
   }
 
   return {
-    //add :userId back?
     userId: userId,
     name: faker.commerce.productName(),
     description: faker.company.catchPhraseDescriptor(),
@@ -50,7 +44,4 @@ function createMany(userId, num) {
   return trackers;
 }
 
-
-// can load this file to see if it works individually
-// console.log(createOne());
 module.exports = { createOneExisting, createMany, createBlank };

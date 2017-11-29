@@ -4,7 +4,6 @@ import Cookies from "js-cookie";
 
 export default class TrackerComponents {
   constructor(data) {
-    // this.userId = Cookies.get("loggedInUserId");
     this.trackerId = data.id;
     this.name = data.name;
     this.description = data.description;
@@ -49,7 +48,6 @@ export default class TrackerComponents {
     const markBlocks = [];
     const template = `<li class="mark"></li>`;
     for (let i = 0; i <= this.currentMarks.monthCount; i++) {
-      // console.log(this.currentMarks.monthCount);
       markBlocks.push(template);
     }
     return markBlocks.join("");
@@ -59,13 +57,10 @@ export default class TrackerComponents {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const tallyMarks = this.tallyMarks;
 
-    //can use filter() to find the most recent 6 months 
-    //in date fns library, has a date range or before/after function or difference in months
     let avgMarks =
       sortedKeys.reduce(function(sum, value) {
         return sum + tallyMarks[value];
       }, 0) / sortedKeys.length;
-    // console.log({average: avgMarks, numOfMonths: sortedKeys.length });
     return { count: avgMarks.toFixed(), numOfMonths: sortedKeys.length };
   }
 
@@ -151,10 +146,9 @@ export default class TrackerComponents {
         </div>
 
         <div class="summary-statements">
-          <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
-          <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
-          <p class="summary-sentence"> On average, you mark ${this.name} ${this.averageMarks.count} 
-            times in the past ${this.averageMarks.numOfMonths} month(s).</p>        
+          <p class="summary-sentence">This Month: <span class="count-bold">${this.currentMarks.monthCount} </span> times</p>
+          <p class="summary-sentence">Last Month: <span class="count-bold">${this.oneMonthBack.monthCount} </span> times</p>
+          <p class="summary-sentence">${this.averageMarks.numOfMonths} months average: <span class="count-bold">${this.averageMarks.count}</span> times</p> 
         </div>
       </div>
       <div class="col-2">

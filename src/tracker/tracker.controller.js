@@ -1,15 +1,11 @@
-"use strict";
-
 const { Tracker } = require("./tracker.model");
-const { User } = require("../user/user.model");
-const ObjectId = require("mongodb");
 const moment = require("moment");
 const TrackerStatuses = require("./tracker-status.enum");
 
-// get all existing trackers from user
+// GET ALL EXISTING TRACKERS
 const findAllTrackers = (req, res) => {
   //need to find by id
-  const userId = req.params.userId; //req.query.userId
+  const userId = req.params.userId;
 
   Tracker.find( {userId : userId} )
     .then(trackers => {
@@ -23,12 +19,12 @@ const findAllTrackers = (req, res) => {
     });
 };
 
-// get all existing active trackers from user
+// GET ALL EXISTING ACTIVE TRACKERS
 const findActiveTrackers = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');
   };
-  // console.log('userId', req.params.userId);
+
   Tracker.find({ userId: req.params.userId, status: 1 })
     .then(trackers => {
       res.json({
@@ -41,7 +37,7 @@ const findActiveTrackers = (req, res) => {
     });
 };
 
-// get all archived trackers from user
+// GET ALL ARCHIVED TRACKERS
 const findArchivedTrackers = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');
@@ -59,7 +55,7 @@ const findArchivedTrackers = (req, res) => {
     });
 };
 
-// create a new tracker -- get user by id and add
+// CREATE NEW TRACKER
 const createNewTracker = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');
@@ -83,7 +79,6 @@ const createNewTracker = (req, res) => {
     status: TrackerStatuses.ACTIVE,
     createdDate: new Date(),
     notes: req.body.notes,
-    //how is userId saved when tracker is created?
     userId: req.params.userId,
     tallyMarks
   })
@@ -96,12 +91,11 @@ const createNewTracker = (req, res) => {
     });
 };
 
-// add mark to a tracker (update by id)
+// ADD MARK (update by id)
 const addMark = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');
   };
-  // console.log(req.params);
   const trackerId = req.params.trackerId;
   Tracker
     //query for tracker by id
@@ -111,12 +105,9 @@ const addMark = (req, res) => {
       if (!tracker) res.status(400).json({ message: "Tracker Not Found" });
       const currentMonth = moment();
       const sortedKeys = Object.keys(tracker.tallyMarks).sort(function (a, b) {
-        return Date.parse(a) > Date.parse(b); //confirm if < or >
-        }); //this checks if it's being parsed as dates  
+        return Date.parse(a) > Date.parse(b); 
+        }); 
 
-      //when sorting, need to make sure the keys are being treated as date value vs string value
-      //date-fns library -- visit this for easier functions 
-      //call the parse function in date-fns library
       const trackerMonth = sortedKeys[sortedKeys.length - 1];
       const trackerMoment = moment(trackerMonth);
 
@@ -129,7 +120,6 @@ const addMark = (req, res) => {
       }
       tracker.markModified("tallyMarks");
       return tracker.save();
-      // return tracker.save((err, trkr) => console.log('updated tracker -> ', trkr));
     })
     .then(tracker => {
       //return the whole tracker
@@ -143,7 +133,7 @@ const addMark = (req, res) => {
     });
 };
 
-// remove a mark to a tracker (update by id)
+// REMOVE MARK (update by id)
 const removeMark = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');
@@ -183,7 +173,7 @@ const removeMark = (req, res) => {
     });
 };
 
-// archive tracker (change status by id)
+// ARCHIVE TRACKER (change status by id)
 const archiveTracker = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');
@@ -205,7 +195,7 @@ const archiveTracker = (req, res) => {
     });
 };
 
-// reactivate archived tracker (change status by id)
+// REACTIVE ARCHIVED TRACKER (change status by id)
 const reactivateTracker = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');
@@ -227,7 +217,7 @@ const reactivateTracker = (req, res) => {
     });
 };
 
-// update fields within tracker (name, description, notes)
+// UPDATE TRACKER FIELDS (name, description, notes)
 const modifyTrackerDetails = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');
@@ -249,7 +239,7 @@ const modifyTrackerDetails = (req, res) => {
     );
 };
 
-// delete tracker (change status to 3)
+// SOFT DELETE TRACKER (change status to 3)
 const deleteTrackerSoft = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');
@@ -271,7 +261,7 @@ const deleteTrackerSoft = (req, res) => {
     });
 };
 
-// hard delete tracker (remove from database)
+// HARD DELETE TRACKER (remove from database)
 const deleteTrackerPerm = (req, res) => {
   if(!req.isAuthenticated()) {
     return res.status(401).json('Not authorized');

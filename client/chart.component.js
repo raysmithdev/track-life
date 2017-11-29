@@ -1,7 +1,7 @@
 import moment from "moment";
 import $ from "jquery";
 import { Chart } from "chart.js";
-// import annotations from "chartjs-plugin-annotation";
+import annotations from "chartjs-plugin-annotation";
 
 export default class ChartComponents {
   constructor(data) {
@@ -11,7 +11,6 @@ export default class ChartComponents {
     this.previousMarks = this.getPreviousMarks();
     this.averageMarks = this.calculateAvgMarks();
     this.totalMarks = this.getTotalMarks();
-    // this.lineGraph = this.changeLineGraph();
   }
 
   // get up to last 6 months of marks to put in chart
@@ -40,7 +39,7 @@ export default class ChartComponents {
     return { total: totalCount };
   }
 
-  // calcuate average -- need to cap at 6 months? 
+  // calcuate average -- need to cap at 6 months
   calculateAvgMarks() {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const tallyMarks = this.tallyMarks;
@@ -49,7 +48,6 @@ export default class ChartComponents {
       sortedKeys.reduce(function(sum, value) {
         return sum + tallyMarks[value];
       }, 0) / sortedKeys.length;
-    // console.log({average: avgMarks, numOfMonths: sortedKeys.length });
     return { count: avgMarks.toFixed(), numOfMonths: sortedKeys.length };
   }
 
@@ -88,10 +86,6 @@ export default class ChartComponents {
             }
           ]
         },
-        // title: {
-        //   display: true,
-        //   text: "Up to last 6 months"
-        // },
         responsive: true,
         // add average line
         annotation: {
@@ -120,41 +114,4 @@ export default class ChartComponents {
       }
     });
   }
-
-  // changeLineGraph() {
-  //   myChart-`${this.trackerId}`.destroy();
-  //   var ctx = document.getElementsByClassName(`myChart-${this.trackerId}`)[0].getContext('2d');
-  //   var chart = new Chart(ctx, {
-  //     // The type of chart we want to create
-  //     type: 'line',
-  //     // The data for our dataset
-  //     data: {
-  //         labels: this.previousMarks.month, //months
-  //         datasets: [{
-  //             label: `Marks for ${this.name}`,
-  //             backgroundColor: 'rgba(79, 195, 247, 0.3)',
-  //             borderColor: 'rgb(0, 147, 196)',
-  //             borderWidth: 1,
-  //             data: this.previousMarks.count, //marks
-  //         }]
-  //     },
-  //     // Configuration options go here
-  //     options: {
-  //       scales: {
-  //           yAxes: [{
-  //               ticks: {
-  //                   beginAtZero:true
-  //                   //look up the setting for highest y axis value
-  //                   //take highest value of the marks and + 2
-  //               }
-  //           }]
-  //       },
-  //       title: {
-  //         display: true,
-  //         text: 'Last 6 Months'
-  //       },
-  //       responsive: true,
-  //     }
-  //   });
-  // }
 }
