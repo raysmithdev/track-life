@@ -3,18 +3,20 @@ const { Tracker } = require("../../src/tracker/tracker.model");
 const moment = require("moment");
 
 
-const newTracker = {
-  userId: 123,  //replace?
+function createBlank() {
+  return {
+  // userId: testUser[0]._id,
   name: faker.commerce.productName(),
   description: faker.company.catchPhraseDescriptor(),
-  // status: faker.random.number({ min: 1, max: 2 }),
   notes: faker.company.catchPhrase(),
   createdDate: new Date(),
+  // status: faker.random.number({ min: 1, max: 2 }),
   // tallyMarks: tallyMarksObj
-};
+  };
+}
 
 //pass in userId?
-function createOneExisting() {
+function createOneExisting(userId) {
   let tallyMarksObj = {};
   for (let i = 0; i < 6; i++) {
     //get 6 random dates
@@ -29,22 +31,21 @@ function createOneExisting() {
   }
 
   return {
-    //add :userId back; hardcoded for now
-    userId: 123, 
+    //add :userId back?
+    userId: userId,
     name: faker.commerce.productName(),
     description: faker.company.catchPhraseDescriptor(),
     status: faker.random.objectElement({one: 1, two: 2}),
-    // status: faker.random.number({ min: 1, max: 2 }),
     notes: faker.company.catchPhrase(),
     createdDate: new Date(),
     tallyMarks: tallyMarksObj
   };
 }
 
-function createMany(num) {
+function createMany(userId, num) {
   let trackers = [];
   for (let i = 0; i < num; i++) {
-    trackers.push(createOneExisting());
+    trackers.push(createOneExisting(userId));
   }
   return trackers;
 }
@@ -52,4 +53,4 @@ function createMany(num) {
 
 // can load this file to see if it works individually
 // console.log(createOne());
-module.exports = { createOneExisting, createMany, newTracker };
+module.exports = { createOneExisting, createMany, createBlank };
