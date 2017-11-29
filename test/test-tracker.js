@@ -12,6 +12,7 @@ const { Tracker } = require("../src/tracker/tracker.model");
 const { User } = require("../src/user/user.model");
 
 const trackerFactory = require("./factories/tracker.factory");
+const userFactory = require("./factories/user.factory");
 
 chai.use(chaiHttp);
 
@@ -25,11 +26,18 @@ function tearDownDb() {
       .catch(err => reject(err));
   });
 }
+// create test user
+function createTestUser() {
+  console.info(`creating test user`);
+  const testUser = userFactory.createOne();
+  // console.log('new test user before db ->', testUser);
+  return User.create(testUser);
+};
 
 // insert random trackers in database
-function seedTrackerData() {
+function seedTrackerData(userId) {
   console.info(`seeding trackers`);
-  const seedData = trackerFactory.createMany(5);
+  const seedData = trackerFactory.createMany(userId, 10);
   //this puts it into the database
   return Tracker.insertMany(seedData);
 }
@@ -37,20 +45,10 @@ function seedTrackerData() {
 const createAuthToken = user => {
   // console.log('auth token->', user); 
   return jwt.sign( { user }, JWT_SECRET, {
-    subject: user[0].userName, 
+    subject: user.userName, 
     expiresIn: JWT_EXPIRY,
     algorithm: 'HS256'
   });
-};
-
-function createTestUser() {
-  console.info(`creating test user`);
-  const testUser = {
-    userName: faker.hacker.adjective(),
-    password: faker.hacker.noun()
-  };
-  // console.log('new test user before db ->', testUser);
-  return User.insertMany(testUser); //how to capture this id? 
 };
 
 describe("tracker api", function() {
@@ -63,10 +61,10 @@ describe("tracker api", function() {
 
   beforeEach(async function() {
     testUser = await createTestUser();
-    console.log('get user id before each ->', testUser[0]._id);
+    // console.log('get user id before each ->', testUser._id);
     mockJwt = createAuthToken(testUser);
     // console.log('jwt? ->', mockJwt);
-    return seedTrackerData();
+    return seedTrackerData(testUser._id);
   });
 
   //remove db after each test
@@ -80,8 +78,8 @@ describe("tracker api", function() {
   });
 
   describe("GET endpoint", function() {
-    console.log('user info before first it statement ->', testUser);
-    console.log('jwt before first it statement ->', mockJwt);
+    // console.log('user info before first it statement ->', testUser);
+    // console.log('jwt before first it statement ->', mockJwt);
     // Strategy:
     // 1. get back all trackers returned by GET request to url
     // 2. check res has correct status & data type
@@ -103,15 +101,16 @@ describe("tracker api", function() {
       return (
         chai
           .request(app)
-          .get(`/api/users/${testUser[0]._id}/trackers`)
+          .get(`/api/users/${testUser._id}/trackers`)
           .set('Authorization', `Bearer ${mockJwt}`)
           .then(_res => {
             // console.log('res ->', _res);
             res = _res;
-            console.log('status ->', res.status);
+            // console.log('status ->', res.status);
             res.should.have.status(200);
-            console.log('get all trackers->', res.body);
+            // console.log('get all trackers->', res.body);
             res.body.trackers.should.have.lengthOf.at.least(1);
+            // console.log('one tracker obj ->', res.body.trackers[0].tallyMarks);
             return Tracker.count();
           })
           .then(count => {
@@ -124,7 +123,7 @@ describe("tracker api", function() {
       let resTracker;
       return chai
         .request(app)
-        .get(`/api/users/${testUser[0]._id}/trackers`)
+        .get(`/api/users/${testUser._id}/trackers`)
         .set('Authorization', `Bearer ${mockJwt}`)
         .then(function(res) {
           res.should.have.status(200);
@@ -156,7 +155,7 @@ describe("tracker api", function() {
       let resTracker;
       return chai
         .request(app)
-        .get(`/api/users/${testUser[0]._id}/trackers/active`)
+        .get(`/api/users/${testUser._id}/trackers/active`)
         .set('Authorization', `Bearer ${mockJwt}`)
         .then(function(res) {
           res.should.have.status(200);
@@ -185,7 +184,7 @@ describe("tracker api", function() {
       let resTracker;
       return chai
         .request(app)
-        .get(`/api/users/${testUser[0]._id}/trackers/archived`)
+        .get(`/api/users/${testUser._id}/trackers/archived`)
         .set('Authorization', `Bearer ${mockJwt}`)
         .then(function(res) {
           res.should.have.status(200);
@@ -222,12 +221,12 @@ describe("tracker api", function() {
     ];
 
     it("create a new tracker", function() {
-      const newTracker = trackerFactory.newTracker;
+      const newTracker = trackerFactory.createBlank();
       return (
         chai
           .request(app)
           //change user
-          .post(`/api/users/${testUser[0]._id}/trackers`)
+          .post(`/api/users/${testUser._id}/trackers`)
           .set('Authorization', `Bearer ${mockJwt}`)
           .send(newTracker)
           .then(function(res) {
@@ -241,12 +240,33 @@ describe("tracker api", function() {
             res.body.description.should.equal(newTracker.description);
             res.body.status.should.equal(1);
             res.body.notes.should.equal(newTracker.notes);
-            // res.body.tallyMarks.should.deep.equal(newTracker.tallyMarks);
           })
       );
     });
 
-/*
+      it("change tracker status to archived", function() {
+        const updateData = { status: 2 };
+        return Tracker
+          .findOne({ status: 1 })
+          .then(tracker => {
+            updateData.id = tracker._id;
+            return chai
+              .request(app)
+              .post(`/api/users/${testUser._id}/trackers/${tracker._id}/archive`)
+              .set('Authorization', `Bearer ${mockJwt}`)
+              .send(updateData);
+          })
+          .then(res => {
+            res.should.have.status(200);
+            return Tracker.findById(updateData.id);
+          })
+          .then(tracker => {
+            tracker.status.should.equal(updateData.status);
+          });
+        });
+    });
+
+    /*
     it("add one mark to a tracker", function() {
       const updateData = { status: 2 };
       return Tracker
@@ -271,31 +291,9 @@ describe("tracker api", function() {
         });
       });
 
-*/
-      it("change tracker status to archived", function() {
-        const updateData = { status: 2 };
-        return Tracker
-          .findOne({ status: 1 })
-          .then(tracker => {
-            updateData.id = tracker._id;
-            return chai
-              .request(app)
-              .post(`/api/users/${testUser[0]._id}/trackers/${tracker.id}`)
-              .set('Authorization', `Bearer ${mockJwt}`)
-              .send(updateData);
-          })
-          .then(res => {
-            res.should.have.status(204);
-            return Tracker.findById(updateData.id);
-          })
-          .then(tracker => {
-            tracker.status.should.equal(updateData.status);
-          });
-        });
-    });
-
     // it('change tracker status to active (reactivated)', function() {});
     // it("remove one mark to a tracker", function() {});
+*/
 
   describe("PUT endpoint", function() {
     // Strategy: 
@@ -318,7 +316,7 @@ describe("tracker api", function() {
           // console.log('find one tracker ->', tracker);
           return chai
             .request(app)
-            .put(`/api/users/${testUser[0]._id}/trackers/${tracker.id}`)
+            .put(`/api/users/${testUser._id}/trackers/${tracker.id}`)
             .set('Authorization', `Bearer ${mockJwt}`)
             .send(updateData);
         })
