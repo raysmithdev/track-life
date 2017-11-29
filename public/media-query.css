@@ -5,12 +5,12 @@
     justify-content: space-between;
   }
 
-  .nav-btn-container {
-
-  }
-
   .nav-btn {
     margin-bottom: 0;
+  }
+
+  .signup-form, .login-form {
+    width: 50%;
   }
 
   .dashboard-container  {
@@ -20,6 +20,7 @@
   }
 
   .summary-container, .archive-container {
+    max-width: 80%;
     justify-content: space-between;
     margin: 0 auto;
   }
@@ -43,24 +44,3 @@
     padding: 5px;
   }
 }
-
-
-/* original attempt at flex box stuffs
-.dashboard-container {
-  display: flex;
-  width: 95%;
-  margin: 0 auto;
-  what applies to the child:
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.dashboard-tracker-container {
-  flex-basis: 50%;
-  max-width: 400px;
-  margin: 5px;
-  padding: 10px;
-  border: 1.5px solid #ffd54f;
-  border-radius: 3px;
-}
-*/
