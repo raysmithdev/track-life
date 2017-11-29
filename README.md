@@ -8,13 +8,12 @@ Full Stack Capstone Project
 
 I use a bullet journal to keep track of my activities. This inspired me to create a antithesis of current habit/routine tracker mobile and web apps. I preferred paper & pencil because it was simple. I don't need to set goals and feel that I'm always "underperforming". I don't need to be reminded of my progress via emails, text messages or alerts. I do like seeing the visual progress. Use the minimalist info as you will. Here is my take on tracking. Please enjoy!
 
-[Live Demo](https://track-life.herokuapp.com)
-
 ## Description
 
 Need to keep track of what you do in life? Start now! 
 (it may take a moment for Heroku to wake up on initial load)
 
+[Live Demo](https://track-life.herokuapp.com)
 ## Technologies
 
 ### Frontend
@@ -36,13 +35,11 @@ Landing Page:
 Dashboard:
 ![screenshot of dashboard](https://github.com/codeannie/track-life/blob/master/assets/TrackLife_Dashboard.png)
 
-Summary (bar graph of marks & ability to edit fields): 
+Summary: 
 ![screenshot of summary](https://github.com/codeannie/track-life/blob/master/assets/TrackLife_Summary.png)
-
-(https://github.com/codeannie/track-life/blob/master/assets/TrackLife_Edit.png)
 
 ## Special Thanks:
 *Doug
-*Russell
+*Russell 
 *Andy
 *Mark
