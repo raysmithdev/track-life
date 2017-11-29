@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Roboto:400,900i">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="media-query.css">    
   </head>
 
   <body>
@@ -18,6 +19,7 @@
             <h1 class="app-name">/ / Track Life / / </h1>
           </div>
           <div class="nav-btn-container">
+            <button type=button class="home-btn nav-btn">Home</button>              
             <button type=button class="login-btn nav-btn">Login</button>
             <button type=button class="signup-btn nav-btn">Sign Up</button>
             <button type=button class="demo-btn nav-btn">Demo</button>
@@ -26,7 +28,7 @@
 
     <main>
       <div class="landing-page">
-        <section class="intro">
+        <section class="intro index main-section">
           <h2>What is Track Life?</h2>
             <div class="intro-container">
               <p class="intro">Track Life will help you keep log of your activities, habits, routines or anything else you want to track!</p>
@@ -34,29 +36,46 @@
               <p class="intro">You are measuring your own progress in the fact that you did it at all.</p>
             </div>
             <div class="screenshots">
-
           </div>
         </section>
-
-        <section class="sign-up">
+      
+        <section class="sign-up index main-section">
           <h2>Ready to Start Tracking?</h2>
           <!-- <div class="form-container"> -->
-          <form action="" method="post" class="signup-form">
-            <fieldset>
+          <div class="signup-container"></div>
+            <form class="signup-form">
+            <!-- <fieldset> -->
               <legend>Create an Account</legend>
-                <label for="username">Username:</label> 
-                <input id="username" type="text" placeholder="enter username">
+                <label for="username" class="signup_login-label">Username:</label> 
+                <input class="signup_login-input" id="username" type="text" placeholder="enter username">
                 
-                <label for="password">Password:</label>
-                <input id="password" type="password" placeholder="enter password" required>
+                <label for="password" class="signup_login-label">Password:</label>
+                <input class="signup_login-input" id="password" type="password" placeholder="enter password" required>
                 <div class="form-btn-row">
                   <button type="submit" class="form-btn">Sign Up</button>
                   <button type="reset" class="form-btn">Reset</button>
                 </div>
-            </fieldset>
-          </form>
-          <p class="already-signedup">Already have an account? <a href="/login">Login</a></p>
-          <!-- </div> -->
+            <!-- </fieldset> -->
+            </form>
+            <p class="already-signedup">Already have an account? <a href="/login">Login</a></p>
+        </section>
+
+        <!-- login screen -->
+        <section class="login main-section">
+          <div class="login-container">
+            <h2>Login</h2>
+            <form class="login-form">
+              <label for="username" class="signup_login-label">Username:</label>
+              <input class="signup_login-input" id="username-login" type="text" placeholder="enter username">
+
+              <label for="password" class="signup_login-label">Password:</label>
+              <input class="signup_login-input" id="password-login" type="password" placeholder="enter password" required>
+              <div class="form-btn-row">
+                <button type="submit" class="form-btn">Login</button>
+                <button type="reset" class="form-btn">Reset</button>
+              </div>
+            </form>
+          </div>
         </section>
       </div>
     </main>

@@ -8,8 +8,25 @@ import { STATE } from "./index";
 
 import mockTrackerData from "./mock-data";
 import { debug } from "util"; //?
+import Cookies from "js-cookie";
 
-// render login screen
+// render login page -- is this needed? 
+export function renderIndexPage() {
+  $(".main-section").hide();
+  $(".index").show(); 
+}
+
+// render login form
+export function renderLoginForm() {
+  $(".main-section").hide();
+  $(".login").show();
+}
+
+// render login form
+export function renderSignUpForm() {
+  $(".main-section").hide();
+  $(".sign-up").show();
+}
 
 // render dashboard
 export function renderDashboard() {
@@ -83,9 +100,16 @@ export function renderCreateTrackerPage() {
   $(".create-tracker").show();
 }
 
-//render log out
-export function renderLogOutDashboard() {
-  //return to landing-page
+//logout
+export function logOutOfDashboard() {
+  Cookies.remove("jwt");
+  Cookies.remove("loggedInUserId");
+  // delete keyword - use to delete property from obj
+  delete STATE.jwt; 
+  delete STATE.currentUserId;
+  
+  //redirect to login page (root) 
+  window.location = '/'; 
 }
 
 //render user profile page - remove for now

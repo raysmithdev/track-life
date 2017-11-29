@@ -1,7 +1,7 @@
 import moment from "moment";
 import $ from "jquery";
 import { Chart } from "chart.js";
-import {annotation} from 'chartjs-plugin-annotation';
+// import annotations from "chartjs-plugin-annotation";
 
 export default class ChartComponents {
   constructor(data) {
@@ -88,10 +88,10 @@ export default class ChartComponents {
             }
           ]
         },
-        title: {
-          display: true,
-          text: "Up to last 6 months"
-        },
+        // title: {
+        //   display: true,
+        //   text: "Up to last 6 months"
+        // },
         responsive: true,
         // add average line
         annotation: {

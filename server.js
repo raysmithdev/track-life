@@ -4,39 +4,59 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const passport = require('passport');
 const { DATABASE_URL, PORT } = require('./config');
 
-const TrackerRouter = require('./src/tracker/tracker.router');
+const authRouter = require('./src/auth/auth.routes');
 
-//creating new express app
+const TrackerRouter = require('./src/tracker/tracker.router');
+const { jwtStrategy } = require('./src/auth/auth.strategies');
+
+// create new express app
 const app = express(); 
 
-//use these middleware for the app
+// use these middleware for the app
 app.use(morgan('common'));
 app.use(bodyParser.json());
+app.use(passport.initialize());
+passport.use(jwtStrategy);
 
 mongoose.Promise = global.Promise;
 
 //https://expressjs.com/en/starter/static-files.html
+// establish root? 
 app.use(express.static('public'));
-// app.get("/", (request, response) => {
-//   response.sendFile(__dirname + '/views/index.html');
-// });
 
-//establish /api/routers 
+// establish /api/routers 
 app.use('/api', TrackerRouter); 
+app.use('/api/auth', authRouter);
 
-//establish dashboard path 
-app.get('/dashboard',  (req, res) => {
+// establish dashboard path 
+// when request to dashboard is made, check for dashboard
+app.get('/dashboard', (req, res) => {
+  // if not authenticated, send back to index
+  // if (!req.isAuthenticated()) {
+  //   return res.status(401).redirect('/');
+  //   //return res.status(401).json({ message: 'Not logged in' });
+  // }
+  // when authenticated, send to dashboard
+  // and return user info to client to save in STATE
+  // need to store in STATE to pass it through other web requests
   res.status(200).sendFile(__dirname + '/public/dashboard.html');
-})
+    //user: req.user.toClient()
+
+});
+// if in root, get index
+app.get('/', (req, res) => {
+  res.status(200).sendFile(__dirname + '/public/index.html');
+});
 
 let server; 
 
-//connect to mongo database & start the express server
+// connect to mongo database & start the express server
 function runServer(databaseUrl = DATABASE_URL, port = PORT) {
   return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, err => {
+    mongoose.connect(databaseUrl, {useMongoClient: true}, err => {
       if (err) {
         return reject(err);
       }
@@ -52,18 +72,19 @@ function runServer(databaseUrl = DATABASE_URL, port = PORT) {
   });
 }
 
+// close the express server
 function closeServer() {
-  return mongoose.disconnect().then(() => {
-    return new Promise((resolve, reject) => {
-      console.log('Closing server');
-      server.close(err => { 
-        if (err) {
-          return reject(err);
-        }
-        resolve();
+    return mongoose.disconnect().then(() => {
+      return new Promise((resolve, reject) => {
+        console.log('Closing server');
+        server.close(err => {
+          if (err) {
+            return reject(err);
+          }
+          resolve();
+        });
       });
     });
-  });
 }
 
 if (require.main === module) {

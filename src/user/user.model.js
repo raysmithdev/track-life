@@ -3,12 +3,14 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema ({
-  firstName: String,
-  lastName: String,
+
   userName: {type: String, required: true},
   password: {type: String, required: true},
-  avatar: String,
-  trackerIds: [mongoose.Schema.Types.ObjectId]
+  // trackerIds are redundant; already stored on tracker model
+  // trackerIds: [mongoose.Schema.Types.ObjectId]
+  // avatar: String,
+  // firstName: String,
+  // lastName: String,
 });
 
 
@@ -16,16 +18,15 @@ userSchema.virtual('fullName').get(function() {
   return `${this.firstName} ${this.lastName}`.trim();
 });
 
-//what is the purpose of this method?
 userSchema.methods.toClient = function () {
   return {
-    id: this._id,
-    firstName: this.firstName,
-    lastName: this.lastName,
-    fullName: this.fullName,
-    username: this.username,
-    avatar: this.avatar,
+    id: this._id,   
+    userName: this.userName,
     trackerIds: this.trackerIds
+    // firstName: this.firstName,
+    // lastName: this.lastName,
+    // fullName: this.fullName,
+    // avatar: this.avatar,
   };
 }
 

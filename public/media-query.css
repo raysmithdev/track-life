@@ -1,0 +1,66 @@
+
+/* for desktop */
+@media (min-width: 700px) {
+  .header-container {
+    justify-content: space-between;
+  }
+
+  .nav-btn-container {
+
+  }
+
+  .nav-btn {
+    margin-bottom: 0;
+  }
+
+  .dashboard-container  {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .summary-container, .archive-container {
+    justify-content: space-between;
+    margin: 0 auto;
+  }
+
+  .dashboard-tracker-container {
+    flex-basis: 32%;
+  }
+
+  .tracker-container {
+    flex-basis: 85%;
+    margin: 10px 20px;
+  }
+  /* this is for 2 columns in summary's tracker container
+ test this out to see the screen size */
+  .inner-flexbox {
+    display: flex;
+  }
+  .col-1,
+  .col-2 {
+    width: 50%;
+    padding: 5px;
+  }
+}
+
+
+/* original attempt at flex box stuffs
+.dashboard-container {
+  display: flex;
+  width: 95%;
+  margin: 0 auto;
+  what applies to the child:
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dashboard-tracker-container {
+  flex-basis: 50%;
+  max-width: 400px;
+  margin: 5px;
+  padding: 10px;
+  border: 1.5px solid #ffd54f;
+  border-radius: 3px;
+}
+*/

@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   /* 62.5% makes 1em = 10px */
@@ -10,11 +14,6 @@ h3,
 legend,
 button {
   font-family: "Roboto", sans-serif;
-}
-
-.app-name {
-  font-style: italic;
-  font-weight: bold;
 }
 
 /* hide sections on render */
@@ -36,13 +35,20 @@ button {
   padding: 1em;
 }
 
+/* mobile first styling */
+
 /* navigation  */
 .header-container {
   display: flex;
-  justify-content: space-between;
   padding: 1em;
   background-color: #00bcd4;
+  justify-content: center;
   flex-wrap: wrap;
+}
+
+.app-name {
+  font-style: italic;
+  font-weight: bold;
 }
 
 .app-name-container {
@@ -53,6 +59,7 @@ button {
 .nav-btn-container {
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
   flex-wrap: wrap;
 }
 
@@ -65,25 +72,9 @@ button {
   border: 0;
   border-radius: 3px;
   cursor: pointer;
-  margin-right: 5px;
+  margin-bottom: 7px;
+  margin-right: 7px;
   white-space: nowrap;
-  /* flex-wrap: wrap; */
-}
-
-/* for smaller screens */
-@media screen and (max-width: 440px) {
-  .header-container {
-    justify-content: center;
-    /* flex-flow: column wrap; */
-    /* padding: 0; */
-  }
-  .nav-btn-container {
-    justify-content: space-evenly;
-  }
-
-  .nav-btn {
-    margin-bottom: 7px;
-  }
 }
 
 h2 {
@@ -92,49 +83,23 @@ h2 {
   background-color: #eceff1;
   text-align: center;
   vertical-align: center;
+  border-radius: 3px;
 }
 
-/* dashboard page */
-.dashboard-container {
+.dashboard-container, .summary-container,
+.archive-container {
   display: flex;
-  width: 95%;
-  margin: 0 auto;
-  /* what applies to the child:  */
-  justify-content: center;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 
-.dashboard-tracker-container {
-  flex-basis: 75%;
-  max-width: 400px;
-  margin: 5px;
+.dashboard-tracker-container, .tracker-container {
   padding: 10px;
+  margin-bottom: 20px;
   border: 1.5px solid #ffd54f;
   border-radius: 3px;
 }
 
-/* summary & archive page */
-.tracker-container {
-  flex-grow: 1;
-  max-width: 90%;
-  margin: 5px;
-  padding: 10px;
-  border: 1.5px solid #ffd54f;
-  border-radius: 3px;
-}
-
-/* this is for 2 columns in summary's tracker container
- test this out to see the screen size */
-@media screen and (min-width: 600px) {
-  .inner-flexbox {
-    display: flex;
-  }
-  .col-1,
-  .col-2 {
-    width: 50%;
-  }
-}
-
+/* tracker content */
 .tracker-name {
   padding: 0.25em;
   background-color: #eceff1;
@@ -144,24 +109,25 @@ h2 {
 }
 
 .tracker-month {
-  /* color: #008ba3; */
   text-align: center;
   font-style: italic;
   font-size: 18px;
 }
 
+.current-count {
+  text-align: center;
+  margin-top: 17px;
+  color: #008ba3;
+}
+
 .summary-sentence {
   font-weight: 200;
   font-size: 16px;
+  margin-top: 15px;
 }
 
-.marks-container {
-  /* max-width: 50%; */
-  /* margin: auto 0; */
-  display: flex;
-  justify-content: space-between;
-  min-height: 35px;
-  /* padding: 5px; */
+.count-bold {
+  font-weight: bold;
 }
 
 ul {
@@ -179,7 +145,7 @@ ul {
   background-color: #aed581;
 }
 
-.edit-trkr-label {
+.edit-trkr-label, .notes-label {
   display: block;
   text-align: center;
 }
@@ -196,17 +162,8 @@ ul {
   text-align: left;
 } 
 
-.notes-container {
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  padding: 5px;
-}
-
 .trkr-sumry-notes {
   resize: none;
-  /* margin: 0 auto; */
-  width: 95%;
   height: 100px;
   border: 1px solid #7da453;
   border-radius: 3px;
@@ -227,20 +184,8 @@ ul {
   white-space: nowrap;
 }
 
-/* make flex container for dashboard & trackers */
-.summary-container,
-.archive-container {
-  display: flex;
-  width: 95%;
-  margin: 0 auto;
-  /* what applies to the child:  */
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-}
-
 .dashboard-btn-row {
   display: flex;
-  /* align-content: flex-end; */
   justify-content: center;
   margin: 25px 0 7px;
 }
@@ -262,6 +207,7 @@ ul {
 
 .new-trkr-label {
   font-size: 18px;
+  margin-bottom: 10px
 }
 
 .new-trkr-input {
@@ -272,7 +218,9 @@ ul {
   padding: 5px;
   border: 2px solid #008ba3;
   border-radius: 3px;
-  margin: 10px auto 10px;
+  margin-bottom: 10px;
+  /* margin: auto 10px 10px; */
+  /* margin: 10px auto 10px; */
   transition: opacity 0.4s;
 }
 
@@ -286,9 +234,9 @@ ul {
   padding: 5px;
 }
 
-.tracker-notes {
+/* .tracker-notes {
   width: 100%;
-}
+} */
 
 .form-btn-row {
   display: flex;
@@ -299,14 +247,14 @@ ul {
 
 button {
   height: auto;
-  margin-right: 5px;
+  margin-right: 7px;
   font-size: 18px;
   text-align: center;
   background: #ffffff;
   border: 0;
   border-radius: 3px;
   cursor: pointer;
-
+  padding: 5px;
 }
 
 .footer {

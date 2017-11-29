@@ -1,8 +1,10 @@
 import moment from "moment";
 import $ from "jquery";
+import Cookies from "js-cookie";
 
 export default class TrackerComponents {
   constructor(data) {
+    // this.userId = Cookies.get("loggedInUserId");
     this.trackerId = data.id;
     this.name = data.name;
     this.description = data.description;
@@ -57,6 +59,8 @@ export default class TrackerComponents {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const tallyMarks = this.tallyMarks;
 
+    //can use filter() to find the most recent 6 months 
+    //in date fns library, has a date range or before/after function or difference in months
     let avgMarks =
       sortedKeys.reduce(function(sum, value) {
         return sum + tallyMarks[value];
@@ -65,7 +69,6 @@ export default class TrackerComponents {
     return { count: avgMarks.toFixed(), numOfMonths: sortedKeys.length };
   }
 
-  //marks are rendering outside of container?
   getDashboardTrackerHtml() {
     const template = `
       <div class="dashboard-tracker-container">
@@ -74,6 +77,7 @@ export default class TrackerComponents {
         <div class="marks-container">
           <ul class="tally-marks>${this.getTallyMarks()}</ul> 
         </div> 
+        <p class="current-count">Tracked: <span class="count-bold">${this.currentMarks.monthCount} </span></p>
         <div class="dashboard-btn-row">
           <button type="button" data-section="dashboard" data-trkr-id=${this
             .trackerId} class="add-mark-btn trkr-btn"> + Mark</button>
@@ -98,10 +102,9 @@ export default class TrackerComponents {
             <ul class="tally-marks>${this.getTallyMarks()}</ul> 
           </div>
           <div class="summary-statements">
-            <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
-            <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
-            <p class="summary-sentence"> On average, you mark ${this.name} ${this.averageMarks.count} 
-              times in the past ${this.averageMarks.numOfMonths} month(s).</p> 
+            <p class="summary-sentence">This Month: <span class="count-bold">${this.currentMarks.monthCount} </span> times</p>
+            <p class="summary-sentence">Last Month: <span class="count-bold">${this.oneMonthBack.monthCount} </span> times</p>
+            <p class="summary-sentence">${this.averageMarks.numOfMonths} months average: <span class="count-bold">${this.averageMarks.count}</span> times</p> 
           </div>
       </div>
       <div class="col-2">
@@ -109,7 +112,7 @@ export default class TrackerComponents {
           <canvas class="myChart-${this.trackerId}"></canvas>
         </div>
         <div class="notes-container">
-          <label for="notes">Notes</label>
+          <label for="notes" class="notes-label">Notes</label>
           <textarea data-trkr-id=${this.trackerId} data-field-name="notes" class="trkr-sumry-notes edit-trkr-field">${this.notes}</textarea>
         </div>
         <div class="summary-btn-row">
@@ -212,15 +215,15 @@ export default class TrackerComponents {
   static getCreateTrackerHtml() {
     const template = `
     <h2>Create a Tracker</h2>
-    <form method="post" class="create-form">
+    <form class="create-form">
       <label for="tracker-name" class="new-trkr-label">New Tracker Name</label>
-      <input class="new-trkr-input" type="text" placeholder="enter new tracker name">
+      <input class="new-trkr-input new-trkr-name" type="text" placeholder="enter new tracker name">
 
       <label for="tracker-description" class="new-trkr-label">Description</label>
-      <input class="new-trkr-input" type="text" placeholder="Add a description (optional)">
+      <input class="new-trkr-input new-trkr-description" type="text" placeholder="Add a description (optional)">
 
       <label for="notes" class="new-trkr-label">Notes</label>
-      <textarea class="new-trkr-input tracker-notes" placeholder="Add any notes for yourself (optional)"></textarea>
+      <textarea class="new-trkr-input tracker-notes new-trkr-notes field-name" placeholder="Add any notes for yourself (optional)"></textarea>
       <div class="form-btn-row">
         <button type="submit" class="create-trkr-btn new-trkr-btn">Create</button>
         <button type="button" class="cancel-btn new-trkr-btn">Cancel</button>
