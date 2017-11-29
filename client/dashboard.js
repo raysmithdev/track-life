@@ -22,7 +22,6 @@ const redirectOnAuthFailure = err => {
 
 // Call the API for current trackers and store in STATE
 export function getDashboardTrackers() {
-  // console.log(`Bearer ${Cookies.get('jwt')}`);
   return $.ajax({
     url: `/api/users/${STATE.currentUserId}/trackers/active`,
     method: "GET",
@@ -86,7 +85,7 @@ export function setDashboardHandlers() {
         case "summary":
           renderSummaryPage();
           break;
-        case "single": //single summary breaks, won't render
+        case "single": 
           renderIndividualTrackerSummary(data.id);
           break;
         default:
@@ -133,13 +132,13 @@ export function setDashboardHandlers() {
 
   // VIEW BUTTON - OPENS INDIVIDUAL TRACKER SUMMARY
   $(".dashboard").on("click", ".view-sumry-btn", e => {
-    const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    const trackerId = $(e.currentTarget).data("trkr-id"); 
     renderIndividualTrackerSummary(trackerId);
   });
 
   // EDIT BUTTON - OPENS INDIVIDUAL TRACKER SUMMARY VIEW
   $(".tracker-summary").on("click", ".edit-trkr-btn", e => {
-    const trackerId = $(e.currentTarget).data("trkr-id"); //OR .attr('data-trkr-id')
+    const trackerId = $(e.currentTarget).data("trkr-id");
     renderIndividualTrackerSummary(trackerId);
   });
 
@@ -220,7 +219,6 @@ export function setDashboardHandlers() {
       dataType: "json"
     })
     .then(data => {
-      // console.log("state =", STATE, data);
       const index = STATE.archivedTrackers.findIndex(
         tracker => tracker.id === data.id
       );
@@ -235,16 +233,11 @@ export function setDashboardHandlers() {
 
   // CREATE TRACKER BUTTON
   $(".main-section").on('submit', '.create-form', e => {
-  // $((".create-form").submit((e) => {
-    console.log('form submit!');
     e.preventDefault();
     const userId = Cookies.get("loggedInUserId");
     const name = $('.new-trkr-name').val();
     const description = $('.new-trkr-description').val();
     const notes = $('.new-trkr-notes').val();
-
-    console.log('userId ->', userId);
-    console.log('form sections ->', name, description, notes);
 
     $.ajax({
       url: `/api/users/${userId}/trackers`,
@@ -258,15 +251,8 @@ export function setDashboardHandlers() {
     })
     .then(newTracker => {
       STATE.trackers.push(newTracker);
-      console.log('after create new tracker ->', STATE);
       renderDashboard(); 
     })
     .catch(redirectOnAuthFailure);
   });
-
-  //add delete button
-  //toggle chart type - line <> bar graph
-  // $(".tracker-summary").on("click", ".toggle-chart", e => {
-  //   toggleChartType();
-  // })
 }

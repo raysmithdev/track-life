@@ -61,9 +61,9 @@ router.post("/login", (req, res) => {
         user,
         isValid: await user.validatePassword(userPassword)
       };
-    }) //if user exists, check password
+    }) 
+    //if user exists, check password
     .then(result => {
-      //console.log(result);
       if (!result.isValid) {
         return Promise.reject({
           reason: "LoginError",

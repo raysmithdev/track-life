@@ -1,5 +1,3 @@
-'use strict';
-
 const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -23,8 +21,7 @@ passport.use(jwtStrategy);
 
 mongoose.Promise = global.Promise;
 
-//https://expressjs.com/en/starter/static-files.html
-// establish root? 
+// establish root
 app.use(express.static('public'));
 
 // establish /api/routers 
@@ -34,18 +31,9 @@ app.use('/api/auth', authRouter);
 // establish dashboard path 
 // when request to dashboard is made, check for dashboard
 app.get('/dashboard', (req, res) => {
-  // if not authenticated, send back to index
-  // if (!req.isAuthenticated()) {
-  //   return res.status(401).redirect('/');
-  //   //return res.status(401).json({ message: 'Not logged in' });
-  // }
-  // when authenticated, send to dashboard
-  // and return user info to client to save in STATE
-  // need to store in STATE to pass it through other web requests
   res.status(200).sendFile(__dirname + '/public/dashboard.html');
-    //user: req.user.toClient()
-
 });
+
 // if in root, get index
 app.get('/', (req, res) => {
   res.status(200).sendFile(__dirname + '/public/index.html');

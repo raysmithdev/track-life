@@ -1,5 +1,3 @@
-'use strict';
-
 const DATABASE_URL = process.env.DATABASE_URL || 
                     global.DATABASE_URL ||
                     'mongodb://localhost/track-life';

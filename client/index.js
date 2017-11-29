@@ -56,7 +56,5 @@ $("document").ready(() => {
     setDashboardHandlers();
     getDashboardTrackers().then(renderDashboard);
     getArchivedTrackers();
-    // render dashboard last
-    // getArchivedTrackers().then(renderArchivePage);
   }
 });
