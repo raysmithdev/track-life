@@ -151,10 +151,9 @@ export default class TrackerComponents {
         </div>
 
         <div class="summary-statements">
-          <p class="summary-sentence">You marked ${this.name} ${this.currentMarks.monthCount} times this month!</p>
-          <p class="summary-sentence">You marked ${this.name} ${this.oneMonthBack.monthCount} times last month!</p>
-          <p class="summary-sentence"> On average, you mark ${this.name} ${this.averageMarks.count} 
-            times in the past ${this.averageMarks.numOfMonths} month(s).</p>        
+          <p class="summary-sentence">This Month: <span class="count-bold">${this.currentMarks.monthCount} </span> times</p>
+          <p class="summary-sentence">Last Month: <span class="count-bold">${this.oneMonthBack.monthCount} </span> times</p>
+          <p class="summary-sentence">${this.averageMarks.numOfMonths} months average: <span class="count-bold">${this.averageMarks.count}</span> times</p> 
         </div>
       </div>
       <div class="col-2">
