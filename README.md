@@ -6,7 +6,7 @@ Full Stack Capstone Project
 
 ## Introduction
 
-I use a bullet journal to keep track of my activities. This inspired me to create a antithesis of current habit/routine tracker mobile and web apps. I prefer paper & pencil because it's simple. I'm not obligated set goals and feel that I'm always "underperforming". I don't need to be reminded of my progress (or lack of) via emails, text messages or alerts. I do like seeing the visual check off though. Use the minimalist info as you will. Here is my take on tracking. Please enjoy!
+I use a bullet journal to keep track of my activities. This inspired me to create a antithesis of current habit/routine tracker mobile and web apps. I prefer paper & pencil because it's simple. I'm not required to set goals and feel that I'm always "underperforming". I don't need to be reminded of my progress (or lack of) via emails, text messages or alerts. I do like seeing the visual check off though. Here is my take on tracking. Please enjoy!
 
 ## Description
 
@@ -18,7 +18,8 @@ Need to keep track of what you do in life? Start now!
 
 ### Frontend
 
-* HTML5, CSS (flexbox), JavaScript
+* HTML5 & CSS (w/ flexbox)
+* JavaScript
 * jQuery
 * Chartjs 
 * Momentjs 
