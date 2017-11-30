@@ -6,6 +6,7 @@ deploy:
   provider: heroku
   api_key:
     secure: YfArUYg1LLpHiyP0r7tIfoKECJEk/sFrBw6eIcHzvmt/1TY8vYsdIutxjVMoiT5fZ3ynEwUhHY+SqDpnELG+hLI5pJLOp3IwLZz89r8X5V+ZiMw0R3HVMkK+bX9xvqzYs8YgTqH56QQ27iBXxDs52dh8mZiRWT9BrnedzJQH2CUjwTYmkfgKWxJz6QBZiGjGOIDnnkPIbGqC1P4+r/hpzhxlxYhF6zYBnL59Xo9kqWLqlp+trd9DPM05+oPm7Nk5MF02u6czYGDmkMRaUGkPjJogA1H6Gx2rjjpBQuuUIOciKw5C3HrSiw3pK+aPonaPc3GYOyTyCV9E5FyhaV5W6d6xlA05dMzgtZfjRqPuptVnkrpuw3NRqkzwHRtam4jCZvjgl9/0j7tzubzlsLsc8xW/lARJlaMb8diHn5Z+rfbI/WJekfB+Q+RiOFktyWOrMoxHJe9tsuKIdw2IfJVzn7+Olxbug/h8EiZzIvmR6kB2WqC3ARVg+pSuBcVoJlaqWLy2nis7JbUHAKD2xWqdosIgXb4gmMUt1CQvk/CMIbwsWhDxLeSOQqL9r2SLtxZ/whSuUsRTw8Y/K3gis7nEkUXsjOHr5G5V/+lwJGW3pmZpVD/XhWqhOelqXJ+IivAl02DVExoEVlmlKaplref8GpYJvuMroIyRhxPICtKpbgE=
+  skip_cleanup: true  
   app: track-life
   on:
     repo: codeannie/track-life
