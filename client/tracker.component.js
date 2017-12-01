@@ -26,8 +26,13 @@ export default class TrackerComponents {
         currentTrackerMonth: trackerMoment.format("MMMM YYYY"),
         monthCount: this.tallyMarks[trackerMonth]
       };
+    } else {
+        return {
+          currentTrackerMonth: currentMonth.format("MMMM YYYY"),
+          monthCount: 0
+        };
+      }
     }
-  }
 
   //look at previous month and display previous month's count in a statement
   getPreviousCount() {
