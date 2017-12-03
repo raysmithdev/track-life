@@ -19,7 +19,7 @@ export default class TrackerComponents {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const trackerMonth = sortedKeys[sortedKeys.length - 1];
     const trackerMoment = moment(trackerMonth);
-    
+
     const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
     if (doesCurrentMonthMatch === true) {
       return {
@@ -27,7 +27,7 @@ export default class TrackerComponents {
         monthCount: this.tallyMarks[trackerMonth]
       };
     } else {
-        Object.assign(this.tallyMarks, currentMonth.format("MMMM YYYY"));
+        // Object.assign(this.tallyMarks, currentMonth.format("MMMM YYYY"));
         return {
           currentTrackerMonth: currentMonth.format("MMMM YYYY"),
           monthCount: 0
