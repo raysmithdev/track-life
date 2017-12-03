@@ -44713,15 +44713,21 @@ class TrackerComponents {
     const sortedKeys = Object.keys(this.tallyMarks).sort();
     const trackerMonth = sortedKeys[sortedKeys.length - 1];
     const trackerMoment = __WEBPACK_IMPORTED_MODULE_0_moment___default()(trackerMonth);
-
+    
     const doesCurrentMonthMatch = trackerMoment.isSame(currentMonth, "month");
     if (doesCurrentMonthMatch === true) {
       return {
         currentTrackerMonth: trackerMoment.format("MMMM YYYY"),
         monthCount: this.tallyMarks[trackerMonth]
       };
+    } else {
+        Object.assign(this.tallyMarks, currentMonth.format("MMMM YYYY"));
+        return {
+          currentTrackerMonth: currentMonth.format("MMMM YYYY"),
+          monthCount: 0
+        };
+      }
     }
-  }
 
   //look at previous month and display previous month's count in a statement
   getPreviousCount() {
