@@ -27,6 +27,7 @@ export default class TrackerComponents {
         monthCount: this.tallyMarks[trackerMonth]
       };
     } else {
+        // Object.assign(this.tallyMarks, currentMonth.format("MMMM YYYY"));
         return {
           currentTrackerMonth: currentMonth.format("MMMM YYYY"),
           monthCount: 0
