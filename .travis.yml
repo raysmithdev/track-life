@@ -9,6 +9,5 @@ deploy:
   api_key:
     secure: Ew3ljqTSldsZJIiAydAJ9gjM8vq/NnJrSS/noCZ5UTCM9zmbpzh8SduL+hnGiRnrRVL5eLzhIjDZlHireV+HlU6XiIWF3/GfDPb+1n+6BWf2v3v70VL9p9hYIPUaI+mmMw3dp6RfUc4sEVB7HIfUHTxU4rkXpNYYQzqJh87rVT1AsDkydKPCBLO4qacnWPvL0Ic4N4M1IB8deQnGepJfAUC3/7lroauOB7mRICU7eHB4/xVVnzjIngfdsF6KfM4MmQD1FVgx7JcsG/EPLtJGP1p0UG1meIUpPfPNkDqsyenVodxEkepEthTT/QeTTmYa/ol/ggkSz2IhRCw8mGVuuEz4dX1G54jieTn+oZBp+wnmesBCSKB/sV4Tnh9R3Jy67+M3nltgZq1XksO2xaie+olhWaDRoPdFMyVtbbF7uW8/qyiGesDPz5n0uJwGKAIuETzm4j7xqVkEC+cMg8CQdrzLWWWcjUlqfQW8iaVHRYip3a54aATFl7C8xO2vpmj2s5y8B52VZD/a/oEG0bnrehU/1XRfbzpVqIpZ47LaGlH3omIMMwATesfBO5QcxlrqzW7Kr32b4AfcMuO3NojG4EGtp21inJB9yGyRe7W+BnbxkP4H/IT5W8ITkgcN5S1PlM8dkGP4CUkEV/hCBJxLxaT+PxpmvBnNKJpu0mX5ezw=
   app: afternoon-cliffs-50099
-  skip_cleanup: true
   on:
     repo: raysmithdev/track-life
