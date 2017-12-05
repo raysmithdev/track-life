@@ -20583,7 +20583,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__dashboard__ = __webpack_require__(251);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__signup__ = __webpack_require__(253);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__login__ = __webpack_require__(252);
-throw new Error("Cannot find module \"./demo\"");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__demo__ = __webpack_require__(317);
 
 
 
@@ -20612,8 +20612,8 @@ function setIndexHandlers() {
 }
   // Demo button
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".demo-btn").click(function() {
-    const userName = __WEBPACK_IMPORTED_MODULE_6__demo__["demoUser"].userName;
-    const password = __WEBPACK_IMPORTED_MODULE_6__demo__["demoUser"].password;
+    const userName = __WEBPACK_IMPORTED_MODULE_6__demo__["a" /* demoUser */].userName;
+    const password = __WEBPACK_IMPORTED_MODULE_6__demo__["a" /* demoUser */].password;
 
     __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post('/api/auth/login', {userName, password}).then((user) => {
       __WEBPACK_IMPORTED_MODULE_1_js_cookie___default.a.set('jwt', user.authToken);
@@ -59738,6 +59738,19 @@ try {
 
 module.exports = g;
 
+
+/***/ }),
+/* 317 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {const demoUser = {
+  userName:process.env.userName,
+  password: process.env.password, 
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = demoUser;
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(312)))
 
 /***/ })
 /******/ ]);
