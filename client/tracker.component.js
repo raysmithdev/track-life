@@ -73,17 +73,17 @@ export default class TrackerComponents {
   getDashboardTrackerHtml() {
     const template = `
       <div class="dashboard-tracker-container">
-        <h3 class="tracker-name">${this.name}</h3>
+        <h3 class="tracker-name">Hellloooo</h3>
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
         <div class="marks-container">
-          <ul class="tally-marks>${this.getTallyMarks()}</ul> 
-        </div> 
+          <ul class="tally-marks>${this.getTallyMarks()}</ul>
+        </div>
         <p class="current-count">Tracked: <span class="count-bold">${this.currentMarks.monthCount} </span></p>
         <div class="dashboard-btn-row">
           <button type="button" data-section="dashboard" data-trkr-id=${this
-          .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button> 
+          .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>
           <button type="button" data-section="dashboard" data-trkr-id=${this
-            .trackerId} class="add-mark-btn trkr-btn"> Mark + </button>           
+            .trackerId} class="add-mark-btn trkr-btn"> Mark + </button>
           <button type="button" data-trkr-id=${this
             .trackerId} class="view-sumry-btn trkr-btn">View</button>
         </div>
@@ -100,12 +100,12 @@ export default class TrackerComponents {
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
         <p class="description">${this.description}</p>
           <div class="marks-container">
-            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+            <ul class="tally-marks>${this.getTallyMarks()}</ul>
           </div>
           <div class="summary-statements">
             <p class="summary-sentence">This Month: <span class="count-bold">${this.currentMarks.monthCount} </span> times</p>
             <p class="summary-sentence">Last Month: <span class="count-bold">${this.oneMonthBack.monthCount} </span> times</p>
-            <p class="summary-sentence">${this.averageMarks.numOfMonths} months average: <span class="count-bold">${this.averageMarks.count}</span> times</p> 
+            <p class="summary-sentence">${this.averageMarks.numOfMonths} months average: <span class="count-bold">${this.averageMarks.count}</span> times</p>
           </div>
       </div>
       <div class="col-2">
@@ -120,9 +120,9 @@ export default class TrackerComponents {
           <button type="button" data-trkr-id=${this
             .trackerId} class="edit-trkr-btn trkr-btn">Edit</button>
           <button type="button" data-section="summary" data-trkr-id=${this
-            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button> 
+            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>
           <button type="button" data-section="summary" data-trkr-id=${this
-            .trackerId} class="add-mark-btn trkr-btn"> Mark + </button>                       
+            .trackerId} class="add-mark-btn trkr-btn"> Mark + </button>
           <button type="button" data-section="summary" data-trkr-id=${this
             .trackerId} class="archive-btn trkr-btn">Archive</button>
         </div>
@@ -136,20 +136,20 @@ export default class TrackerComponents {
     const template = `
       <div class="tracker-container inner-flexbox">
       <div class="col-1">
-        <label for="tracker-name" class="edit-trkr-label">Edit Tracker Name</label>      
-        <input data-trkr-id=${this.trackerId} data-field-name="name" 
+        <label for="tracker-name" class="edit-trkr-label">Edit Tracker Name</label>
+        <input data-trkr-id=${this.trackerId} data-field-name="name"
           class="tracker-name edit-trkr-field" value="${this.name}"/>
-        <label for="tracker-description" class="edit-trkr-label">Edit Description</label>        
-        <input data-trkr-id=${this.trackerId} data-field-name="description" 
+        <label for="tracker-description" class="edit-trkr-label">Edit Description</label>
+        <input data-trkr-id=${this.trackerId} data-field-name="description"
           class="description edit-trkr-field" value="${this.description}"/>
-        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>          
+        <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
         <div class="marks-container">
-          <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+          <ul class="tally-marks>${this.getTallyMarks()}</ul>
         </div>
         <div class="summary-statements">
           <p class="summary-sentence">This Month: <span class="count-bold">${this.currentMarks.monthCount} </span> times</p>
           <p class="summary-sentence">Last Month: <span class="count-bold">${this.oneMonthBack.monthCount} </span> times</p>
-          <p class="summary-sentence">${this.averageMarks.numOfMonths} months average: <span class="count-bold">${this.averageMarks.count}</span> times</p> 
+          <p class="summary-sentence">${this.averageMarks.numOfMonths} months average: <span class="count-bold">${this.averageMarks.count}</span> times</p>
         </div>
       </div>
       <div class="col-2">
@@ -162,9 +162,9 @@ export default class TrackerComponents {
         </div>
         <div class="summary-btn-row">
           <button type="button" data-section="single" data-trkr-id=${this
-            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button> 
+            .trackerId} class="remove-mark-btn trkr-btn"> - Mark</button>
           <button type="button" data-section="single" data-trkr-id=${this
-            .trackerId} class="add-mark-btn trkr-btn"> Mark + </button>                     
+            .trackerId} class="add-mark-btn trkr-btn"> Mark + </button>
           <button type="button" data-section="single" data-trkr-id=${this
             .trackerId} class="archive-btn trkr-btn">Archive</button>
           <button type="button" class="close-btn trkr-btn">Close</button>
@@ -182,7 +182,7 @@ export default class TrackerComponents {
         <h3 class="tracker-name">${this.name}</h3>
         <h4 class="tracker-month">${this.currentMarks.currentTrackerMonth}</h4>
           <div class="marks-container">
-            <ul class="tally-marks>${this.getTallyMarks()}</ul> 
+            <ul class="tally-marks>${this.getTallyMarks()}</ul>
           </div>
           <div class="summary-statements">
             <p class="summary-sentence">You last marked ${this.name} ${this
@@ -194,7 +194,7 @@ export default class TrackerComponents {
             <canvas class="myChart-${this.trackerId}"></canvas>
           </div>
         <div class="summary-btn-row">
-          <button type="button" class="delete-btn trkr-btn">Delete</button> 
+          <button type="button" class="delete-btn trkr-btn">Delete</button>
           <button type="button" data-trkr-id=${this
             .trackerId} class="reactivate-btn trkr-btn">Reactivate</button>
         </div>
