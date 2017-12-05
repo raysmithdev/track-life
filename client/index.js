@@ -16,7 +16,7 @@ import {
 
 import { setSignUpHandlers } from "./signup";
 import { setLoginHandlers } from "./login";
-import { demoUser } from "./demo";
+import { demoUser } from "../config";
 
 export const STATE = {
   trackers: [],

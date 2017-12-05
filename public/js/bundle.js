@@ -20583,7 +20583,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__dashboard__ = __webpack_require__(251);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__signup__ = __webpack_require__(253);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__login__ = __webpack_require__(252);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__demo__ = __webpack_require__(317);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__config__ = __webpack_require__(318);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__config__);
 
 
 
@@ -20612,10 +20613,10 @@ function setIndexHandlers() {
 }
   // Demo button
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".demo-btn").click(function() {
-    const userName = __WEBPACK_IMPORTED_MODULE_6__demo__["a" /* demoUser */].userName;
-    const password = __WEBPACK_IMPORTED_MODULE_6__demo__["a" /* demoUser */].password;
+    const userName = __WEBPACK_IMPORTED_MODULE_6__config__["demoUser"].userName;
+    const password = __WEBPACK_IMPORTED_MODULE_6__config__["demoUser"].password;
     
-    console.log(__WEBPACK_IMPORTED_MODULE_6__demo__["a" /* demoUser */]);
+    console.log(__WEBPACK_IMPORTED_MODULE_6__config__["demoUser"]);
 
     __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.post('/api/auth/login', {userName, password}).then((user) => {
       __WEBPACK_IMPORTED_MODULE_1_js_cookie___default.a.set('jwt', user.authToken);
@@ -59742,17 +59743,28 @@ module.exports = g;
 
 
 /***/ }),
-/* 317 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 317 */,
+/* 318 */
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {const demoUser = {
+/* WEBPACK VAR INJECTION */(function(process, global) {const DATABASE_URL = process.env.DATABASE_URL || 
+                    global.DATABASE_URL ||
+                    'mongodb://localhost/track-life-test2';
+
+const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL ||
+                          'mongodb://localhost/test-track-life2';
+
+const PORT = process.env.PORT || 8080;
+const JWT_SECRET = 'trackyolife';
+const JWT_EXPIRY = process.env.JWT_EXPIRY || '3d';
+
+const demoUser = {
   userName: process.env.userName,
-  password: process.env.password, 
-};
-/* harmony export (immutable) */ __webpack_exports__["a"] = demoUser;
+  password: process.env.password
+}
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(312)))
+module.exports = {DATABASE_URL, JWT_EXPIRY, JWT_SECRET, PORT, TEST_DATABASE_URL};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(312), __webpack_require__(316)))
 
 /***/ })
 /******/ ]);
