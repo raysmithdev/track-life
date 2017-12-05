@@ -1,9 +1,9 @@
 const DATABASE_URL = process.env.DATABASE_URL || 
                     global.DATABASE_URL ||
-                    'mongodb://localhost/track-life';
+                    'mongodb://localhost/track-life-test2';
 
 const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL ||
-                          'mongodb://localhost/test-track-life';
+                          'mongodb://localhost/test-track-life2';
 
 const PORT = process.env.PORT || 8080;
 const JWT_SECRET = 'trackyolife';

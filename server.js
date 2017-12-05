@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const passport = require('passport');
 const { DATABASE_URL, PORT } = require('./config');
 
+
 const authRouter = require('./src/auth/auth.routes');
 
 const TrackerRouter = require('./src/tracker/tracker.router');
