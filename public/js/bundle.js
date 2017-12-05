@@ -59763,7 +59763,7 @@ const demoUser = {
   password: process.env.password
 }
 
-module.exports = {DATABASE_URL, JWT_EXPIRY, JWT_SECRET, PORT, TEST_DATABASE_URL};
+module.exports = {DATABASE_URL, JWT_EXPIRY, JWT_SECRET, PORT, TEST_DATABASE_URL, demoUser};
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(312), __webpack_require__(316)))
 
 /***/ })
